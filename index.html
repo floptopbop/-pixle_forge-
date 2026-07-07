@@ -1,4 +1,622 @@
-// ═══════════════════════════════════════════════════════════════════
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>PYFORGE</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Anton&display=swap" rel="stylesheet">
+<style>
+/* RESET & ROOT
+   ----------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  --bg: #2D2C2E;
+  --surface: #605D5E;
+  --surface2: #b99e78;
+  --border: #241811;
+  --border2: #4d372a;
+  --fg: #f4e9d8;
+  --dim: #a98e6c;
+  --dim2: #fff6ea;
+  --accent: #c0392b;
+  --accent-d: #8e2a1f;
+  --accent-glow: rgba(192, 57, 43, 0.18);
+  --mono: 'DM Mono', monospace;
+  --display: 'Anton', sans-serif;
+  --panel-w: 320px; /* FIXED: Changed from 100% to a sane desktop width */
+  --radius: 3px;
+}
+
+html,
+body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--mono);
+  font-size: 11px;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* LAYOUT
+   ----------------------------------------------------------- */
+#app {
+  display: grid;
+  grid-template-columns: var(--panel-w) 1fr;
+  height: 100vh;
+}
+
+/* PANEL
+   ----------------------------------------------------------- */
+#panel {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  z-index: 10;
+}
+
+#panel-tab {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+#panel-tab .grip {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border2);
+  transition: background 0.15s;
+}
+
+#panel-tab:hover .grip,
+#panel.expanded #panel-tab .grip {
+  background: var(--accent);
+}
+
+#panel-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.sub {
+  margin-top: 4px;
+  font-size: 11px; /* Compressed for better density */
+  letter-spacing: 2px;
+  color: var(--dim);
+  text-transform: uppercase;
+}
+
+/* MODULE TABS */
+#module-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.mtab {
+  background: var(--surface);
+  color: var(--dim);
+  border: none;
+  padding: 10px 8px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+  line-height: 1.4;
+}
+
+.mtab .mnum {
+  color: var(--dim2);
+  margin-right: 5px;
+  font-weight: 500;
+}
+
+.mtab:hover {
+  background: var(--surface2);
+  color: var(--fg);
+}
+
+.mtab.active {
+  background: var(--surface2);
+  color: var(--accent);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+.mtab.active .mnum {
+  color: var(--accent-d);
+}
+
+/* SCROLL AREA */
+#scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 16px 40px; /* Streamlined margins to eliminate screen wasting */
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border2) transparent;
+  min-height: 0;
+}
+
+#scroll::-webkit-scrollbar { width: 4px; }
+#scroll::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+.section-title {
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--dim);
+  text-transform: uppercase;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+
+.effect-desc {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--dim);
+  padding: 2px 0 2px 10px;
+  border-left: 2px solid var(--border2);
+}
+
+/* PARAMS */
+.params {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.param {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.param-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.param-name {
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: var(--dim);
+  text-transform: uppercase;
+}
+
+.param-val {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Input Elements Optimization */
+input[type=range] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 20px;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+  height: 2px;
+  background: var(--border2);
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  margin-top: -5px;
+  background: var(--accent);
+  border-radius: 50%;
+  transition: transform 0.12s;
+}
+
+input[type=range]::-webkit-slider-thumb:hover {
+  transform: scale(1.3);
+}
+
+.select-wrap {
+  position: relative; /* FIXED: Was absolute, which broke document flow */
+  width: 100%;
+}
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  color: var(--fg);
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 6px 24px 6px 8px;
+  cursor: pointer;
+  outline: none;
+}
+
+.select-arrow {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--dim);
+  pointer-events: none;
+}
+
+/* Checkbox */
+.checkrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkrow input[type=checkbox] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--border2);
+  border-radius: 2px;
+  background: var(--surface2);
+  cursor: pointer;
+  position: relative;
+}
+
+.checkrow input[type=checkbox]:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.checkrow input[type=checkbox]:checked::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 4px;
+  height: 7px;
+  border: solid var(--fg);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Buttons */
+.btn-row {
+  display: flex;
+  gap: 6px;
+}
+
+.btn {
+  flex: 1;
+  padding: 8px 10px;
+  background: transparent;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  color: var(--fg);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn-accent {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn-accent:hover {
+  background: var(--accent-glow);
+}
+
+/* STATUS BAR */
+#status-bar {
+  padding: 8px 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+#dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--dim);
+}
+
+#dot.on {
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
+  animation: blink 0.9s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+#status-msg {
+  color: var(--dim);
+  font-size: 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* VIEWPORT
+   ----------------------------------------------------------- */
+#viewport {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  overflow: hidden;
+  padding: 20px;
+}
+
+#viewport canvas {
+  display: none;
+  image-rendering: pixelated;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+#viewport canvas.show { display: block; }
+
+#drop-zone {
+  border: 1px dashed var(--border2);
+  border-radius: var(--radius);
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+  color: var(--dim);
+}
+
+#empty {
+  text-align: center;
+  color: var(--dim2);
+}
+
+.empty-word {
+  font-family: var(--display);
+  font-size: clamp(32px, 6vw, 54px);
+  letter-spacing: 6px;
+  opacity: 0.3;
+}
+
+/* PROGRESS BAR */
+#prog-wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 5;
+  opacity: 0;
+}
+
+#prog-wrap.show { opacity: 1; }
+#prog-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+}
+
+.hidden-input { display: none; }
+
+/* MOBILE BREAKPOINT (KEEP LAST)
+   ----------------------------------------------------------- */
+@media (max-width: 780px) {
+  #app {
+    display: block;
+    position: relative;
+    height: 100vh;
+  }
+  #viewport {
+    position: absolute;
+    inset: 0;
+    padding: 0;
+  }
+  #panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-right: none;
+    border-top: 1px solid var(--border);
+    border-radius: 12px 12px 0 0;
+    box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.4);
+  }
+  #module-tabs {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+  .mtab {
+    flex-shrink: 0;
+    padding: 12px 16px;
+  }
+  #panel-tab {
+    display: flex;
+  }
+  #panel-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease-out;
+  }
+  #panel.expanded #panel-body {
+    max-height: 30vh;
+  }
+  #scroll {
+    max-height: 50vh;
+    padding-bottom: 8px;
+  }
+  #empty {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto;
+  }
+</style>
+</head>
+<body>
+
+    <div id="app">
+        <!-- ══════════════════════════════════════════════════════════════════
+        SIDE PANEL
+        (On phone/narrow screens this becomes a bottom drawer — see the
+        #panel-tab pull handle and the max-width:780px media query above.)
+        ══════════════════════════════════════════════════════════════════════ -->
+        <aside id="panel">
+            <div id="module-tabs"></div>
+
+            <div id="panel-tab"><span class="grip"></span></div>
+
+            <div id="panel-body">
+                <div id="scroll">
+                    <div>
+                        <div class="section-title">Source</div>
+                        <input type="file" id="file-in" accept="image/*" class="hidden-input">
+                        <div id="drop-zone">
+                            <span class="dz-icon">&#8595;</span>
+                            DROP IMAGE<br>OR TAP TO BROWSE
+                        </div>
+                    </div>
+
+                    <div id="module-desc"></div>
+                    <div id="module-params"></div>
+
+                    <div>
+                        <div class="section-title">Export</div>
+                        <div class="btn-row">
+                            <button class="btn btn-accent" id="btn-png" disabled>&#8595; PNG</button>
+                            <button class="btn" id="btn-reset" disabled>&#8634; Reset</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="status-bar">
+                    <div id="dot"></div>
+                    <span id="status-msg">Drop an image to begin</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+        VIEWPORT
+        ══════════════════════════════════════════════════════════════════════ -->
+        <main id="viewport">
+            <div id="prog-wrap"><div id="prog-bar"></div></div>
+            <div id="empty">
+                <div class="empty-word">PYFORGE</div>
+                <div class="empty-label">No image loaded</div>
+            </div>
+            <canvas id="main"></canvas>
+        </main>
+    </div>
+
+    <script>
+        (function() {
+            // ═══════════════════════════════════════════════════════════════════
+            // DOM REFS
+            // ═══════════════════════════════════════════════════════════════════
+            const mainCvs = document.getElementById('main');
+            const ctx = mainCvs.getContext('2d', { willReadFrequently: true });
+            const dropZone = document.getElementById('drop-zone');
+            const empty = document.getElementById('empty');
+            const dot = document.getElementById('dot');
+            const statusMsg = document.getElementById('status-msg');
+            const progWrap = document.getElementById('prog-wrap');
+            const progBar = document.getElementById('prog-bar');
+            const btnPng = document.getElementById('btn-png');
+            const btnReset = document.getElementById('btn-reset');
+            const tabsEl = document.getElementById('module-tabs');
+            const descEl = document.getElementById('module-desc');
+            const paramsEl = document.getElementById('module-params');
+            const fileInput = document.getElementById('file-in');
+            const viewport = document.getElementById('viewport');
+            const panel = document.getElementById('panel');
+            const panelTab = document.getElementById('panel-tab');
+
+            // ═══════════════════════════════════════════════════════════════════
+            // STATE
+            // ═══════════════════════════════════════════════════════════════════
+            let srcImg = null;
+            let srcCanvas = null; // offscreen canvas at full source resolution
+            let running = false;
+            let activeModule = null;
+            let currentVals = {};
+            let debounceTimer = null;
+            const MAX_DIM = 840; // process at ≤640px for performance
+            let workingWidth = 0; // dimensions of current working canvas
+            let workingHeight = 0;
+
+            // ═══════════════════════════════════════════════════════════════════
+            // HELPERS
+            // ═══════════════════════════════════════════════════════════════════
+            function setStatus(state, msg) {
+                dot.className = state;
+                statusMsg.textContent = msg;
+            }
+
+            function setProgress(pct) {
+                const clamped = Math.min(100, Math.max(0, Math.round(pct)));
+                progBar.style.width = clamped + '%';
+                progWrap.classList.toggle('show', clamped > 0 && clamped < 100);
+            }
+
+            function yieldFrame() {
+                return new Promise(r => requestAnimationFrame(r));
+            }
+
+            const Clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+
+            // ═══════════════════════════════════════════════════════════════════
 // PRNG — fast 32-bit mulberry32
 // ═══════════════════════════════════════════════════════════════════
 function mulberry32(seed) {
@@ -323,3 +941,1060 @@ Core.quadSplit = function(data, imgW, x, y, w, h, depth, opts) {
         onLeaf(x, y, w, h);
     }
 };
+
+
+            // ═══════════════════════════════════════════════════════════════════
+            // MODULE DEFINITIONS
+            // Each: { id, name, desc, params:[{key,label,type,min,max,step,default,options}],
+            //         async run(ctx, w, h, vals) }
+            // ═══════════════════════════════════════════════════════════════════
+            const MODULES = [];
+
+            // ── 1. QUADTREE MOSAIC ────────────────────────────────────────────
+            // Replaces the old "Quadtree Warp" module. Ported from ULTIMATE_QUAD:
+            // recursively split on local variance (stddev of luminance), then
+            // fill each leaf with its average color. A real quadtree mosaic,
+            // not a warp — the old warp module has been switched off below.
+            MODULES.push({
+                id: 'quadtree',
+                name: 'Quadtree Mosaic',
+                desc: 'Recursive quadtree split: blocks divide while local variance exceeds the detail threshold, then each leaf fills with its average color. Ported from the ULTIMATE_QUAD engine.',
+                params: [
+                    { key: 'entropy', label: 'Detail Threshold', type: 'range', min: 3, max: 40, step: 1,
+                        default: 15 },
+                    { key: 'maxDepth', label: 'Max Depth', type: 'range', min: 2, max: 12, step: 1,
+                        default: 9 },
+                    { key: 'minSize', label: 'Min Block Size', type: 'range', min: 2, max: 16, step: 1,
+                        default: 4 },
+                    { key: 'strokeWeight', label: 'Grid Line Weight', type: 'range', min: 0, max: 3,
+                        step: 1, default: 1 },
+                ],
+                async run(ctx, w, h, v) {
+                    const id = ctx.getImageData(0, 0, w, h);
+                    const data = id.data;
+
+                    setStatus('on', 'Analyzing geometry…');
+                    const leaves = [];
+                    Core.quadSplit(data, w, 0, 0, w, h, 0, {
+                        minSize: Math.round(v.minSize),
+                        maxDepth: Math.round(v.maxDepth),
+                        entropyLimit: v.entropy,
+                        minDepth: 0,
+                        onLeaf: (bx, by, bw, bh) => leaves.push([bx, by, bw, bh])
+                    });
+                    await yieldFrame();
+                    setProgress(30);
+
+                    setStatus('on', 'Stabilizing geometry…');
+                    const strokeOn = v.strokeWeight > 0;
+                    ctx.lineWidth = v.strokeWeight;
+                    ctx.strokeStyle = 'rgb(0,0,0)';
+
+                    for (let li = 0; li < leaves.length; li++) {
+                        const [bx, by, bw, bh] = leaves[li];
+                        const color = Core.avgColor(data, w, bx, by, bw, bh);
+                        ctx.fillStyle = `rgb(${color[0]},${color[1]},${color[2]})`;
+                        ctx.fillRect(bx, by, bw, bh);
+                        if (strokeOn) ctx.strokeRect(bx + 0.5, by + 0.5, Math.max(0, bw - 1), Math.max(0,
+                            bh - 1));
+                        if (li % 200 === 0) { setProgress(30 + Math.round(li / leaves.length * 65));
+                            await yieldFrame(); }
+                    }
+                    setProgress(100);
+                }
+            });
+
+            // The old "Quadtree Warp" module has been switched off per request.
+            // Its code is removed; the gradient-warp + poison-invert pipeline
+            // can be restored from version history if it's ever wanted back.
+
+            // ── 2. JAPANESE INK ───────────────────────────────────────────────
+            // Merged "Sobel Ink Strokes" + "Sumi-e Wash" into one module —
+            // both were black & white Japanese-ink-style effects. Pick the
+            // style up top; only the params for that style matter.
+            MODULES.push({
+                id: 'japaneseink',
+                name: 'Japanese Ink',
+                desc: 'Two ink styles in one module. Sumi-e Wash: layered ghost/bloom washes plus edge strokes composited onto paper, with optional hanko seal. Ink Strokes: directional Sobel-derived strokes with drift-drag trailing and pooling.',
+                params: [
+                    { key: 'style', label: 'Style', type: 'select', options: [
+                            'sumi-e wash', 'ink strokes'
+                        ], default: 'sumi-e wash' },
+                    // — sumi-e wash params —
+                    { key: 'paperWhite', label: 'Paper Tone', type: 'range', min: 200, max: 255,
+                        step: 1, default: 252 },
+                    { key: 'ghostBlur', label: 'Ghost Blur', type: 'range', min: 0, max: 10, step: 0.5,
+                        default: 3 },
+                    { key: 'ghostOp', label: 'Ghost Opacity', type: 'range', min: 0, max: 0.6,
+                        step: 0.02, default: 0.18 },
+                    { key: 'ghostDark', label: 'Ghost Darken', type: 'range', min: 20, max: 220,
+                        step: 5, default: 130 },
+                    { key: 'bloomBlur', label: 'Bloom Blur', type: 'range', min: 0, max: 6, step: 0.5,
+                        default: 1 },
+                    { key: 'bloomOp', label: 'Bloom Opacity', type: 'range', min: 0, max: 0.5,
+                        step: 0.02, default: 0.1 },
+                    { key: 'strokeThresh', label: 'Stroke Sharpness (Sumi-e)', type: 'range', min: 0,
+                        max: 40, step: 1, default: 2 },
+                    { key: 'hanko', label: 'Hanko Seal', type: 'checkbox', default: true },
+                    { key: 'hankoPos', label: 'Seal Position', type: 'select', options: [
+                            'bottom-right', 'top-left'
+                        ], default: 'bottom-right' },
+                    // — ink strokes params —
+                    { key: 'preblur', label: 'Pre-blur Radius (Strokes)', type: 'range', min: 0, max: 5,
+                        step: 0.5, default: 1 },
+                    { key: 'threshold', label: 'Stroke Threshold (Strokes)', type: 'range', min: 0,
+                        max: 60, step: 1, default: 8 },
+                    { key: 'driftX', label: 'Drift X', type: 'range', min: -5, max: 5, step: 1,
+                        default: 1 },
+                    { key: 'driftY', label: 'Drift Y', type: 'range', min: -5, max: 5, step: 1,
+                        default: -1 },
+                    { key: 'cycles', label: 'Drift Cycles', type: 'range', min: 0, max: 6, step: 1,
+                        default: 2 },
+                    { key: 'pool', label: 'Pool Intensity', type: 'range', min: 0, max: 1, step: 0.05,
+                        default: 0.9 },
+                ],
+                async run(ctx, w, h, v) {
+                    if (v.style === 'ink strokes') return runInkStrokes(ctx, w, h, v);
+                    return runSumieWash(ctx, w, h, v);
+                }
+            });
+
+            /** Sobel-derived directional ink strokes with drift-drag trailing and pooling. */
+            async function runInkStrokes(ctx, w, h, v) {
+                const id = ctx.getImageData(0, 0, w, h);
+                const data = id.data;
+                let gray = Core.toGray(data, w, h);
+                setStatus('on', 'Pre-blurring…');
+                gray = Core.gaussianApprox(gray, w, h, v.preblur);
+                await yieldFrame();
+                setProgress(20);
+
+                setStatus('on', 'Computing gradient magnitude…');
+                const { mag } = Core.sobel(gray, w, h);
+                let maxMag = 0;
+                for (let i = 0; i < mag.length; i++)
+                    if (mag[i] > maxMag) maxMag = mag[i];
+                const norm = new Float32Array(mag.length);
+                for (let i = 0; i < mag.length; i++) norm[i] = maxMag > 0 ? mag[i] / maxMag * 255 : 0;
+                await yieldFrame();
+                setProgress(40);
+
+                let stroke = new Float32Array(w * h);
+                for (let i = 0; i < stroke.length; i++) {
+                    const inkWeight = Clamp((norm[i] - v.threshold) / (255 - v.threshold), 0, 1);
+                    stroke[i] = 255 - inkWeight * 255;
+                }
+                stroke = Core.gaussianApprox(stroke, w, h, 0.5);
+                setProgress(55);
+
+                for (let c = 0; c < v.cycles; c++) {
+                    const dragged = new Float32Array(w * h);
+                    for (let y = 0; y < h; y++) {
+                        for (let x = 0; x < w; x++) {
+                            const sx = Clamp(x - v.driftX, 0, w - 1);
+                            const sy = Clamp(y - v.driftY, 0, h - 1);
+                            dragged[y * w + x] = stroke[sy * w + sx];
+                        }
+                    }
+                    for (let i = 0; i < stroke.length; i++) stroke[i] = Math.min(stroke[i], dragged[i]);
+                    await yieldFrame();
+                    setProgress(55 + Math.round((c + 1) / Math.max(1, v.cycles) * 20));
+                }
+
+                const poolMask = Core.gaussianApprox(stroke.map(s => 255 - s), w, h, 2.0);
+                for (let i = 0; i < stroke.length; i++) {
+                    const pm = Clamp(poolMask[i] * v.pool, 0, 60);
+                    stroke[i] = Clamp(stroke[i] - pm, 0, 255);
+                }
+                setProgress(85);
+
+                for (let i = 0, p = 0; i < data.length; i += 4, p++) {
+                    const val = stroke[p];
+                    data[i] = val;
+                    data[i + 1] = val;
+                    data[i + 2] = val;
+                    data[i + 3] = 255;
+                }
+                ctx.putImageData(id, 0, 0);
+                setProgress(100);
+            }
+
+            /** Three-layer ink wash composited onto paper, with optional hanko seal. */
+            async function runSumieWash(ctx, w, h, v) {
+                const id = ctx.getImageData(0, 0, w, h);
+                const data = id.data;
+                const gray = Core.toGray(data, w, h);
+
+                setStatus('on', 'Ghost wash…');
+                const ghostMask = new Float32Array(w * h);
+                for (let i = 0; i < gray.length; i++) ghostMask[i] = gray[i] < v.ghostDark ? gray[
+                    i] : 255;
+                const ghost = Core.gaussianApprox(ghostMask, w, h, v.ghostBlur);
+                await yieldFrame();
+                setProgress(20);
+
+                setStatus('on', 'Mid bloom…');
+                const bloomMask = new Float32Array(w * h);
+                for (let i = 0; i < gray.length; i++) bloomMask[i] = gray[i] < 60 ? gray[i] : 255;
+                let bloom = Core.gaussianApprox(bloomMask, w, h, v.bloomBlur);
+                const dx = -1,
+                    dy = 1;
+                const drifted = new Float32Array(w * h);
+                for (let y = 0; y < h; y++)
+                    for (let x = 0; x < w; x++) {
+                        const sx = Clamp(x - dx, 0, w - 1),
+                            sy = Clamp(y - dy, 0, h - 1);
+                        drifted[y * w + x] = bloom[sy * w + sx];
+                    }
+                for (let i = 0; i < bloom.length; i++) bloom[i] = Math.min(bloom[i], drifted[i]);
+                await yieldFrame();
+                setProgress(40);
+
+                setStatus('on', 'Black strokes…');
+                const smoothed = Core.gaussianApprox(gray, w, h, 1);
+                const { mag } = Core.sobel(smoothed, w, h);
+                let maxMag = 0;
+                for (let i = 0; i < mag.length; i++)
+                    if (mag[i] > maxMag) maxMag = mag[i];
+                let strokes = new Float32Array(w * h);
+                for (let i = 0; i < mag.length; i++) {
+                    const m = maxMag > 0 ? mag[i] / maxMag * 255 : 0;
+                    const inkWeight = Clamp((m - v.strokeThresh) / (255 - v.strokeThresh), 0, 1);
+                    strokes[i] = 255 - inkWeight * 255;
+                }
+                strokes = Core.gaussianApprox(strokes, w, h, 0.5);
+                for (let c = 0; c < 2; c++) {
+                    const dr = new Float32Array(w * h);
+                    for (let y = 0; y < h; y++)
+                        for (let x = 0; x < w; x++) {
+                            const sx = Clamp(x - 1, 0, w - 1),
+                                sy = Clamp(y + 1, 0, h - 1);
+                            dr[y * w + x] = strokes[sy * w + sx];
+                        }
+                    for (let i = 0; i < strokes.length; i++) strokes[i] = Math.min(strokes[i], dr[i]);
+                }
+                await yieldFrame();
+                setProgress(65);
+
+                setStatus('on', 'Compositing paper…');
+                const paper = new Float32Array(w * h).fill(v.paperWhite);
+                const blendOnto = (paperArr, layerArr, opacity) => {
+                    for (let i = 0; i < paperArr.length; i++) {
+                        const ink = Clamp(((255 - layerArr[i]) / 255) * opacity, 0, 1);
+                        paperArr[i] = paperArr[i] * (1 - ink);
+                    }
+                };
+                blendOnto(paper, ghost, v.ghostOp);
+                blendOnto(paper, bloom, v.bloomOp);
+                blendOnto(paper, strokes, 1.0);
+                setProgress(85);
+
+                for (let i = 0, p = 0; i < data.length; i += 4, p++) {
+                    const val = Clamp(paper[p] * 1.15 - 15, 0, 255);
+                    data[i] = val;
+                    data[i + 1] = val;
+                    data[i + 2] = val;
+                    data[i + 3] = 255;
+                }
+
+                // Hanko seal stamp
+                if (v.hanko) {
+                    const size = Math.max(48, Math.round(Math.max(w, h) * 0.07));
+                    const sx = v.hankoPos === 'top-left' ? 40 : w - size - 50;
+                    const sy = v.hankoPos === 'top-left' ? 40 : h - size - 50;
+                    const pad = Math.max(3, Math.floor(size / 10));
+                    const bw = Math.max(2, Math.floor(size / 20));
+                    for (let yy = 0; yy < size; yy++) {
+                        for (let xx = 0; xx < size; xx++) {
+                            const onBorder = (xx >= pad && xx < pad + bw) || (xx >= size - pad - bw &&
+                                xx < size - pad) ||
+                                (yy >= pad && yy < pad + bw) || (yy >= size - pad - bw && yy < size -
+                                    pad);
+                            if (onBorder && xx >= pad && xx < size - pad && yy >= pad && yy < size -
+                                pad) {
+                                const px = sx + xx,
+                                    py = sy + yy;
+                                if (px >= 0 && px < w && py >= 0 && py < h) {
+                                    const i = (py * w + px) * 4;
+                                    data[i] = 175;
+                                    data[i + 1] = 20;
+                                    data[i + 2] = 20;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                ctx.putImageData(id, 0, 0);
+                setProgress(100);
+            }
+
+            // ── 3. ASCII / GLYPH RENDER ───────────────────────────────────────
+            MODULES.push({
+                id: 'ascii',
+                name: 'ASCII Glyph Render',
+                desc: 'Edge-traced glyph rendering with selectable character sets: directional lines, bubbly dots, or block ramps.',
+                params: [
+                    { key: 'cellSize', label: 'Cell Size (px)', type: 'range', min: 4, max: 20, step: 1,
+                        default: 8 },
+                    { key: 'glyphSet', label: 'Glyph Set', type: 'select', options: ['directional',
+                            'bubbly', 'blocks'
+                        ], default: 'directional' },
+                    { key: 'edgeSens', label: 'Edge Sensitivity', type: 'range', min: 5, max: 100,
+                        step: 1, default: 40 },
+                    { key: 'color', label: 'True Color', type: 'checkbox', default: true },
+                    { key: 'bg', label: 'Dark Background', type: 'checkbox', default: true },
+                ],
+                async run(ctx, w, h, v) {
+                    const id = ctx.getImageData(0, 0, w, h);
+                    const data = id.data;
+                    const gray = Core.toGray(data, w, h);
+                    const { mag, angle } = Core.sobel(gray, w, h);
+                    let maxMag = 0;
+                    for (let i = 0; i < mag.length; i++)
+                        if (mag[i] > maxMag) maxMag = mag[i];
+
+                    const cell = Math.round(v.cellSize);
+                    const cols = Math.ceil(w / cell),
+                        rows = Math.ceil(h / cell);
+                    const out = new Uint8ClampedArray(data.length);
+                    const bgVal = v.bg ? 8 : 255;
+                    for (let i = 0; i < out.length; i += 4) { out[i] = bgVal;
+                        out[i + 1] = bgVal;
+                        out[i + 2] = bgVal;
+                        out[i + 3] = 255; }
+
+                    setStatus('on', 'Rendering glyphs…');
+
+                    const setPx = (x, y, r, g, b) => {
+                        if (x < 0 || x >= w || y < 0 || y >= h) return;
+                        const di = (y * w + x) * 4;
+                        out[di] = r;
+                        out[di + 1] = g;
+                        out[di + 2] = b;
+                        out[di + 3] = 255;
+                    };
+
+                    for (let cy = 0; cy < rows; cy++) {
+                        for (let cx = 0; cx < cols; cx++) {
+                            const px = cx * cell,
+                                py = cy * cell;
+                            const sampleX = Math.min(w - 1, px + (cell >> 1));
+                            const sampleY = Math.min(h - 1, py + (cell >> 1));
+                            const i = sampleY * w + sampleX;
+                            const m = maxMag > 0 ? mag[i] / maxMag * 255 : 0;
+                            const lum = gray[i];
+                            let r = lum,
+                                g = lum,
+                                b = lum;
+                            if (v.color) { const di = i * 4;
+                                r = data[di];
+                                g = data[di + 1];
+                                b = data[di + 2]; }
+
+                            const drawGlyph = m > v.edgeSens;
+                            let strokeType = 'dot';
+                            if (drawGlyph && v.glyphSet !== 'blocks') {
+                                const a = ((angle[i] % 180) + 180) % 180;
+                                if (a < 22.5 || a >= 157.5) strokeType = 'h';
+                                else if (a < 67.5) strokeType = 'd1';
+                                else if (a < 112.5) strokeType = 'v';
+                                else strokeType = 'd2';
+                            }
+
+                            const thickness = Math.max(1, Math.floor(cell / 6));
+                            const midX = Math.floor((px + Math.min(w, px + cell)) / 2);
+                            const midY = Math.floor((py + Math.min(h, py + cell)) / 2);
+                            const cx0 = px,
+                                cy0 = py,
+                                cx1 = Math.min(w, px + cell),
+                                cy1 = Math.min(h, py + cell);
+
+                            if (v.glyphSet === 'blocks') {
+                                if (m > v.edgeSens * 0.6) {
+                                    for (let yy = cy0; yy < cy1; yy++)
+                                        for (let xx = cx0; xx < cx1; xx++) {
+                                            if ((xx + yy) % 2 === 0) setPx(xx, yy, r, g, b);
+                                        }
+                                }
+                            } else if (v.glyphSet === 'bubbly') {
+                                // Radius scales with brightness; always at least 1px
+                                const idx = Math.round((lum / 255) * 3); // 0–3
+                                const rad = Math.max(1, Math.floor(cell * 0.2 * (idx + 1) / 4 * 2.5));
+                                for (let yy = -rad; yy <= rad; yy++)
+                                    for (let xx = -rad; xx <= rad; xx++) {
+                                        if (xx * xx + yy * yy <= rad * rad) setPx(midX + xx, midY + yy, r,
+                                            g, b);
+                                    }
+                            } else {
+                                // Directional strokes
+                                if (drawGlyph) {
+                                    const half = Math.floor(cell / 2) - 1;
+                                    for (let t = -half; t <= half; t++) {
+                                        let xx = midX,
+                                            yy = midY;
+                                        if (strokeType === 'h') { xx = midX + t;
+                                            yy = midY; } else if (strokeType === 'v') { xx = midX;
+                                            yy = midY + t; } else if (strokeType === 'd1') { xx = midX +
+                                                t;
+                                            yy = midY + t; } else { xx = midX + t;
+                                            yy = midY - t; }
+                                        for (let tt = 0; tt < thickness; tt++) setPx(xx, yy + tt, r, g, b);
+                                    }
+                                }
+                            }
+                        }
+                        if (cy % 20 === 0) { setProgress(Math.round(cy / rows * 100));
+                            await yieldFrame(); }
+                    }
+
+                    for (let i = 0; i < data.length; i++) data[i] = out[i];
+                    ctx.putImageData(id, 0, 0);
+                    setProgress(100);
+                }
+            });
+
+            // ── 4. DITHER ──────────────────────────────────────────────────────
+            // Merged "Ordered Dither" (Bayer 8x8) + "Floyd-Steinberg" into one
+            // module with an algorithm switch. Both share the same pixelate
+            // and palette-extraction math, now pulled into Core helpers instead
+            // of being duplicated per-module.
+            MODULES.push({
+                id: 'dither',
+                name: 'Dither',
+                desc: 'Ordered: Bayer 8×8 ordered dithering, crisp cross-hatch grid pattern. Floyd-Steinberg: error-diffusion dithering, smoother and more organic grain. Both map to an auto-extracted (or grayscale) palette.',
+                params: [
+                    { key: 'algorithm', label: 'Algorithm', type: 'select', options: [
+                            'ordered', 'floyd-steinberg'
+                        ], default: 'ordered' },
+                    { key: 'colors', label: 'Palette Size', type: 'range', min: 2, max: 32, step: 1,
+                        default: 8 },
+                    { key: 'grayscale', label: 'Luminance Mode', type: 'checkbox', default: false },
+                    { key: 'spread', label: 'Dither Spread (Ordered)', type: 'range', min: 0, max: 120,
+                        step: 5, default: 50 },
+                    { key: 'pixelate', label: 'Pixelate', type: 'range', min: 1, max: 12, step: 1,
+                        default: 1 },
+                ],
+                async run(ctx, w, h, v) {
+                    const id = ctx.getImageData(0, 0, w, h);
+                    const data = id.data;
+
+                    setStatus('on', 'Pixelating…');
+                    Core.pixelateBlocks(data, w, h, Math.round(v.pixelate));
+                    await yieldFrame();
+                    setProgress(25);
+
+                    setStatus('on', 'Extracting palette…');
+                    let palette;
+                    if (v.grayscale) {
+                        const n = Math.round(v.colors);
+                        palette = Array.from({ length: n }, (_, i) => {
+                            const g = Math.round(i * 255 / (n - 1 || 1));
+                            return [g, g, g];
+                        });
+                    } else {
+                        palette = Core.extractPalette(data, w, h, Math.round(v.colors));
+                    }
+                    await yieldFrame();
+                    setProgress(50);
+
+                    if (v.algorithm === 'floyd-steinberg') {
+                        setStatus('on', 'Diffusing error…');
+                        await yieldFrame();
+                        Core.floydSteinberg(data, w, h, palette);
+                    } else {
+                        setStatus('on', 'Applying ordered dither…');
+                        await yieldFrame();
+                        Core.bayerDither(data, w, h, palette, v.spread);
+                    }
+                    ctx.putImageData(id, 0, 0);
+                    setProgress(100);
+                }
+            });
+
+            // ── 5. CRT SIMULATOR ──────────────────────────────────────────────
+            MODULES.push({
+                id: 'crt',
+                name: 'CRT Simulator',
+                desc: 'Pixelate + quantize + scanlines + glowing bezel frame. Simulates an old television or arcade monitor.',
+                params: [
+                    { key: 'pixelSize', label: 'Pixel Size', type: 'range', min: 2, max: 14, step: 1,
+                        default: 6 },
+                    { key: 'colors', label: 'Color Count', type: 'range', min: 2, max: 32, step: 1,
+                        default: 6 },
+                    { key: 'scanGap', label: 'Scanline Gap', type: 'range', min: 1, max: 8, step: 1,
+                        default: 3 },
+                    { key: 'frameSize', label: 'Bezel Size', type: 'range', min: 0, max: 60, step: 2,
+                        default: 20 },
+                ],
+                async run(ctx, w, h, v) {
+                    const id = ctx.getImageData(0, 0, w, h);
+                    const data = id.data;
+                    const p = Math.round(v.pixelSize);
+
+                    setStatus('on', 'Pixel-crushing…');
+                    let avgR = 0,
+                        avgG = 0,
+                        avgB = 0;
+                    for (let i = 0; i < data.length; i += 4) { avgR += data[i];
+                        avgG += data[i + 1];
+                        avgB += data[i + 2]; }
+                    const pc = data.length / 4;
+                    avgR /= pc;
+                    avgG /= pc;
+                    avgB /= pc;
+
+                    for (let y = 0; y < h; y += p)
+                        for (let x = 0; x < w; x += p) {
+                            let r = 0,
+                                g = 0,
+                                b = 0,
+                                n = 0;
+                            for (let yy = y; yy < Math.min(h, y + p); yy++)
+                                for (let xx = x; xx < Math.min(w, x + p); xx++) {
+                                    const i = (yy * w + xx) * 4;
+                                    r += data[i];
+                                    g += data[i + 1];
+                                    b += data[i + 2];
+                                    n++;
+                                }
+                            r /= n;
+                            g /= n;
+                            b /= n;
+                            for (let yy = y; yy < Math.min(h, y + p); yy++)
+                                for (let xx = x; xx < Math.min(w, x + p); xx++) {
+                                    const i = (yy * w + xx) * 4;
+                                    data[i] = r;
+                                    data[i + 1] = g;
+                                    data[i + 2] = b;
+                                }
+                        }
+                    await yieldFrame();
+                    setProgress(35);
+
+                    setStatus('on', 'Quantizing palette…');
+                    const palette = Core.extractPalette(data, w, h, Math.round(v.colors));
+                    for (let i = 0; i < data.length; i += 4) {
+                        const nc = Core.nearestColor(data[i], data[i + 1], data[i + 2], palette);
+                        data[i] = nc[0];
+                        data[i + 1] = nc[1];
+                        data[i + 2] = nc[2];
+                    }
+                    await yieldFrame();
+                    setProgress(65);
+
+                    setStatus('on', 'Scanlines + bezel…');
+                    const gap = Math.round(v.scanGap);
+                    for (let y = 0; y < h; y += gap)
+                        for (let x = 0; x < w; x++) { const i = (y * w + x) * 4;
+                            data[i] = 0;
+                            data[i + 1] = 0;
+                            data[i + 2] = 0; }
+
+                    const frame = Math.round(v.frameSize);
+                    if (frame > 0) {
+                        const cw = w + frame * 2,
+                            ch = h + frame * 2;
+                        const glow = [Math.min(255, avgR * 1.3), Math.min(255, avgG * 1.3), Math.min(255,
+                            avgB * 1.3)];
+                        const outCanvas = document.createElement('canvas');
+                        outCanvas.width = cw;
+                        outCanvas.height = ch;
+                        const octx = outCanvas.getContext('2d');
+                        octx.fillStyle = `rgb(${glow[0]},${glow[1]},${glow[2]})`;
+                        octx.fillRect(0, 0, cw, ch);
+                        octx.fillStyle = '#000';
+                        const pad = Math.round(frame * 0.5);
+                        octx.fillRect(frame - pad, frame - pad, cw - 2 * (frame - pad), ch - 2 * (frame -
+                            pad));
+                        const tmp = document.createElement('canvas');
+                        tmp.width = w;
+                        tmp.height = h;
+                        tmp.getContext('2d').putImageData(id, 0, 0);
+                        octx.drawImage(tmp, frame, frame);
+                        // Resize main canvas to include bezel; working dims updated
+                        mainCvs.width = cw;
+                        mainCvs.height = ch;
+                        workingWidth = cw;
+                        workingHeight = ch;
+                        ctx.drawImage(outCanvas, 0, 0);
+                        setProgress(100);
+                        return;
+                    }
+                    ctx.putImageData(id, 0, 0);
+                    setProgress(100);
+                }
+            });
+
+            // ── 6. GLITCH SHRED ────────────────────────────────────────────────
+            // Replaces the old "Glitch Collapse" module (rectangle tearing +
+            // fake error text) with the chunk-tear / chromatic-bleed / edge-
+            // enhance pipeline ported from the GOBLIN_SURGE shredder script.
+            MODULES.push({
+                id: 'glitch',
+                name: 'Glitch Shred',
+                desc: 'Spatial tearing (rectangular chunks copy/pasted, optionally flipped) plus RGB chromatic bleed and edge enhancement. Ported from the GOBLIN_SURGE shredder engine.',
+                params: [
+                    { key: 'intensity', label: 'Destruction Intensity', type: 'range', min: 1, max: 10,
+                        step: 1, default: 5 },
+                    { key: 'allowFlips', label: 'Allow Flipped Tears', type: 'checkbox', default: true },
+                    { key: 'sharpen', label: 'Edge Enhance', type: 'checkbox', default: true },
+                ],
+                async run(ctx, w, h, v) {
+                    const id = ctx.getImageData(0, 0, w, h);
+                    const data = id.data;
+                    const rng = mulberry32((Date.now() & 0xffffffff) >>> 0);
+                    const intensity = v.intensity;
+
+                    setStatus('on', 'Tearing spatial fabric…');
+                    const tears = Math.round(50 * (intensity / 5) * 2.24);
+                    for (let t = 0; t < tears; t++) {
+                        const sw = 10 + Math.floor(rng() * Math.max(1, w * 0.4 - 10));
+                        const sh = 5 + Math.floor(rng() * 75);
+                        const x1 = Math.floor(rng() * Math.max(1, w - sw));
+                        const y1 = Math.floor(rng() * Math.max(1, h - sh));
+                        const x2 = Math.floor(rng() * Math.max(1, w - sw));
+                        const y2 = Math.floor(rng() * Math.max(1, h - sh));
+                        const flip = v.allowFlips && rng() > 0.3;
+                        const flipHorizontal = rng() < 0.5;
+
+                        // Copy the (x1,y1,sw,sh) chunk onto (x2,y2), reading into a
+                        // scratch buffer first so overlapping src/dst never smears.
+                        const chunk = new Uint8ClampedArray(sw * sh * 3);
+                        for (let yy = 0; yy < sh; yy++) {
+                            for (let xx = 0; xx < sw; xx++) {
+                                const si = ((y1 + yy) * w + (x1 + xx)) * 4;
+                                const ci = (yy * sw + xx) * 3;
+                                chunk[ci] = data[si];
+                                chunk[ci + 1] = data[si + 1];
+                                chunk[ci + 2] = data[si + 2];
+                            }
+                        }
+                        for (let yy = 0; yy < sh; yy++) {
+                            for (let xx = 0; xx < sw; xx++) {
+                                let sx = xx, sy = yy;
+                                if (flip) { if (flipHorizontal) sx = sw - 1 - xx;
+                                    else sy = sh - 1 - yy; }
+                                const ci = (sy * sw + sx) * 3;
+                                const di = ((y2 + yy) * w + (x2 + xx)) * 4;
+                                data[di] = chunk[ci];
+                                data[di + 1] = chunk[ci + 1];
+                                data[di + 2] = chunk[ci + 2];
+                            }
+                        }
+                        if (t % 20 === 0) { setProgress(Math.round(t / tears * 50));
+                            await yieldFrame(); }
+                    }
+                    setProgress(50);
+
+                    setStatus('on', 'Chromatic bleed…');
+                    const shift = Math.round(30 * (intensity / 5));
+                    const src = new Uint8ClampedArray(data);
+                    const rShiftX = Math.floor(rng() * (2 * shift + 1)) - shift;
+                    const rShiftY = Math.floor(rng() * 11) - 5;
+                    const bShiftX = Math.floor(rng() * 11) - 5;
+                    const bShiftY = Math.floor(rng() * (2 * shift + 1)) - shift;
+                    for (let y = 0; y < h; y++) {
+                        for (let x = 0; x < w; x++) {
+                            const di = (y * w + x) * 4;
+                            const rx = Clamp(x - rShiftX, 0, w - 1),
+                                ry = Clamp(y - rShiftY, 0, h - 1);
+                            const bxp = Clamp(x - bShiftX, 0, w - 1),
+                                byp = Clamp(y - bShiftY, 0, h - 1);
+                            data[di] = src[(ry * w + rx) * 4];
+                            data[di + 2] = src[(byp * w + bxp) * 4 + 2];
+                        }
+                    }
+                    await yieldFrame();
+                    setProgress(80);
+
+                    if (v.sharpen) {
+                        setStatus('on', 'Edge enhance…');
+                        for (let ch = 0; ch < 3; ch++) {
+                            const chan = new Float32Array(w * h);
+                            for (let i = 0, p = 0; i < data.length; i += 4, p++) chan[p] = data[i + ch];
+                            const blurred = Core.gaussianApprox(chan, w, h, 1);
+                            for (let i = 0, p = 0; i < data.length; i += 4, p++) {
+                                data[i + ch] = Clamp(chan[p] + (chan[p] - blurred[p]) * 0.6, 0, 255);
+                            }
+                            await yieldFrame();
+                        }
+                    }
+                    ctx.putImageData(id, 0, 0);
+                    setProgress(100);
+                }
+            });
+
+            // ── 7. CASCADE SORT ───────────────────────────────────────────────
+            MODULES.push({
+                id: 'cascade',
+                name: 'Cascade Sort',
+                desc: 'Column-wise pixel sorting between edge-detected ledges, with overhang shadow and highlight faking.',
+                params: [
+                    { key: 'edgeThresh', label: 'Edge Threshold', type: 'range', min: 5, max: 100,
+                        step: 1, default: 32 },
+                    { key: 'streakMax', label: 'Max Streak', type: 'range', min: 20, max: 500, step: 10,
+                        default: 200 },
+                    { key: 'shadowLen', label: 'Shadow Length', type: 'range', min: 0, max: 60, step: 2,
+                        default: 20 },
+                    { key: 'reverse', label: 'Reverse Gravity', type: 'checkbox', default: false },
+                ],
+                async run(ctx, w, h, v) {
+                    const id = ctx.getImageData(0, 0, w, h);
+                    const data = id.data;
+                    const gray = Core.toGray(data, w, h);
+                    const { mag } = Core.sobel(gray, w, h);
+                    const src = new Uint8ClampedArray(data);
+                    setStatus('on', 'Sorting cascades…');
+
+                    for (let x = 0; x < w; x++) {
+                        let y = 0;
+                        while (y < h) {
+                            let yEnd = y + 1;
+                            while (yEnd < h && mag[yEnd * w + x] < v.edgeThresh && (yEnd - y) < v
+                                .streakMax) yEnd++;
+                            const segment = [];
+                            for (let sy = y; sy < yEnd; sy++) {
+                                const i = (sy * w + x) * 4;
+                                segment.push([src[i], src[i + 1], src[i + 2]]);
+                            }
+                            segment.sort((a, b) => {
+                                const la = 0.299 * a[0] + 0.587 * a[1] + 0.114 * a[2];
+                                const lb = 0.299 * b[0] + 0.587 * b[1] + 0.114 * b[2];
+                                return v.reverse ? la - lb : lb - la;
+                            });
+                            for (let idx = 0, sy = y; sy < yEnd; sy++, idx++) {
+                                let [r, g, b] = segment[idx];
+                                if (y > 0 && idx < v.shadowLen) {
+                                    const shadeFactor = idx / v.shadowLen;
+                                    const shade = 0.2 + 0.8 * Math.pow(shadeFactor, 0.5);
+                                    r *= shade;
+                                    g *= shade;
+                                    b *= shade;
+                                }
+                                if (sy === yEnd - 1 && yEnd < h) {
+                                    r = Math.min(255, r + 40);
+                                    g = Math.min(255, g + 40);
+                                    b = Math.min(255, b + 40);
+                                }
+                                const di = (sy * w + x) * 4;
+                                data[di] = Clamp(Math.round(r), 0, 255);
+                                data[di + 1] = Clamp(Math.round(g), 0, 255);
+                                data[di + 2] = Clamp(Math.round(b), 0, 255);
+                                data[di + 3] = 255;
+                            }
+                            y = yEnd;
+                        }
+                        if (x % 30 === 0) { setProgress(Math.round(x / w * 100));
+                            await yieldFrame(); }
+                    }
+                    ctx.putImageData(id, 0, 0);
+                    setProgress(100);
+                }
+            });
+
+            // ── 8. CONSTELLATION WEAVE ───────────────────────────────────────
+            MODULES.push({
+                id: 'constellation',
+                name: 'Constellation Weave',
+                desc: 'Extracts edge-strength node coordinates, then weaves faint threads between nearby nodes — a Delaunay-ish vector reconstruction.',
+                params: [
+                    { key: 'sampleRate', label: 'Sample Rate', type: 'range', min: 4, max: 24, step: 1,
+                        default: 10 },
+                    { key: 'edgeThresh', label: 'Node Threshold', type: 'range', min: 10, max: 100,
+                        step: 5, default: 40 },
+                    { key: 'maxDist', label: 'Max Connection', type: 'range', min: 20, max: 200, step: 5,
+                        default: 80 },
+                    { key: 'lineAlpha', label: 'Line Strength', type: 'range', min: 5, max: 100, step: 5,
+                        default: 40 },
+                    { key: 'onWhite', label: 'White Background', type: 'checkbox', default: true },
+                ],
+                async run(ctx, w, h, v) {
+                    const id = ctx.getImageData(0, 0, w, h);
+                    const data = id.data;
+                    const gray = Core.toGray(data, w, h);
+                    const { mag } = Core.sobel(gray, w, h);
+
+                    setStatus('on', 'Extracting nodes…');
+                    const nodes = [];
+                    const step = Math.round(v.sampleRate);
+                    for (let y = 0; y < h; y += step) {
+                        for (let x = 0; x < w; x += step) {
+                            if (mag[y * w + x] > v.edgeThresh) nodes.push([x, y]);
+                        }
+                    }
+                    await yieldFrame();
+                    setProgress(25);
+
+                    const bg = v.onWhite ? 255 : 0;
+                    for (let i = 0; i < data.length; i += 4) { data[i] = bg;
+                        data[i + 1] = bg;
+                        data[i + 2] = bg;
+                        data[i + 3] = 255; }
+                    ctx.putImageData(id, 0, 0);
+
+                    setStatus('on', `Weaving ${nodes.length} nodes…`);
+                    const lineColor = v.onWhite ? '40,40,50' : '200,200,220';
+                    const maxD = v.maxDist;
+                    const n = nodes.length;
+                    const capped = n > 1200;
+                    for (let i = 0; i < n; i++) {
+                        const [x1, y1] = nodes[i];
+                        const jEndLimit = capped ? Math.min(n, i + 400) : n;
+                        for (let j = i + 1; j < jEndLimit; j++) {
+                            const [x2, y2] = nodes[j];
+                            const dist = Math.hypot(x2 - x1, y2 - y1);
+                            if (dist < maxD) {
+                                const alpha = (1 - dist / maxD) * (v.lineAlpha / 255);
+                                ctx.strokeStyle = `rgba(${lineColor},${alpha.toFixed(3)})`;
+                                ctx.lineWidth = 1;
+                                ctx.beginPath();
+                                ctx.moveTo(x1, y1);
+                                ctx.lineTo(x2, y2);
+                                ctx.stroke();
+                            }
+                        }
+                        if (i % 60 === 0) { setProgress(25 + Math.round(i / n * 65));
+                            await yieldFrame(); }
+                    }
+                    ctx.fillStyle = `rgba(${lineColor},0.4)`;
+                    for (const [x, y] of nodes) ctx.fillRect(x - 1, y - 1, 2, 2);
+                    setProgress(100);
+                }
+            });
+
+            // ═══════════════════════════════════════════════════════════════════
+            // CONTROLLER
+            // ═══════════════════════════════════════════════════════════════════
+
+            /** Build module tab buttons */
+            function buildTabs() {
+                tabsEl.innerHTML = '';
+                MODULES.forEach((m, i) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'mtab';
+                    btn.innerHTML =
+                        `<span class="mnum">${String(i + 1).padStart(2, '0')}</span>${m.name}`;
+                    btn.addEventListener('click', () => selectModule(m.id));
+                    btn.dataset.id = m.id;
+                    tabsEl.appendChild(btn);
+                });
+            }
+
+            /** Select a module by ID, rebuild param UI, schedule render */
+            function selectModule(id) {
+                activeModule = MODULES.find(m => m.id === id);
+                [...tabsEl.children].forEach(el => el.classList.toggle('active', el.dataset.id ===
+                id));
+                descEl.innerHTML = `<div class="effect-desc">${activeModule.desc}</div>`;
+                currentVals = {};
+                activeModule.params.forEach(p => currentVals[p.key] = p.default);
+                buildParamUI();
+                if (srcCanvas) scheduleRender();
+            }
+
+            /** Build parameter controls for the active module */
+            function buildParamUI() {
+                paramsEl.innerHTML = '';
+                const wrap = document.createElement('div');
+                wrap.className = 'params';
+                activeModule.params.forEach(p => {
+                    const row = document.createElement('div');
+                    row.className = 'param';
+                    if (p.type === 'range') {
+                        const stepInt = Number.isInteger(p.step);
+                        const displayVal = stepInt ? p.default : p.default.toFixed(2);
+                        row.innerHTML = `
+                  <div class="param-row">
+                    <span class="param-name">${p.label}</span>
+                    <span class="param-val" data-val="${p.key}">${displayVal}</span>
+                  </div>
+                  <input type="range" min="${p.min}" max="${p.max}" step="${p.step}" value="${p.default}" data-key="${p.key}">
+                `;
+                        const input = row.querySelector('input');
+                        const valEl = row.querySelector('.param-val');
+                        input.addEventListener('input', () => {
+                            const num = parseFloat(input.value);
+                            currentVals[p.key] = num;
+                            valEl.textContent = stepInt ? Math.round(num) : num.toFixed(2);
+                            scheduleRender();
+                        });
+                    } else if (p.type === 'select') {
+                        const opts = p.options.map(o =>
+                            `<option value="${o}" ${o === p.default ? 'selected' : ''}>${o}</option>`
+                        ).join('');
+                        row.innerHTML = `
+                  <div class="param-name">${p.label}</div>
+                  <div class="select-wrap">
+                    <select data-key="${p.key}">${opts}</select>
+                    <span class="select-arrow">▾</span>
+                  </div>
+                `;
+                        row.querySelector('select').addEventListener('change', (e) => {
+                            currentVals[p.key] = e.target.value;
+                            scheduleRender();
+                        });
+                    } else if (p.type === 'checkbox') {
+                        row.innerHTML = `
+                  <label class="checkrow">
+                    <input type="checkbox" ${p.default ? 'checked' : ''} data-key="${p.key}">
+                    <span>${p.label}</span>
+                  </label>
+                `;
+                        row.querySelector('input').addEventListener('change', (e) => {
+                            currentVals[p.key] = e.target.checked;
+                            scheduleRender();
+                        });
+                    }
+                    wrap.appendChild(row);
+                });
+                paramsEl.appendChild(wrap);
+            }
+
+            /** Debounced render trigger */
+            function scheduleRender() {
+                if (!srcCanvas || !activeModule) return;
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(runActiveModule, 120);
+            }
+
+            /** Downscale source to maxDim for processing */
+            function downscaleForProcessing(source, maxDim) {
+                const w = source.width,
+                    h = source.height;
+                const longest = Math.max(w, h);
+                const scale = longest > maxDim ? maxDim / longest : 1;
+                const cw = Math.max(1, Math.round(w * scale));
+                const ch = Math.max(1, Math.round(h * scale));
+                const c = document.createElement('canvas');
+                c.width = cw;
+                c.height = ch;
+                c.getContext('2d').drawImage(source, 0, 0, cw, ch);
+                return { canvas: c, scale, width: cw, height: ch };
+            }
+
+            /** Run the active module on the current source */
+            async function runActiveModule() {
+                if (running || !srcCanvas || !activeModule) return;
+                running = true;
+                btnPng.disabled = true;
+                btnReset.disabled = true;
+
+                // Reset working canvas to a fresh downscaled copy each run
+                const work = downscaleForProcessing(srcCanvas, MAX_DIM);
+                mainCvs.width = work.width;
+                mainCvs.height = work.height;
+                workingWidth = work.width;
+                workingHeight = work.height;
+                ctx.drawImage(work.canvas, 0, 0);
+
+                try {
+                    await activeModule.run(ctx, workingWidth, workingHeight, currentVals);
+                    // Update working dims in case module changed canvas size (e.g. CRT bezel)
+                    workingWidth = mainCvs.width;
+                    workingHeight = mainCvs.height;
+                    setStatus('ok', `${activeModule.name} — ready`);
+                } catch (err) {
+                    setStatus('', 'Error — see console');
+                    console.error('Module error:', err);
+                }
+                setProgress(0);
+                running = false;
+                btnPng.disabled = false;
+                btnReset.disabled = false;
+            }
+
+            // ── FILE LOADING ──────────────────────────────────────────────────
+            function loadImageFile(file) {
+                if (!file || !file.type.startsWith('image/')) return;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        srcImg = img;
+                        srcCanvas = document.createElement('canvas');
+                        srcCanvas.width = img.naturalWidth;
+                        srcCanvas.height = img.naturalHeight;
+                        srcCanvas.getContext('2d').drawImage(img, 0, 0);
+
+                        empty.style.display = 'none';
+                        mainCvs.classList.add('show');
+                        btnReset.disabled = false;
+                        setStatus('ok', `Loaded ${img.naturalWidth}×${img.naturalHeight}`);
+                        panel.classList.remove('expanded'); // let the image take over on phone
+
+                        if (!activeModule) selectModule(MODULES[0].id);
+                        else scheduleRender();
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+
+            // Drop zone events
+            panelTab.addEventListener('click', () => panel.classList.toggle('expanded'));
+            empty.addEventListener('click', () => fileInput.click());
+            dropZone.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files[0]) loadImageFile(e.target.files[0]);
+            });
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('over');
+            });
+            dropZone.addEventListener('dragleave', () => dropZone.classList.remove('over'));
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('over');
+                if (e.dataTransfer.files[0]) loadImageFile(e.dataTransfer.files[0]);
+            });
+
+            // Also allow dropping anywhere on the viewport
+            viewport.addEventListener('dragover', (e) => e.preventDefault());
+            viewport.addEventListener('drop', (e) => {
+                e.preventDefault();
+                if (e.dataTransfer.files[0]) loadImageFile(e.dataTransfer.files[0]);
+            });
+
+            // ── EXPORT ────────────────────────────────────────────────────────
+            btnPng.addEventListener('click', () => {
+                if (!srcCanvas) return;
+                // Export at current working resolution (preserves bezel etc.)
+                const outCanvas = document.createElement('canvas');
+                outCanvas.width = workingWidth;
+                outCanvas.height = workingHeight;
+                const octx = outCanvas.getContext('2d');
+                octx.imageSmoothingEnabled = false;
+                octx.drawImage(mainCvs, 0, 0);
+
+                outCanvas.toBlob((blob) => {
+                    if (!blob) return;
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `PYFORGE_${activeModule ? activeModule.id : 'export'}_${Date.now()}.png`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                }, 'image/png');
+            });
+
+            // ── RESET ─────────────────────────────────────────────────────────
+            btnReset.addEventListener('click', () => {
+                if (!srcCanvas || !activeModule) return;
+                currentVals = {};
+                activeModule.params.forEach(p => currentVals[p.key] = p.default);
+                buildParamUI();
+                scheduleRender();
+            });
+
+            // ── INIT ──────────────────────────────────────────────────────────
+            buildTabs();
+            selectModule(MODULES[0].id);
+            setStatus('', 'Drop an image to begin');
+            workingWidth = mainCvs.width;
+            workingHeight = mainCvs.height;
+
+        })();
+    </script>
+</body>
+</html>
