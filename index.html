@@ -1,570 +1,2062 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>QUADTREE · GLYPH</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>PYFORGE</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Anton&display=swap" rel="stylesheet">
 <style>
-@font-face {
-  font-family: 'IBM VGA';
-  src: url('data:font/truetype;base64,d09GRgABAAAAACZMAA4AAAAAZqgAAgACAAAAAAAAAAAAAAAAAAAAAAAAAABGRlRNAAAmMAAAABwAAAAcf0PtOEdERUYAACYYAAAAGAAAABwAFQAUT1MvMgAAAbQAAABLAAAAYHMnE2xjbWFwAAACfAAAA1IAAASqH2eTCmN2dCAAAAXQAAAABAAAAAQANQP1Z2FzcAAAJhAAAAAIAAAACP//AANnbHlmAAAIEAAAF8YAAE9cDgELfWhlYWQAAAFEAAAANQAAADYHVS+daGhlYQAAAXwAAAAcAAAAJAg2AflobXR4AAACAAAAAHwAAAJKJkgZNWxvY2EAAAXUAAACPAAAAkTluvoIbWF4cAAAAZgAAAAZAAAAIAFiATBuYW1lAAAf2AAAAmcAAAU9Te7wRXBvc3QAACJAAAADzwAABsIrf4S0eJxjYGRgYADiBxZfZeP5bb4ycLM5AEUYLhnxyYLp+tvKDAz/CphbWDYAuRwMTCBRACX2Ck4AAAB4nGNgZGBg2fCvgIGBuYWBAUwyMqACFgBX2gM3eJxjYGRgYFQEEg4MIMDEgAB6IAIACrgAlQAAAHicY2BhbmGcwMDKwMDmwObAwMCsAKMZUpgiGECAkwEGmBmQQJhekB5DAwODWjbLhn8FDAwsG4DmAAFQiIFpD/MLIKXAwAgAtbwLEAB4nIVR2xGAIAyDcx1/3SijMIBjdSwr9sVLclfIQRracpR0HSUljQDiQGWwMxhH4J4RlSQOvOaz8xHwOU2dvIIdyHSj+qvn3wVcg77uyq7voNmhnUDb2cxDX/I7CjPWgEzQsyB11fXdNdynTpesgylfI9/D76854wEavSWYeJzN1GlQ1VUYx/Ev/BEXQFERARHuvXD+iOKOC3hVxA03xAVcUXaVxQ1RURQyLbIsyizaiEJFhUoJEkGKJszRphmpUfEeuNya3jfNNDXNcDv9QYdxaup1z8yZc553nznP7xxA4/EKxIXe43mjc+nr3bRSY6+gBHeCKKaKC1RTSx3XaeELbnOHdh7QyY/8zK/8Tg/K5TXtrFauVWkXtcvaNa1Ba9XatK9NFpPVVGyqNp8zX7IEWIIt4ZY4S6olM8Q1xDvELBCuwlN4Cx/hJwJFqIgQkcIqckWJOClKxUvirKgUtaJONImbok18Ix7pVj1Gj9VT9HQ9S89RqldOZZ/vCldpoMnwtfX7uvmJX/iNP/7hqzd8Xz3lKzN8/pagJ76MPp/pX3wJ/b6yv/k69Oh+X6ae3etTPyiH6lZdyqY61AN1X7Wre+qOuqVa1eeqRd1UzapJNSrdqTstTj+nr9PH6eX0cLr0qJ4/HVWO0444h7k7qjvMft1eb6+xn7EX2PO7Hnbd7WqWXbJTfi/vyW/lXXlbtsobsk7WyHJ5Sp6QxbJIFso8mSaTZZJMlPEyTlptnbZHtg5bs+2GrdHWYEy7gv9zuRiJdGOAkcKBDGIwQ/DAEy+G4sowvBnOCEbiwyh8GY0f/gQwxsjvWCO1wZgwYyGEUAQ6YYwjnPFMIIKJTGIyU5jKNKYTyQxmMovZRBHNHKzMZR7ziWEBsSxkEYtZwlLiWMZyVrCSVcSzmgTWsJZ1rCeRJDawkU1sZgtbSWYb20khlTTSySCTLHawk11kk0MueexmD3vZx37yOUABBznEYQo5wlGKOMZx49WVGBfgbizNbYD7wEGDh3h4eg11HeY9fMRIn1G+o/38A8YEjg0KNpktIaFCDxsXPn5CxMRJk6dMnTY9csbMWbOjoudY586bH7MgduGixUuWxi1bvmLlqvjVCWvWrlufmLRh46bNW7Ymb9uekpqWnpGZtWPnruyc3Lzde/bu259/oODgocOFR44WHTteXHLujfK33n7n3fcrKj/gw/MXL1RfunK5pvajTz6+eo36Txs+4/SzJ5+79fJ7j0f2Jt+9+LDj1Bnj+CXPl7VU8fqJF9ob71P6Ks88Ndver+RJvfLfIfgL7HI/MAAAADUD9XicDcJtRJxxAADw5/397Z577nl//s+Le57LzJwkSSb3IXNOMsk+JJmTkzM5MzmTk8nkTCZJzn3YhzlzTiYzSZJkHyaZnH2acyaZnOnDJMny+0EQ9PBeFqpATegEuoJVeBgeh+fhd/AufI4ISBopIlWkifxA/qISOo0W0PdoEz1GuxiESdgAlsPy9yrYJnaEXeN9+CxewtfwJn6K/8b/EQghEP1EnigTDeKUuCZ1coScJt+SLfKAbFMIpVIZao5aoVrUGXVHe/QYXaA36W36mO4wFBMwo8wMU2a2mH2my0psmh1jC+wKu8t2OYWLuBw3wy1xq1yNO+C6PMQn+Sd8kV/nd/gT/lKQhUjICDNCWagLh0JHFMRHYlYsiqvivvhLIqRIGpKmpAVp/d621JbuYv2xpVg9dhrrxG5kRR6Sn8oluSJ/kM/iUnwqXo274ucKp4wqRaWmHCsXCSExmiglGom2KqgZdV6tqd81ROvXJrVXWk3b0/7oiv5YL+obekv/aSBG2nhmvDE+GXvGpWmaY2bJ3DKPzAvzzjKtQStvLVob1mfr3MZsYA/bk/aiXbe/2W37ylGcpDPszDkVp+m0nRvAAA8MggyYALNgASyDddAAe+AEdMGtK7mBO+SOuwX3tbvmNtx998zteZhnegNezst7K17d++q1vZ6P+YE/4k/6L/0N/4vf8Xv+bcAEehAF3WQueR0SoRw+CLPh83A5/Bgehr0oGU1E1Wgn6qSwVF8qm3qRqqZa/wGkSKAOeJzdXE2IXdlW3ueeqi5CqgmH67ESQkhdDpfivS5fEy+HauluusUWESMiIpaIiHgeIiJGRESMiFjgQMELDhzY4MCBEQem2wYHFtjiwA0OHFjoQHk2OLBAxYEF0qZScX3rZ++1z72V5CVpfFiVm/tTZ6+99trf+t3r3DAJfQjV1za+HOqwFb7yURXefOfjrY3wH9/60Wub//TOx/WEXoaPany8iY8/3nqtOn/n4wqfL5pZM581s776o4vfqt67+MuNLz/6+77+NIQwoUeod+vTcDVcC6Ff9Lh41nTtrGoX/TBMDi/uDRcn1TLGYXJ8cfL4wVAfDQOGbaWxNY+ehp1wM9wmKs2imfaztmu7vu4X7azrF9OuWVSzdtbQ58NQLYdI/+8PeHr8weTw8YPJ4VDvnn+Gz+Qv9Dk+kOk2HJ8yD2YhWguw2k/bBXG76OeLvtvsu5bYpvEPQJ7Yx3REfBiIGr/maXkRFehOjutdohluVESj5QdR5d8ev3Q1X8+MyXhQVRJMY2AaxFUDEfZMg38LOv5H6OSfvBdHJEvjRuhgQ5pa34GZeHESsQhiZx8vaIP2L04uTgbaJVkT07mEH9oR+oT5iSIMWk6kLRZOeLVMJ4Y4OZwckszDHAsQMl11xhfoheD74l69u/GQcHANfM+aSraDxrRdvUsbEWWW197//NPJMQ/GegfIbXJM9Gm9B3k/3/XjRVTgkGfUN7qJvNRi/pvKAdbYdEBhM1W+sQ3gJpHwXB3aPIpK3Q/a19OEapUlUW2YtXah+Hu7arpiV8FutHcX96JCploGWbfQZRxDM3ThnXGJSQ7ok6gUI37wVJ1l5uMgBInPJx+ybkAHA2swUWn0GZIgMWOlhA9GDOnVfYby4w+G+hRrfS1hplYt7sJeCNiIPTYK9CvMERK7nj5rK3pAuzdpq8BdHPQ/2Ip4sR0FJAAmVk8IxVtTR6c7JIuNu0DAncZQ6jSHfmWzGZ0bdwuVKccnrDPHonP4jXlIdSbPjz4RCpVgkPc4HEDwTef0hYSo+surY8DoQwwVFmZr2Uj7ChvN9vSAhpMeNzv6LBuJn2p/ckzS12dnh18PTQgzFjOWAGzQQMKtcEBXk1mrj87v01KIB+A1KAZYDovwHkkSVjetX1WpZ5i1Hf/vrQGeyTmYwsHGyGaZyCKQo28vtm3lpoMrb2RwdPtDMK2xv7MGry/usdxFVrefJnexVKXsHz9YFb9iwWiS5KcFta5RbY+wPvghp3M8HnOgODeLPYjSDfB8tFces5Ht1hSYg5wdYmlW8W5sn52RH48T/kjyrewK7DFGsKUrBro5D8Om+NcZ7dEZqRqtP/293iXa2ea3i4IvXVPapWxbkn55X3aNtb/wHWmbRQdiGF3fiM9P/s5kPTk080U4pVGTQ4s3po162wbq0XbiUWiXDrG/8GhkPu5FtpmQHOF7E95oyupdsc2UhUTYBhIdm5tsu4/Edr9bKb5UJoovlsnc0KF7JtjHf2CafSpMOdGV9T55i/h4aNaREEqBVdc4tLF/MIMuMscqTNIIpkTesgM8E5vGE3Ub4tM0LhFbHLxp671xhEmGNV603VD80DpizHttG8HidL5tHr5kvi1ZCGher1Lq1QyxhRBbLLonKimxh0BJPxEbv89PmFHwOUDzaf8oaqxYTSgehJ5EBGZsw6qEjalEA7rQxqRq9GkQ3LVEeKYfbmy2/4vWYrlYiMEGr+pNpxgRV7xQjIgNEg8X45rYDXYkaiwzjpX0R2Oz+ORDcuL7kMNMxNAAveopVZerJUnrDCiATkFy4BVSok8jPp/TWKHtYtibT8fJCB/Fk2GOfdBUMcd7MEsyhKV7G2nBQsIfsrGtefMcT8HIut0RcRPqDAeKu9d5n8zq0x6bZ+XBFJ+kdZ2ClztNXhbLLSFVfme92idExublSQMSVjN2XNwhfh96DC2G1iplWq9EdhG7godRvdgeTG0H09nB6VNbRN28MtGeRbO36HUXNB6MZrqYLFwZ256Cv2nir0H6NHN8bVNCts3xoPBEDK7yg2wp7SRLSiksiBiLaFASbDrFZlvaVPIh8SS7U1kaEeTro8i9PsUoikiWvJDg7Nipz9pywJs56ZmbLGMTu4laF8bvCvs1tVxpllAKWev6mB7H9OobxLOIN6dXIDah/+hC0h/EbdBehqVoF5vRIH6Lr9liDW9Fwfm6pRgFCc9jxvgRcDtdUcUUexXxaYqj+IUBuDAy5AMRLZKNYT6RYVfIpiV7ZiO8b7YozX+QchaNBVfj6xQflzyMpx/LvMk6qICYtVN4IWZe/BniLUmyOPxHVpCxfcTZSs768AoY75kC4QmekqAAiAERy4htK/m46SxDq9a+mVECaLmjrEd81JCDP4RZnMYWGJUaBqJnzhwNoXPGAzI8MWzEGjYcjmsES6cvt7397ISdRtLahdpSC8CyPWD60WxnFLs8cfx57hTve2qPDTWyeWBOLTARLe2dUpAMqdHhqtIipGQviQzMEpYpKyUXlWntXEqrdXRWqfg13QizSyTFMtrshLyTFYzCGRcCRvKSqGO73IerjBAyXYyMhqOiixOYqmp5fr06s+tzXBrmi1w8gE1NKSuE6mlfk1jc6gxsl6OVK2BtrOi0Xv6SV6c6AksuVcWy/DWoVSWi5CmMeDBE5D3UDMSmT3FF8u+Wa0uk1HCc2qQcHjUBGnldqmjlfFOXpzfKNY/V+JbHVvsk2qUOnri9uFbW7ZKNNvdjHJOhLXA/LbWSZNfWSSOBrUIfYQ0lJ34r602ed8E+4u2KUw/zESeSSSYeoiZ+K3ZvZB2wfqT2Zh2i4yWyLyQ/zfwU8Yz49JyhjzJz8/G8jS4DJzlFiWmi5mG8+nJvUf9SfRQgE8LYHkiURuEk12REzkUdRvDfm74IDxGzouKARzGXeF6xak1ZM42aUHFcK+lzSqKHERZZh3rFk0bcMh52tt59/AH8CG1Jzjll7Bsp3nXOzTlb52hz/Guc2cuyrGNPxTw316zTZOvWWopX/jfjUdDbK+NZjcyaWfbJEtGyLhth2UGhlkswXP81f+vt2JbYMRAlzwkgRlZO739lXa7m5qtmo3q1RBiqIrqL4/nYqlGeuIxcxiCOz68zXpBhUc68s6YerZtjnnrIC3VYefJWvfvkQ3jqlmSFWhh/Huuj6ozoIqcUUpZTng5FnE9qbBYAv+3CMlveRQk2OYGN7F0ktN+2PSxs2Ota9WmSnjZajdgXBQV86qNBN5905jMiXfKS455WJCYRgSq6apxLN7z/uJEr0exDZB2Kx0ErF4O6SV4TlFbdmK2DeGgoU0lcZB6mJB6+etvY2Bd/ywQFfmkth8KPWMRF4zy4Zj3qkw2rS3NuFgaADsXkx5J/t5x7zzQ/6NQqmF8VndJSyT1WVfEc+J+d7MjXTJ2nxSmAVpqUI/Zz7F1hn+GqJofB1aeu5AwV46U6xQHGSeSZcRJ2KrWUAWuw2i0yZIlZEMBwXYbrR+zIl2zQeEs2HsZwaVzQu9psf0lcsK0mLCb/nnl3MYxFMPsyLNkhxgBqsnbipb8q4yjR8uMHCJE4TMrY2ZJqn4xSr9pE8UzRhGkideOe7f/1NT17bJDuskzVRdhwAFckkDJEriYJJOAqTe8ynX6ELakwsw0waA2JD0NWHOlvmzDfJswr3pP+WTTOqbQba76/v9T3t5f7/tWfwne3yb6K/lmm0UStNyLBP5RnoQY5j/aVvTEiJKmFs+bBFkRONAf9P3gcPW8cwF5BStxlHJBs4uVxAE6it5Fhp6JfHvsG78dzBwJr44D1PyV+pj420kpDrzHSwKUYDj6Be8Cm3B8af8vV5zre8rKANRPEaJpKVCnySW6Rn4WfIcWjqC8oortW9o1sRRzsWHiQU6Kcpwapd6CWIedUOGvikozUO3D9cjQH7yrXgdVz0lwcKEnpuizRBPP3kptolcCQ2Ip6aJSdZQwM2jnCjjtr1ahkrgeuOsLOoNxpq5Q+xucLB5ydCZoad77AB+cS8tdHLtbbuKsxkavmm290Z0IaTvExHhQ0aScX7/OZJO/3etcoAvH+kcY+fhBLH7k9FPH2np03rcP4TH6R5dI1ycexEbEaJp5Wa0tSHfmGPUOsUZ1jvmrxsFz5WrBbJgYpj+vEKHGuxZbmTCKeE9YYYMvO3fb8yVv2r/NVj9snb2vriMNK4T8hWM/B5HwO0WHXTI6jxFF65o+/0hrk3MtKZ8a/KZDE6Lz0dCa8K30Vd7jep8cKxKPkRZwDCgajxBPVGcXEd30VuhvVyxdaK4/pJIdLYW4POOb+0M71WjkXlYwQ9lMPxhBPSGzAG/WyZ9gVlBINDojzKznf0NRJMXDIGLgmdk8wUEiRWcmSVBgMms+NcCCnm7kmCslMi3eC+gTKdELoAeuBzHzK+eBdPrd7052hrjmQqZvFDd1R0bBmlHPpRNE5KlUnrNTOV8hqyLxqv26Hg2fOy/1Z/ozdcDKaX2sNKdZcw4Y58ySDtWcPUidOWQafVkZJX7mmocegHFyrTd5IdhR0bhenQLnWi76ottF6rzsFRYuUcI/ITgq3HM6iLHfKUmN05Hkesu/pcnY+W6knN1mRZgfwZmKstbxsWhzTCaMkloXhKOVzI89lOdOskXpSmyq6KpTdwXwsxM75uJ1HE60vmd9aX29eaLxits1XnjV2Ya+otfvkzpTpSZIRzgZzxbFnv8PurMo4Q9/gceSjM9T8ZR4OPOVAXeqLThZMt1tfWaxHEUSqNMYcSxyx7MmeQP7bRt76BhlD1qFY5B+CnWZW2bkFmBVvGSUBQskK5M/vo67jz7QSzaJeBopzRBqGbKaERkZuZhRWx/VgV5mUWEVPr5GtKnLE9GC0VtIHOfA5v59keJfRe2mVY5pMGyxlWfFQJIwLH8Ks0+lnzuExsHaOlSl2x3aD59h71hwLy7pW51FLddlMozOf3LO6dra6l36A8SwSRK6bweFDrcnlK0nuq5/R5q+rQ1k56pKtwWLqlAflrr3s2Zyd53CJuxX7bt5rDK/hZpTDmdTI4e38YLHFoDHBLe7ZykFtM7YxYvGiFqjvSUdN6hMQsk5OqEXNLqtGNQVux5UpBW5Rn3L9hc85h3pLltPqHJaIuylUMiP680vXsILZlTkUtOVCUnARsj8kzGKuG5xdrMym3nBWMWbdLGbW/BRcLHG5EwyyxKgtYtQcDE9THSz7DBql3Zjn17UelvIvonEFNFz9zMUhMbUHqWBRSvN2YFCZXoF/HNFwUkx0LKkTSkdOaLXrydTcgbtWlSKkpRmSWlc0xiYy3k5scQySql57I6+0qWdB2skjfol1wCphLmjk8tjIj9xcrYyNkb8G9FIry4B/Ns3CQo9pOpL7Y1upNG9fRrNE9zpgl5SZdsb00/2zonkFyCAp53VCWHMFrSXU2q1BcpwTzT3t6ri4xx2JUpeKbn1b0lFgFTDvMaeuGqauLOaamGLu/DMrjl1O08m/WqHp62ymEYmop7lj91mojyp2oORVtcMV8I4TDj8wfjcczq+mfUge0CjidXJ/JavGppwo1lIzK/p+VupmfG9Iz5WCmLt0+F1ZRFPHGtJZkOS3reiiL6806bzAcorBclVSueSCUu+frZl7k2ETKG7l7oCTSJFV1v8j3sWn9sT1Gl63XfLWEoxodhD9gY4mU+4sLvd4Sog+c0WWUYWQo2s7hfNVwmxiYraj1gN7oD0eUnY0/nkHuD2WtUHNFDdZpwgnH/lpn6bJzTKBIluCN9IGwUbOLwtpoE9N33Mmo42+274O7e/v6YseULvXItdk1FmeeT5R1c7rPxVfeWDLlxxuZikkZXKyevYDS20D8Pdv2LZxP9yg9cUd61G1rrpZ6lkZtK2OzSoekg4ar8HJcBf2aaaFEuSAHFuQhuKwXPKP9ecnXb7vBHuWpWCnJ36OpqzD8mxtKrHl3JgmDCmeJNxgH2ZSW+doz3JJrQOhKLzD74YUFKVbU6zzUoNKBlN87nuKXvJeCq0VFedUB3rIpZ28XGezkyIWWJ1qwNdo1XPfaSUdJ6mvPnVG163cI5fRLQYH/gDlXEuzJV/TZuiXuw/gRe5xeNH7FV7w3ohXch/Cq7sv5wu510RrlWe+VnkWc8+B4kg6BdCEISUq1OXRjnHCiyZPc4ToWc516iQ7rSvkrlbRdO4ysjsbNf/XHFFL/M91n4j4hKuu7kC+T0v04slRqvD10mt6D0UR8Y7rMinqje7VYH7DgRjrLOKzdyvpZK241x2oFds35J7WkS+bdqPCpstVaqJihVp7mhyOTj24GWKdj1w5RUzud9PoJsroJi7q5vyXV3aWVZwp9Nz9jYZv6eUQDOK+R+nZqrSsgC3hOjuoUJjwP/+++U0WZ3CvzFXrWVxYnCQ1houTjbu4K07vP0Bnjd1/QK/1/gM0zfJ9lqFCp8BZ3Hj4+aevvW+8YMwm9IHvVz26uIeYh+B0xGeo91hf0vmIVPfP76PVj/WJ5iTaGM9rRVrz+MHGQ9yjuKvYRY97uqbHNRDfxkMKFNnUGR/aE9TIeRgoES9M6vwzsGv82HWdUuNKLtZEemC2U9e1JbLIK1uKpiR5uTl74R71SJ60oCV7YLzZtURR5mYebXr2ZUTber7BwZx3BN14WqqR65DVHPPecDdU88ZEjnTJkOkmqWyI1hXbI/gcXg1u8+a9QkrPvEZd9xWVD3sYMl1c2F1iU3X5MjfT3RQkguxmvh7uFUkXVwsYDUn+wksj1THuPSEhyKnP8OgTos7X8b0wVww3nZytDYYe5mIi1xkPcuWe0FxyF7peHUH31OHtiu5Fa5jD2S5wx4G67G901y40wGXhIvJWhFLgIbJIOL5qV29xcChCIO2lQY66x/UVxXWfsS2g4ERIe2Jwb1DiZSZumWjjMHBQTTBe7FrjhcjO5Y4jXI8JAA4lzr26WX+uerl0STKsR8w8a5LuPWPf1tsl7Cn6stoROu36TYnqKsbJnEWKfLg+ilG0YduMh7R+PPoEt2mHQnevJt3tnf46HWahKTZYN4THrpI+lYb3hIQQk87jKeg95Ul21zKiMA79ftzJJXc7K64gwckhsSj3wx9xP83VbDVEb1nPRXUBXM0BVdf0auvEgiyGZGgY53WivUkIcHzNbk1U4aKIULnKKme2JO2VWSp4XrVWYE22tzqzvnUdk9CcEEcZclT4J8zV6fo68dcK5mSPYbnQZaIWVMTGXzOxHQobOc12YeFxKMWfBEY2FXzua+Z4TMPOrhdJrnIXn4jW4o0sYtRCHEYb6VrNu7/pEbuUnhnFbIGFwYFXzuVVLpA8ywGio53M+1/zPVYzORnn+kNeSzFO7DnrwVL+xt95sJTvMmA9Xo7HXWzruN0wpO9L2Cq+uQOnB2+EN8MiHIS3w3vhO8J3he8J3xd+IPxQ+JHwY+Enwk+Gnw4/G34+/GL45fCrch/Ujj4Qk92q5Lmn9wf02JRqa7uFx0LuVN3Sz/AdAjaGx/uHfj53Y2xc7caXrcIa140DsmdeIP/4KxJSUsyKc11fYZqYjkaQasqIQ22iP83jpF1w/Ff20u+776l4Obn/eviN8Jvht8PvhN8Nvxd+P/xB+MPwx+FPwp+GPwt/Hv4i/FX46/A34W/D34V/CP8Y/jn8S/jX8G/hP8N/hf8Oj8IT6UBcJ1Pbq+p59pX25g6ucc+Ne297uaMpll1Tjcbc0TlQzdvqtHVR39cjunOdt9VH43CFzyt9b2ldeujnFSrAfb6TXX9yRfQylIx+ivalNT+rrZqrI+Ss2uHPo0mR9uAp4LyfKJkWcPmVz76tHObYEAqMXgrEUktCyviVntDSewzsfg0aK8PkapoHEoO9/uaE6W8Jd0Ifvi28G749fGf47vC94fvDD4YfDj8afjx8NfxU+Jnwc+EXwi+FXwm/Jrkkf8lJ+Wg1o2zknNL+cpD2m9In+suOPk/pGaXXLX3UdPmtSp57el/pe/4bPfbcNVkwMTUv6mHF0/YtlXnW/3z+afF2RZirm0k7nrc/far1j0Px+Aean6uTvfw7Nb7+72942e9e+Xq+++Flv6vlVX1f0It+X9EX9T1D/x++R+v/6vuDvoDvUkp9Oa/yO59e1XdyvdLvCPsG+96zF/kOulfw3Vf/C6Lopk8AAHicpZPPbtNAEMY/J2lp6R+p7QUhhFYcSivVcZJGVM3N7aGqRClKpXBBRLa1Sqy6dmVvolaC5+DKgRtXHoFjb7wAB46ceADE583QiqqVEI3l+LezO/PNjMcAHjk9OJj8nuKlsIMVfBCu4B6+CFex6jwUrmHFiYWnMO+8F56m/UJ4BlPOD+FZ8i/hOSxV1oTnyW+EF7Bd+S68iHr1rfAyVqpfqe7UZrl6YTMp2cEqzoQr9PgsXMVzXAjXmLMvPIUHzjvhado/Cs/gvvNNeJb8U3gOTyo14XlyR3gBeeVUeBGvq4+Fl7Fa/YRDjGCQIEYKDYU1jPmMaMuQY52Wcp2j4ImMZxRCnPO/x3XCnS42uGqhYW8cjkwSp1qtjXVksnxdjXVexFmqwnPVixPd3VCtRosHX9E3RBub2KL/PnZwYKPuwedzm51q4hmP6bC9uaX2dw5Ub89X22dNGrv0HTDvBAEzQ1cPRklAuMqp84/xO6yuhTpv97IGlztNBiuz7dyg3xm36i23rMJtNu9WyK3it0v0RaIvEv3rEn1K9CnRn0hc9WRS0U2WId+2wSm74fEqJ8EwYoP2up2CAY8Yc9rxvDg1zcawnuWD//Xa5Y7mezP0GNuJ2+XpE17ldBVc+zZuzv3QzuZk7lwcMXJgvX07r8fWu021hm18qV9OairRM0sJJXMdmHis1W52cpKlhfKNyeNwZDiX7tEwyLWfxMdatesNtZ8anadBuRUk12uMruUe/ZX5n6o9m13E/dKqeXv2m3FJAXmSsXfZnUjSiybZlW3ykjjSaaELLzx3i8BjZt6dJu03SgTgsgB4nF2TV3PbRhSFz7EEUaSKe++92wIISqK7urtlS+4VJEACFghAKJRc4hLbKW+Z1IdMMpnUSX5BJq/5S8lzApK7nEx2BvjOYu/ecxe4wBI0xz/DMFMQ/xvcnl5L2MFOKuxiht3MMsce9rKP/VzKZVzOFVzJVVzNNVzLdVzPDdzITdzMLdzKbWmGDnRCQRcy6EYWOfSgF33ox1Isw3KswEqswmqswVqsw3pswEZswmZswVZsw3bswE7swm7swV7sw34cwEEcwmEcwVEMQIWGPHQUMIghDKOIYziOEziJUziNMxjBKMYwjglMYgpncQ7ncQEXcQmXcQXTuIprmMEsruMGbuIWbuMO7uIe7uMBHuIRDO7gTvyAt3iHL/EBvsGv+BFv8Bl34St8hD/xLX7D3/gL36OEMj5J36OFCqqw8TEew8EcXHj4Dj7mESBEhAQx6ljAIp7iCZ7hOX7HS7zAK7zGH/iZu7mHe7mP+3mAB3kIX/Mwj/AoPuQAVWrMU2eBgxziMIs8hp/wKY/zBH7hSXyOL3iKp3mGIxzlGMc5wUlO8SzP8Twv8CIv8TKvcJpXeY0znOV13uBN3uJt3uFd3uN9PuBDPqLBEss0abHCKm06fMw5uqzRo8+A8wwZMWbCOhe4yCd8ymd8zvf4gi/5iq/5Pt/wLd9lEs8ZSIfguKAqqAnmBXXBguCg4JDgsGBRcERwVHBMcEJwskVV+KvCVxW+qvBVha8qfFXhqwpfVfiqwlcVvqrwVYWvKs6nCn9V+A8Jjog6RjVlyqjVDGXWtmJDmXGqNaNj2naaq/mRomK4gW0opuXGRsYKIsf1PSVqRsVG0hHYTtZaLLtGzSy5jT1a6tAVWFGaLGuEob/gWpU401RJkGsydKp23Fo0/QWvpUp+bGdFmOn1tlUpspppNbWY88PY9qu+Z7i9jhdbYWSVY8f3eqz5xKkbruWVLcX2k8jqC62661edsuF6fpxrBFdDw42DtizF3TOTaqMdBhpCFWKgLfJSaFLoUgxLUZRiUIohKQpC6DKPJrcXpEVBZs7LPJp8oskYTeYpyFJ1GZyXZWhtId01WU++LeSSLi3UtqnMrMlS9XawzKzLevT2uWRmXW4vtA/YzqO3freg5PrluUz6LRtUWjO30mIYi3kc2YZpKc17xpxrMltxXNcyS/5irqXC9Itn4tAxqknQYijmpteiW+kqO2HZtbKOVy8l6aa4ocSzqOak/WiUrbSB6u1JR5R4XRWrlrZQZ+OmREFq3ll2k5JiW0ZqYTpGzffMnloSiaay+v+j097/F1NUmKAAAAAAAf//AAJ4nGNgZIAAHgYRBhYgzQTEjBAMAALLACoAAAABAAAAANqSA/cAAAAA0jIOHQAAAADSf9sj') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
-- {
+/* RESET & ROOT
+   ----------------------------------------------------------- */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
   -webkit-tap-highlight-color: transparent;
-  user-select: none;
+}
+
+:root {
+  --bg: #AEAEAE;
+  --surface: #363E41;
+  --surface2: #AEAEAE;
+  --border: #222228;
+  --border2: #2e2e38;
+  --fg: #e8e8f0;
+  --dim: #363E41;
+  --dim2: #FEFCFD;
+  --orange: #ff6b2b;
+  --orange-d: #c04e18;
+  --orange-glow: rgba(255, 107, 43, 0.15);
+  --mono: 'DM Mono', monospace;
+  --display: 'Anton', sans-serif;
+  --panel-w: 320px;
+  --radius: 3px;
+}
+
+html,
+body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--mono);
+  font-size: 11px;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* LAYOUT
+   ----------------------------------------------------------- */
+#app {
+  display: grid;
+  grid-template-columns: var(--panel-w) 1fr;
+  height: 100vh;
+}
+
+@media (max-width: 780px) {
+  #app {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
   }
-
-html, body {
-width: 100%;
-height: 100dvh;
-overflow: hidden;
-background: #0d0c08;
-color: #d6c8a8;
-font-family: ‘Share Tech Mono’, monospace;
-overscroll-behavior: none;
+  #panel {
+    max-height: 60vh;
+    overflow-y: auto;
+  }
 }
 
-/* ── CANVAS ── */
-#outputCanvas {
-display: block;
-position: fixed;
-inset: 0;
-width: 100%;
-height: 100%;
-object-fit: cover;
-image-rendering: pixelated;
-z-index: 0;
+/* PANEL
+   ----------------------------------------------------------- */
+#panel {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  z-index: 10;
 }
 
-#videoCanvas {
-display: none;
+/* Typo fixed: sub text size was .1px → now 10px */
+.sub {
+  margin-top: 4px;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--dim);
+  text-transform: uppercase;
 }
 
-/* ── START SCREEN ── */
-#start-screen {
-position: fixed;
-inset: 0;
-z-index: 30;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-background: #0d0c08;
-gap: 18px;
-backdrop-filter: blur(2px);
-}
-#start-screen p {
-font-size: 11px;
-color: #5a5240;
-letter-spacing: 0.2em;
-text-align: center;
-line-height: 2;
-}
-#start-btn {
-border: 1.5px solid #e05a2e;
-background: transparent;
-color: #e05a2e;
-font-family: ‘Share Tech Mono’, monospace;
-font-size: 12px;
-letter-spacing: 0.2em;
-padding: 12px 32px;
-cursor: pointer;
-transition: 0.1s linear;
-}
-#start-btn:active {
-background: #e05a2e;
-color: #0d0c08;
+/* MODULE TABS */
+#module-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
 }
 
-/* ── TITLE TAG ── */
-#title-tag {
-position: fixed;
-top: env(safe-area-inset-top, 14px);
-left: 16px;
-font-size: 10px;
-letter-spacing: 0.2em;
-color: #5a5240;
-text-transform: uppercase;
-z-index: 12;
-pointer-events: none;
+.mtab {
+  background: var(--surface);
+  color: var(--dim);
+  border: none;
+  padding: 10px 8px;
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+  line-height: 1.4;
+  position: relative;
+}
+.mtab .mnum {
+  color: var(--dim2);
+  margin-right: 5px;
+  font-weight: 500;
+}
+.mtab:hover {
+  background: var(--surface2);
+  color: var(--fg);
+}
+.mtab.active {
+  background: var(--surface2);
+  color: var(--orange);
+  box-shadow: inset 2px 0 0 var(--orange);
+}
+.mtab.active .mnum {
+  color: var(--orange-d);
 }
 
-/* ── FPS ── */
-#fps {
-position: fixed;
-top: 12px;
-right: 16px;
-font-size: 10px;
-color: #5a5542;
-letter-spacing: 0.1em;
-z-index: 12;
-pointer-events: none;
-background: rgba(0,0,0,0.4);
-padding: 2px 8px;
-border-radius: 20px;
-backdrop-filter: blur(2px);
+/* SCROLL AREA */
+#scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border2) transparent;
+  min-height: 0;
+}
+#scroll::-webkit-scrollbar { width: 4px; }
+#scroll::-webkit-scrollbar-track { background: transparent; }
+#scroll::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+.section-title {
+  font-size: 7.5px;
+  letter-spacing: 3px;
+  color: var(--dim);
+  text-transform: uppercase;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 10px;
 }
 
-/* ── BOTTOM SHEET ── */
-#bottom-sheet {
-position: fixed;
-bottom: 0;
-left: 0;
-width: 100%;
-z-index: 25;
-transform: translateY(calc(100% - 48px - env(safe-area-inset-bottom, 0px)));
-transition: transform 0.32s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-}
-#bottom-sheet.open {
-transform: translateY(0);
+.effect-desc {
+  font-size: 9px;
+  line-height: 1.7;
+  color: var(--dim);
+  padding: 2px 0 4px;
+  border-left: 2px solid var(--border2);
+  padding-left: 10px;
 }
 
-#pull-tab {
-width: 80px;
-height: 28px;
-margin: 0 auto;
-background: #17150e;
-border: 1px solid #2e2a1e;
-border-bottom: none;
-border-radius: 12px 12px 0 0;
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 10px;
-font-weight: bold;
-color: #6a6248;
-letter-spacing: 0.2em;
-cursor: pointer;
-backdrop-filter: blur(2px);
-transition: 0.1s;
+/* PARAMS */
+.params {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
-#pull-tab:active {
-background: #2c281c;
-color: #e0c888;
-}
-
-/* ── CONTROLS GRID ── */
-#controls {
-background: rgba(12, 11, 8, 0.96);
-backdrop-filter: blur(8px);
-border-top: 1px solid #2e2a1e;
-padding: 18px 20px 12px;
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 16px 24px;
-}
-
 .param {
-display: flex;
-flex-direction: column;
-gap: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
-.param-header {
-display: flex;
-justify-content: space-between;
-align-items: baseline;
+.param-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
 }
-.param-label {
-font-size: 9px;
-color: #8a8268;
-letter-spacing: 0.12em;
-text-transform: uppercase;
-font-weight: 500;
+.param-name {
+  font-size: 8.5px;
+  letter-spacing: 1.2px;
+  color: var(--dim);
+  text-transform: uppercase;
 }
 .param-val {
-font-size: 11px;
-color: #efdfb0;
-font-weight: bold;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--orange);
+  font-variant-numeric: tabular-nums;
+  font-family: var(--mono);
 }
 
+/* Range input */
 input[type=range] {
--webkit-appearance: none;
-width: 100%;
-height: 2px;
-background: #2c281c;
-border-radius: 2px;
-outline: none;
-cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 20px;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  height: 2px;
+  background: var(--border2);
+  border-radius: 1px;
 }
 input[type=range]::-webkit-slider-thumb {
--webkit-appearance: none;
-width: 16px;
-height: 16px;
-border-radius: 50%;
-background: #efcf90;
-border: none;
-cursor: pointer;
-transition: 0.05s linear;
+  -webkit-appearance: none;
+  width: 13px;
+  height: 13px;
+  margin-top: -5.5px;
+  background: var(--orange);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s;
 }
-input[type=range]:active::-webkit-slider-thumb {
-background: #ffa86e;
-transform: scale(1.2);
+input[type=range]::-webkit-slider-thumb:hover {
+  transform: scale(1.4);
+  box-shadow: 0 0 12px var(--orange);
+}
+input[type=range]::-moz-range-track {
+  height: 2px;
+  background: var(--border2);
+  border-radius: 1px;
+  border: none;
 }
 input[type=range]::-moz-range-thumb {
-width: 16px;
-height: 16px;
-border-radius: 50%;
-background: #efcf90;
-border: none;
-cursor: pointer;
+  width: 13px;
+  height: 13px;
+  background: var(--orange);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
 }
 
-/* ── BUTTON ROW ── */
-#btn-row {
-display: flex;
-background: rgba(12, 11, 8, 0.96);
-backdrop-filter: blur(8px);
-border-top: 1px solid #262219;
-padding-bottom: max(10px, env(safe-area-inset-bottom));
+/* Select */
+.select-wrap {
+  position: relative;
+}
+select {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  color: var(--fg);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.8px;
+  padding: 7px 28px 7px 10px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+}
+select:hover,
+select:focus {
+  border-color: var(--orange);
+}
+.select-arrow {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--dim);
+  pointer-events: none;
+  font-size: 9px;
+}
+
+/* Checkbox */
+.checkrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+.checkrow input[type=checkbox] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  border: 1px solid var(--border2);
+  border-radius: 2px;
+  background: var(--surface2);
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s;
+}
+.checkrow input[type=checkbox]:checked {
+  background: var(--orange);
+  border-color: var(--orange);
+}
+.checkrow input[type=checkbox]:checked::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 4px;
+  height: 8px;
+  border: solid #0a0a0b;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.checkrow label {
+  font-size: 8.5px;
+  letter-spacing: 1.2px;
+  color: var(--dim);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+/* Buttons */
+.btn-row {
+  display: flex;
+  gap: 6px;
 }
 .btn {
-flex: 1 1 0;
-min-width: 60px;
-border: none;
-border-right: 1px solid #262219;
-background: transparent;
-color: #7a7258;
-padding: 12px 0;
-font-size: 10px;
-font-family: ‘Share Tech Mono’, monospace;
-font-weight: 500;
-letter-spacing: 0.15em;
-text-transform: uppercase;
-cursor: pointer;
-transition: 0.05s linear;
+  flex: 1;
+  padding: 9px 10px;
+  background: transparent;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  color: var(--fg);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
 }
-.btn:last-child { border-right: none; }
-.btn:active {
-background: #252116;
-color: #ffefb0;
+.btn:hover {
+  border-color: var(--orange);
+  color: var(--orange);
 }
-.btn.green  { color: #6fa86f; }
-.btn.red    { color: #e05a2e; }
-.btn.lit    { color: #ffe6a3; text-shadow: 0 0 2px #cc8844; }
-.btn.orange { color: #e0a050; }
-</style>
+.btn:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.btn-accent {
+  border-color: var(--orange-d);
+  color: var(--orange);
+}
+.btn-accent:hover {
+  background: var(--orange-glow);
+}
 
+/* STATUS BAR */
+#status-bar {
+  padding: 9px 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-shrink: 0;
+}
+#dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--dim);
+  flex-shrink: 0;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+#dot.on {
+  background: var(--orange);
+  box-shadow: 0 0 8px var(--orange);
+  animation: blink 0.9s infinite;
+}
+#dot.ok { background: var(--orange); }
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+#status-msg {
+  color: var(--dim);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 9px;
+  letter-spacing: 0.5px;
+}
+
+/* VIEWPORT
+   ----------------------------------------------------------- */
+#viewport {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  overflow: hidden;
+}
+#viewport canvas {
+  display: none;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+#drop-zone {
+  border: 1px dashed var(--border2);
+  border-radius: var(--radius);
+  padding: 20px 12px;
+  text-align: center;
+  cursor: pointer;
+  color: var(--dim);
+  font-size: 10px;
+  letter-spacing: 1px;
+  line-height: 2;
+  transition: border-color 0.2s, color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+#drop-zone:hover,
+#drop-zone.over {
+  border-color: var(--orange);
+  color: var(--orange);
+  background: var(--orange-glow);
+  box-shadow: 0 0 20px rgba(255, 107, 43, 0.06);
+}
+.dz-icon {
+  font-size: 20px;
+  display: block;
+  margin-bottom: 6px;
+  opacity: 0.35;
+  transition: opacity 0.2s;
+}
+#drop-zone:hover .dz-icon,
+#drop-zone.over .dz-icon {
+  opacity: 0.7;
+}
+#viewport canvas.show { display: block; }
+
+#empty {
+  text-align: center;
+  color: var(--dim2);
+  pointer-events: none;
+  user-select: none;
+}
+.empty-word {
+  font-family: var(--display);
+  font-size: clamp(36px, 8vw, 64px);
+  letter-spacing: 8px;
+  color: var(--dim2);
+  opacity: 0.5;
+}
+.empty-label {
+  margin-top: 10px;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--dim2);
+  opacity: 0.4;
+}
+
+/* PROGRESS BAR */
+#prog-wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: transparent;
+  z-index: 5;
+  opacity: 0;
+  transition: opacity 0.25s;
+  pointer-events: none;
+}
+#prog-wrap.show { opacity: 1; }
+#prog-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--orange);
+  box-shadow: 0 0 10px var(--orange);
+  transition: width 0.2s ease-out;
+}
+
+.hidden-input { display: none; }
+</style>
 </head>
 <body>
 
-<canvas id="outputCanvas"></canvas>
-<canvas id="videoCanvas"></canvas>
+    <div id="app">
+        <!-- ══════════════════════════════════════════════════════════════════
+        SIDE PANEL
+        ══════════════════════════════════════════════════════════════════════ -->
 
-<div id="title-tag">QUADTREE · GLYPH</div>
-<span id="fps">– fps</span>
 
-<!-- START SCREEN -->
+            <div id="module-tabs"></div>
 
-<div id="start-screen">
-  <p>◢ QUADTREE GLYPH ENGINE ◣<br>LIVE CAM + ASCII RENDER</p>
-  <button id="start-btn">▶ INIT CAMERA</button>
-</div>
+            <div id="scroll">
+                <div>
+                    <div class="section-title">Source</div>
+                    <input type="file" id="file-in" accept="image/*" class="hidden-input">
+                    <div id="drop-zone">
+                        <span class="dz-icon">&#8595;</span>
+                        DROP IMAGE<br>OR TAP TO BROWSE
+                    </div>
+                </div>
 
-<!-- BOTTOM SLIDE PANEL -->
+                <div id="module-desc"></div>
+                <div id="module-params"></div>
 
-<div id="bottom-sheet">
-  <div id="pull-tab">▴ UI</div>
+                <div>
+                    <div class="section-title">Export</div>
+                    <div class="btn-row">
+                        <button class="btn btn-accent" id="btn-png" disabled>&#8595; PNG</button>
+                        <button class="btn" id="btn-reset" disabled>&#8634; Reset</button>
+                    </div>
+                </div>
+            </div>
 
-  <div id="controls">
-    <div class="param">
-      <div class="param-header">
-        <span class="param-label">threshold</span>
-        <span class="param-val" id="threshVal">28</span>
-      </div>
-      <input type="range" id="threshold" min="5" max="80" step="1" value="28">
+            <div id="status-bar">
+                <div id="dot"></div>
+                <span id="status-msg">Drop an image to begin</span>
+            </div>
+        </aside>
+
+        <!-- ══════════════════════════════════════════════════════════════════
+        VIEWPORT
+        ══════════════════════════════════════════════════════════════════════ -->
+        <main id="viewport">
+            <div id="prog-wrap"><div id="prog-bar"></div></div>
+            <div id="empty">
+                <div class="empty-word">PYFORGE</div>
+                <div class="empty-label">No image loaded</div>
+            </div>
+            <canvas id="main"></canvas>
+        </main>
     </div>
-    <div class="param">
-      <div class="param-header">
-        <span class="param-label">max block</span>
-        <span class="param-val" id="maxBlockVal">64</span>
-      </div>
-      <input type="range" id="maxBlock" min="32" max="96" step="8" value="64">
-    </div>
-    <div class="param" style="grid-column: span 2">
-      <div class="param-header">
-        <span class="param-label">min block</span>
-        <span class="param-val" id="minBlockVal">8</span>
-      </div>
-      <input type="range" id="minBlock" min="4" max="32" step="2" value="8">
-    </div>
-  </div>
 
-  <div id="btn-row">
-    <button class="btn green" id="bootBtn">BOOT</button>
-    <button class="btn" id="flipCamBtn">FLIP</button>
-    <button class="btn lit" id="colorBtn">COLOR ▪</button>
-    <button class="btn red" id="saveBtn">SAVE</button>
-  </div>
-</div>
+    <script>
+        (function() {
+            // ═══════════════════════════════════════════════════════════════════
+            // DOM REFS
+            // ═══════════════════════════════════════════════════════════════════
+            const mainCvs = document.getElementById('main');
+            const ctx = mainCvs.getContext('2d', { willReadFrequently: true });
+            const dropZone = document.getElementById('drop-zone');
+            const empty = document.getElementById('empty');
+            const dot = document.getElementById('dot');
+            const statusMsg = document.getElementById('status-msg');
+            const progWrap = document.getElementById('prog-wrap');
+            const progBar = document.getElementById('prog-bar');
+            const btnPng = document.getElementById('btn-png');
+            const btnReset = document.getElementById('btn-reset');
+            const tabsEl = document.getElementById('module-tabs');
+            const descEl = document.getElementById('module-desc');
+            const paramsEl = document.getElementById('module-params');
+            const fileInput = document.getElementById('file-in');
+            const viewport = document.getElementById('viewport');
 
-<script>
-(function(){
-  const GLYPH_RAMP = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
+            // ═══════════════════════════════════════════════════════════════════
+            // STATE
+            // ═══════════════════════════════════════════════════════════════════
+            let srcImg = null;
+            let srcCanvas = null; // offscreen canvas at full source resolution
+            let running = false;
+            let activeModule = null;
+            let currentVals = {};
+            let debounceTimer = null;
+            const MAX_DIM = 640; // process at ≤640px for performance
+            let workingWidth = 0; // dimensions of current working canvas
+            let workingHeight = 0;
 
-  function getChar(luma) {
-    let idx = Math.floor((luma / 255) * (GLYPH_RAMP.length - 1));
-    idx = Math.min(GLYPH_RAMP.length - 1, Math.max(0, idx));
-    return GLYPH_RAMP[idx];
-  }
+            // ═══════════════════════════════════════════════════════════════════
+            // HELPERS
+            // ═══════════════════════════════════════════════════════════════════
+            function setStatus(state, msg) {
+                dot.className = state;
+                statusMsg.textContent = msg;
+            }
 
-  // ── DOM refs ──
-  const outputCanvas  = document.getElementById('outputCanvas');
-  const outCtx        = outputCanvas.getContext('2d');
-  const videoCanvas   = document.getElementById('videoCanvas');
-  const videoCtx      = videoCanvas.getContext('2d');
+            function setProgress(pct) {
+                const clamped = Math.min(100, Math.max(0, Math.round(pct)));
+                progBar.style.width = clamped + '%';
+                progWrap.classList.toggle('show', clamped > 0 && clamped < 100);
+            }
 
-  const thresholdSlider = document.getElementById('threshold');
-  const threshVal       = document.getElementById('threshVal');
-  const maxBlockSlider  = document.getElementById('maxBlock');
-  const maxBlockVal     = document.getElementById('maxBlockVal');
-  const minBlockSlider  = document.getElementById('minBlock');
-  const minBlockVal     = document.getElementById('minBlockVal');
-  const fpsSpan         = document.getElementById('fps');
+            function yieldFrame() {
+                return new Promise(r => requestAnimationFrame(r));
+            }
 
-  const startScreen = document.getElementById('start-screen');
-  const startBtn    = document.getElementById('start-btn');
-  const bottomSheet = document.getElementById('bottom-sheet');
-  const pullTab     = document.getElementById('pull-tab');
-  const bootBtn     = document.getElementById('bootBtn');
-  const flipBtn     = document.getElementById('flipCamBtn');
-  const colorBtn    = document.getElementById('colorBtn');
-  const saveBtn     = document.getElementById('saveBtn');
+            const Clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 
-  // ── state ──
-  let videoStream   = null;
-  let facingMode    = 'environment';
-  let videoElement  = null;
-  let lastTimestamp = 0;
-  let frameCount    = 0;
-  let cameraReady   = false;
-  let animStarted   = false;
+            // ═══════════════════════════════════════════════════════════════════
+            // PRNG — fast 32-bit mulberry32
+            // ═══════════════════════════════════════════════════════════════════
+            function mulberry32(seed) {
+                return function() {
+                    seed |= 0;
+                    seed = (seed + 0x6D2B79F5) | 0;
+                    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+                    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+                    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+                };
+            }
 
-  let threshold    = 28;
-  let maxBlockSize = 64;
-  let minBlockSize = 8;
-  let colorize     = true;
+            // ═══════════════════════════════════════════════════════════════════
+            // CORE IMAGE UTILITIES
+            // ═══════════════════════════════════════════════════════════════════
+            const Core = {};
 
-  // ── quadtree helpers ──
-  function getBlockStats(grayData, width, x, y, size) {
-    let sum = 0, sumSq = 0;
-    const pixels = size * size;
-    for (let row = 0; row < size; row++) {
-      const srcRow = (y + row) * width;
-      for (let col = 0; col < size; col++) {
-        const val = grayData[srcRow + (x + col)];
-        sum += val;
-        sumSq += val * val;
-      }
-    }
-    const mean = sum / pixels;
-    const variance = (sumSq / pixels) - (mean * mean);
-    return { mean, variance };
-  }
+            /** Convert RGBA Uint8ClampedArray to grayscale Float32Array [0–255] */
+            Core.toGray = function(data, w, h) {
+                const out = new Float32Array(w * h);
+                for (let i = 0, p = 0; i < data.length; i += 4, p++) {
+                    out[p] = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+                }
+                return out;
+            };
 
-  function getBlockColor(rgbData, width, x, y, size) {
-    let rSum = 0, gSum = 0, bSum = 0;
-    const pixels = size * size;
-    for (let row = 0; row < size; row++) {
-      const srcRow = (y + row) * width;
-      for (let col = 0; col < size; col++) {
-        const idx = (srcRow + (x + col)) * 4;
-        rSum += rgbData[idx];
-        gSum += rgbData[idx+1];
-        bSum += rgbData[idx+2];
-      }
-    }
-    return {
-      r: Math.floor(rSum / pixels),
-      g: Math.floor(gSum / pixels),
-      b: Math.floor(bSum / pixels)
-    };
-  }
+            /** 1D sliding-window box blur (O(n) per pass) */
+            Core.boxBlur1D = function(src, w, h, radius, horizontal) {
+                const out = new Float32Array(w * h);
+                const size = radius * 2 + 1;
+                if (horizontal) {
+                    for (let y = 0; y < h; y++) {
+                        let acc = 0;
+                        const row = y * w;
+                        for (let x = -radius; x <= radius; x++) acc += src[row + Clamp(x, 0, w - 1)];
+                        for (let x = 0; x < w; x++) {
+                            out[row + x] = acc / size;
+                            const addX = Clamp(x + radius + 1, 0, w - 1);
+                            const subX = Clamp(x - radius, 0, w - 1);
+                            acc += src[row + addX] - src[row + subX];
+                        }
+                    }
+                } else {
+                    for (let x = 0; x < w; x++) {
+                        let acc = 0;
+                        for (let y = -radius; y <= radius; y++) acc += src[Clamp(y, 0, h - 1) * w + x];
+                        for (let y = 0; y < h; y++) {
+                            out[y * w + x] = acc / size;
+                            const addY = Clamp(y + radius + 1, 0, h - 1);
+                            const subY = Clamp(y - radius, 0, h - 1);
+                            acc += src[addY * w + x] - src[subY * w + x];
+                        }
+                    }
+                }
+                return out;
+            };
 
-  function renderBlock(ctx, grayData, rgbData, imgWidth, imgHeight, x, y, size, thresholdVal, minSize, colorEnabled) {
-    const blockW = Math.min(size, imgWidth - x);
-    const blockH = Math.min(size, imgHeight - y);
-    if (blockW <= 0 || blockH <= 0) return;
+            /**
+             * Approximate Gaussian blur via 4-pass box blur (same radius).
+             * For artistic use; a true 3-pass Gaussian would use 3 different radii.
+             */
+            Core.gaussianApprox = function(src, w, h, radius) {
+                if (radius <= 0) return src.slice();
+                const r = Math.max(1, Math.round(radius));
+                let a = Core.boxBlur1D(src, w, h, r, true);
+                a = Core.boxBlur1D(a, w, h, r, false);
+                a = Core.boxBlur1D(a, w, h, r, true);
+                a = Core.boxBlur1D(a, w, h, r, false);
+                return a;
+            };
 
-    const stats = getBlockStats(grayData, imgWidth, x, y, blockW);
-    const isUniform = stats.variance < thresholdVal;
-    const isMin = size <= minSize;
+            /** Sobel edge detection. Returns {gx, gy, mag, angle} as Float32Arrays. */
+            Core.sobel = function(gray, w, h) {
+                const gx = new Float32Array(w * h);
+                const gy = new Float32Array(w * h);
+                const mag = new Float32Array(w * h);
+                const angle = new Float32Array(w * h);
+                for (let y = 1; y < h - 1; y++) {
+                    for (let x = 1; x < w - 1; x++) {
+                        const i = y * w + x;
+                        const a = gray[i - w - 1],
+                            b = gray[i - w],
+                            c = gray[i - w + 1];
+                        const d = gray[i - 1],
+                            f = gray[i + 1];
+                        const g = gray[i + w - 1],
+                            hh = gray[i + w],
+                            ii = gray[i + w + 1];
+                        const dx = (c + 2 * f + ii) - (a + 2 * d + g);
+                        const dy = (g + 2 * hh + ii) - (a + 2 * b + c);
+                        gx[i] = dx;
+                        gy[i] = dy;
+                        mag[i] = Math.sqrt(dx * dx + dy * dy);
+                        angle[i] = Math.atan2(dy, dx) * 180 / Math.PI;
+                    }
+                }
+                return { gx, gy, mag, angle };
+            };
 
-    if (isUniform || isMin) {
-      const ch = getChar(stats.mean);
-      if (ch === ' ') return;
-      if (colorEnabled && rgbData) {
-        const avgCol = getBlockColor(rgbData, imgWidth, x, y, blockW);
-        ctx.fillStyle = `rgb(${avgCol.r},${avgCol.g},${avgCol.b})`;
-      } else {
-        ctx.fillStyle = '#efdfb0';
-      }
-      const fontSize = Math.max(8, Math.min(blockW, blockH));
-      ctx.font = `${fontSize}px "IBM VGA","Courier New",monospace`;
-      ctx.textBaseline = 'top';
-      ctx.textAlign = 'left';
-      ctx.fillText(ch, x, y);
-    } else if (size > minSize) {
-      const half = size >> 1;
-      renderBlock(ctx, grayData, rgbData, imgWidth, imgHeight, x,        y,        half, thresholdVal, minSize, colorEnabled);
-      renderBlock(ctx, grayData, rgbData, imgWidth, imgHeight, x + half, y,        half, thresholdVal, minSize, colorEnabled);
-      renderBlock(ctx, grayData, rgbData, imgWidth, imgHeight, x,        y + half, half, thresholdVal, minSize, colorEnabled);
-      renderBlock(ctx, grayData, rgbData, imgWidth, imgHeight, x + half, y + half, half, thresholdVal, minSize, colorEnabled);
-    }
-  }
+            /**
+             * Median-cut palette extraction.
+             * Samples up to ~4000 pixels for performance, then recursively splits.
+             */
+            Core.extractPalette = function(data, w, h, k) {
+                const pixels = [];
+                const step = Math.max(1, Math.floor((w * h) / 4000));
+                for (let p = 0, i = 0; i < data.length; i += 4 * step, p++) {
+                    pixels.push([data[i], data[i + 1], data[i + 2]]);
+                }
+                if (pixels.length === 0) return [
+                    [0, 0, 0]
+                ];
 
-  function processFrame() {
-    if (!videoElement || videoElement.readyState < 2) return;
-    const vw = videoElement.videoWidth;
-    const vh = videoElement.videoHeight;
-    if (!vw || !vh) return;
+                function cut(box, depth) {
+                    if (depth <= 0 || box.length <= 1) {
+                        let r = 0,
+                            g = 0,
+                            b = 0;
+                        for (const p of box) { r += p[0];
+                            g += p[1];
+                            b += p[2]; }
+                        const n = box.length || 1;
+                        return [
+                            [Math.round(r / n), Math.round(g / n), Math.round(b / n)]
+                        ];
+                    }
+                    let rmin = 255,
+                        rmax = 0,
+                        gmin = 255,
+                        gmax = 0,
+                        bmin = 255,
+                        bmax = 0;
+                    for (const p of box) {
+                        if (p[0] < rmin) rmin = p[0];
+                        if (p[0] > rmax) rmax = p[0];
+                        if (p[1] < gmin) gmin = p[1];
+                        if (p[1] > gmax) gmax = p[1];
+                        if (p[2] < bmin) bmin = p[2];
+                        if (p[2] > bmax) bmax = p[2];
+                    }
+                    const rr = rmax - rmin,
+                        gr = gmax - gmin,
+                        br = bmax - bmin;
+                    let axis = 0;
+                    if (gr >= rr && gr >= br) axis = 1;
+                    else if (br >= rr && br >= gr) axis = 2;
+                    box.sort((a, b) => a[axis] - b[axis]);
+                    const mid = box.length >> 1;
+                    return [...cut(box.slice(0, mid), depth - 1), ...cut(box.slice(mid), depth - 1)];
+                }
+                const depth = Math.ceil(Math.log2(Math.max(1, k)));
+                let palette = cut(pixels, depth);
+                if (palette.length > k) palette = palette.slice(0, k);
+                while (palette.length < k && palette.length > 0) palette.push(palette[palette.length -
+                1]);
+                return palette;
+            };
 
-    let targetW = Math.min(1000, vw);
-    let targetH = (targetW * vh) / vw;
-    targetW = Math.floor(targetW / 2) * 2;
-    targetH = Math.floor(targetH / 2) * 2;
+            /** Nearest color in palette (Euclidean distance in RGB) */
+            Core.nearestColor = function(r, g, b, palette) {
+                let best = palette[0],
+                    bestD = Infinity;
+                for (const p of palette) {
+                    const d = (p[0] - r) * (p[0] - r) + (p[1] - g) * (p[1] - g) + (p[2] - b) * (p[2] -
+                    b);
+                    if (d < bestD) { bestD = d;
+                        best = p; }
+                }
+                return best;
+            };
 
-    videoCanvas.width  = targetW;
-    videoCanvas.height = targetH;
-    outputCanvas.width  = targetW;
-    outputCanvas.height = targetH;
+            /** Floyd-Steinberg error-diffusion dither (mutates data in place) */
+            Core.floydSteinberg = function(data, w, h, palette) {
+                const buf = new Float32Array(w * h * 3);
+                for (let i = 0, p = 0; i < data.length; i += 4, p += 3) {
+                    buf[p] = data[i];
+                    buf[p + 1] = data[i + 1];
+                    buf[p + 2] = data[i + 2];
+                }
+                for (let y = 0; y < h; y++) {
+                    for (let x = 0; x < w; x++) {
+                        const p = (y * w + x) * 3;
+                        const old = [buf[p], buf[p + 1], buf[p + 2]];
+                        const nc = Core.nearestColor(old[0], old[1], old[2], palette);
+                        buf[p] = nc[0];
+                        buf[p + 1] = nc[1];
+                        buf[p + 2] = nc[2];
+                        const er = old[0] - nc[0],
+                            eg = old[1] - nc[1],
+                            eb = old[2] - nc[2];
+                        const pushErr = (xx, yy, f) => {
+                            if (xx < 0 || xx >= w || yy < 0 || yy >= h) return;
+                            const q = (yy * w + xx) * 3;
+                            buf[q] += er * f;
+                            buf[q + 1] += eg * f;
+                            buf[q + 2] += eb * f;
+                        };
+                        pushErr(x + 1, y, 7 / 16);
+                        pushErr(x - 1, y + 1, 3 / 16);
+                        pushErr(x, y + 1, 5 / 16);
+                        pushErr(x + 1, y + 1, 1 / 16);
+                    }
+                }
+                for (let i = 0, p = 0; i < data.length; i += 4, p += 3) {
+                    data[i] = Clamp(Math.round(buf[p]), 0, 255);
+                    data[i + 1] = Clamp(Math.round(buf[p + 1]), 0, 255);
+                    data[i + 2] = Clamp(Math.round(buf[p + 2]), 0, 255);
+                }
+            };
 
-    videoCtx.drawImage(videoElement, 0, 0, targetW, targetH);
-    const frameData = videoCtx.getImageData(0, 0, targetW, targetH);
-    const rgba = frameData.data;
+            /** Bayer 8×8 matrix normalized to [-0.5, 0.5) */
+            const BAYER_8x8 = [
+                [0, 32, 8, 40, 2, 34, 10, 42],
+                [48, 16, 56, 24, 50, 18, 58, 26],
+                [12, 44, 4, 36, 14, 46, 6, 38],
+                [60, 28, 52, 20, 62, 30, 54, 22],
+                [3, 35, 11, 43, 1, 33, 9, 41],
+                [51, 19, 59, 27, 49, 17, 57, 25],
+                [15, 47, 7, 39, 13, 45, 5, 37],
+                [63, 31, 55, 23, 61, 29, 53, 21]
+            ].map(row => row.map(v => v / 64 - 0.5));
 
-    const gray = new Uint8Array(targetW * targetH);
-    for (let i = 0; i < rgba.length; i += 4) {
-      gray[i >> 2] = 0.299 * rgba[i] + 0.587 * rgba[i+1] + 0.114 * rgba[i+2];
-    }
+            /** Bayer ordered dither (mutates data in place) */
+            Core.bayerDither = function(data, w, h, palette, spread) {
+                for (let y = 0; y < h; y++) {
+                    for (let x = 0; x < w; x++) {
+                        const i = (y * w + x) * 4;
+                        const thresh = BAYER_8x8[y & 7][x & 7] * spread;
+                        const r = Clamp(data[i] + thresh, 0, 255);
+                        const g = Clamp(data[i + 1] + thresh, 0, 255);
+                        const b = Clamp(data[i + 2] + thresh, 0, 255);
+                        const nc = Core.nearestColor(r, g, b, palette);
+                        data[i] = nc[0];
+                        data[i + 1] = nc[1];
+                        data[i + 2] = nc[2];
+                    }
+                }
+            };
 
-    outCtx.clearRect(0, 0, targetW, targetH);
-    outCtx.fillStyle = '#0d0c08';
-    outCtx.fillRect(0, 0, targetW, targetH);
+            /**
+             * Recursive quadtree split.
+             * Calls onLeaf(x, y, w, h) for each terminal block.
+             * Uses stddev of luminance to decide whether to split further.
+             */
+            Core.quadSplit = function(data, imgW, x, y, w, h, depth, opts) {
+                const { minSize, maxDepth, entropyLimit, minDepth, onLeaf } = opts;
+                if (w <= minSize || h <= minSize || depth >= maxDepth) {
+                    onLeaf(x, y, w, h);
+                    return;
+                }
+                // Sample luminance within block for stddev
+                let sum = 0,
+                    sumSq = 0,
+                    n = 0;
+                const stepX = Math.max(1, Math.floor(w / 16));
+                const stepY = Math.max(1, Math.floor(h / 16));
+                for (let yy = y; yy < y + h; yy += stepY) {
+                    for (let xx = x; xx < x + w; xx += stepX) {
+                        const i = (yy * imgW + xx) * 4;
+                        const lum = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+                        sum += lum;
+                        sumSq += lum * lum;
+                        n++;
+                    }
+                }
+                const mean = sum / (n || 1);
+                const variance = Math.max(0, sumSq / (n || 1) - mean * mean);
+                const stddev = Math.sqrt(variance);
 
-    for (let y = 0; y < targetH; y += maxBlockSize) {
-      for (let x = 0; x < targetW; x += maxBlockSize) {
-        renderBlock(outCtx, gray, rgba, targetW, targetH, x, y, maxBlockSize, threshold, minBlockSize, colorize);
-      }
-    }
-  }
+                if (stddev > entropyLimit || depth < minDepth) {
+                    const hw = w >> 1,
+                        hh = h >> 1;
+                    if (hw < 1 || hh < 1) { onLeaf(x, y, w, h); return; }
+                    Core.quadSplit(data, imgW, x, y, hw, hh, depth + 1, opts);
+                    Core.quadSplit(data, imgW, x + hw, y, w - hw, hh, depth + 1, opts);
+                    Core.quadSplit(data, imgW, x, y + hh, hw, h - hh, depth + 1, opts);
+                    Core.quadSplit(data, imgW, x + hw, y + hh, w - hw, h - hh, depth + 1, opts);
+                } else {
+                    onLeaf(x, y, w, h);
+                }
+            };
 
-  let lastRender    = 0;
-  const frameInterval = 33;
+            // ═══════════════════════════════════════════════════════════════════
+            // MODULE DEFINITIONS
+            // Each: { id, name, desc, params:[{key,label,type,min,max,step,default,options}],
+            //         async run(ctx, w, h, vals) }
+            // ═══════════════════════════════════════════════════════════════════
+            const MODULES = [];
 
-  function animationLoop(now) {
-    frameCount++;
-    if (now - lastTimestamp >= 1000) {
-      fpsSpan.innerText = `${frameCount} fps`;
-      frameCount    = 0;
-      lastTimestamp = now;
-    }
-    if (videoElement && videoStream && now - lastRender >= frameInterval) {
-      processFrame();
-      lastRender = now;
-    }
-    requestAnimationFrame(animationLoop);
-  }
+            // ── 1. QUADTREE WARP ──────────────────────────────────────────────
+            MODULES.push({
+                id: 'quadwarp',
+                name: 'Quadtree Warp',
+                desc: 'Gradient-field spatial warp, golden-ratio echo blend, recursive quadtree poison (invert/posterize), chromatic split, and final color quantize.',
+                params: [
+                    { key: 'warp', label: 'Warp Strength', type: 'range', min: 0, max: 15, step: 0.5,
+                        default: 6 },
+                    { key: 'entropy', label: 'Entropy Limit', type: 'range', min: 3, max: 40, step: 1,
+                        default: 15 },
+                    { key: 'maxDepth', label: 'Max Depth', type: 'range', min: 2, max: 8, step: 1,
+                    default: 6 },
+                    { key: 'poison', label: 'Poison Chance', type: 'range', min: 0, max: 1, step: 0.05,
+                        default: 0.2 },
+                    { key: 'chromatic', label: 'Chromatic Shift', type: 'range', min: 0, max: 12, step: 1,
+                        default: 4 },
+                    { key: 'colors', label: 'Quantize Colors', type: 'range', min: 2, max: 64, step: 1,
+                        default: 16 },
+                ],
+                async run(ctx, w, h, v) {
+                    const id = ctx.getImageData(0, 0, w, h);
+                    const data = id.data;
+                    const gray = Core.toGray(data, w, h);
+                    const grayN = new Float32Array(w * h);
+                    for (let i = 0; i < gray.length; i++) grayN[i] = gray[i] / 255;
+                    const { gx, gy } = Core.sobel(gray, w, h);
+                    const src = new Uint8ClampedArray(data);
 
-  async function initCamera() {
-    if (videoStream) videoStream.getTracks().forEach(t => t.stop());
-    if (!videoElement) {
-      videoElement = document.createElement('video');
-      videoElement.autoplay = true;
-      videoElement.muted = true;
-      videoElement.setAttribute('playsinline', '');
-    }
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { exact: facingMode }, width: { ideal: 1280 } }
-      });
-      videoStream = stream;
-      videoElement.srcObject = stream;
-      await videoElement.play();
-      cameraReady = true;
-    } catch {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode, width: { ideal: 640 } }
-        });
-        videoStream = stream;
-        videoElement.srcObject = stream;
-        await videoElement.play();
-        cameraReady = true;
-      } catch (e) {
-        console.error('Camera error', e);
-        const p = startScreen.querySelector('p');
-        if (p) p.innerHTML = `⚠ CAMERA ERROR<br>${(e.message||'').substring(0,60)}`;
-        startScreen.style.display = 'flex';
-      }
-    }
-  }
+                    setStatus('on', 'Warping spatial field…');
+                    for (let y = 0; y < h; y++) {
+                        for (let x = 0; x < w; x++) {
+                            const i = y * w + x;
+                            const brightness = grayN[i];
+                            const dxg = gx[i] / 4,
+                                dyg = gy[i] / 4;
+                            const angle = Math.atan2(dyg, dxg) + 1.0;
+                            const mag = Math.sqrt(dxg * dxg + dyg * dyg) / 255;
+                            const dx = Math.cos(angle) * mag * (0.5 + brightness) * v.warp;
+                            const dy = Math.sin(angle) * mag * (0.5 + brightness) * v.warp;
+                            const sx = Clamp(Math.round(x + dx), 0, w - 1);
+                            const sy = Clamp(Math.round(y + dy), 0, h - 1);
+                            const si = (sy * w + sx) * 4,
+                                di = i * 4;
+                            data[di] = src[si];
+                            data[di + 1] = src[si + 1];
+                            data[di + 2] = src[si + 2];
+                            data[di + 3] = 255;
+                        }
+                        if (y % 40 === 0) { setProgress(Math.round(y / h * 40));
+                            await yieldFrame(); }
+                    }
 
-  function launchCamera() {
-    startScreen.style.display = 'none';
-    initCamera().then(() => {
-      if (!animStarted) {
-        animStarted = true;
-        requestAnimationFrame(animationLoop);
-      }
-    });
-  }
+                    setStatus('on', 'Quadtree poison pass…');
+                    const rng = mulberry32(12345);
+                    const leaves = [];
+                    Core.quadSplit(data, w, 0, 0, w, h, 0, {
+                        minSize: 4,
+                        maxDepth: v.maxDepth,
+                        entropyLimit: v.entropy,
+                        minDepth: 2,
+                        onLeaf: (bx, by, bw, bh) => leaves.push([bx, by, bw, bh])
+                    });
+                    for (let li = 0; li < leaves.length; li++) {
+                        const [bx, by, bw, bh] = leaves[li];
+                        if (rng() < v.poison) {
+                            const invert = rng() > 0.5;
+                            for (let yy = by; yy < by + bh; yy++) {
+                                for (let xx = bx; xx < bx + bw; xx++) {
+                                    const i = (yy * w + xx) * 4;
+                                    if (invert) {
+                                        data[i] = 255 - data[i];
+                                        data[i + 1] = 255 - data[i + 1];
+                                        data[i + 2] = 255 - data[i + 2];
+                                    } else {
+                                        const levels = 2 + Math.floor(rng() * 3);
+                                        const step = 255 / (levels - 1);
+                                        data[i] = Math.round(Math.round(data[i] / step) * step);
+                                        data[i + 1] = Math.round(Math.round(data[i + 1] / step) * step);
+                                        data[i + 2] = Math.round(Math.round(data[i + 2] / step) * step);
+                                    }
+                                }
+                            }
+                        }
+                        if (li % 200 === 0) { setProgress(40 + Math.round(li / leaves.length * 30));
+                            await yieldFrame(); }
+                    }
 
-  // ── slider bindings ──
-  thresholdSlider.addEventListener('input', () => {
-    threshold = parseInt(thresholdSlider.value, 10);
-    threshVal.innerText = threshold;
-  });
-  maxBlockSlider.addEventListener('input', () => {
-    maxBlockSize = parseInt(maxBlockSlider.value, 10);
-    maxBlockVal.innerText = maxBlockSize;
-    if (minBlockSize > maxBlockSize) {
-      minBlockSlider.value = maxBlockSize;
-      minBlockSize = maxBlockSize;
-      minBlockVal.innerText = minBlockSize;
-    }
-  });
-  minBlockSlider.addEventListener('input', () => {
-    minBlockSize = Math.min(parseInt(minBlockSlider.value, 10), maxBlockSize);
-    minBlockSlider.value = minBlockSize;
-    minBlockVal.innerText = minBlockSize;
-  });
+                    setStatus('on', 'Chromatic split + quantize…');
+                    if (v.chromatic > 0) {
+                        const shift = Math.round(v.chromatic);
+                        const copy = new Uint8ClampedArray(data);
+                        for (let y = 0; y < h; y++) {
+                            for (let x = 0; x < w; x++) {
+                                const di = (y * w + x) * 4;
+                                const rx = Clamp(x - shift, 0, w - 1),
+                                    bx2 = Clamp(x + shift, 0, w - 1);
+                                data[di] = copy[(y * w + rx) * 4];
+                                data[di + 2] = copy[(y * w + bx2) * 4 + 2];
+                            }
+                        }
+                    }
+                    await yieldFrame();
+                    setProgress(80);
+                    const palette = Core.extractPalette(data, w, h, Math.round(v.colors));
+                    for (let i = 0; i < data.length; i += 4) {
+                        const nc = Core.nearestColor(data[i], data[i + 1], data[i + 2], palette);
+                        data[i] = nc[0];
+                        data[i + 1] = nc[1];
+                        data[i + 2] = nc[2];
+                    }
+                    ctx.putImageData(id, 0, 0);
+                    setProgress(100);
+                }
+            });
 
-  // ── button bindings ──
-  startBtn.addEventListener('click', launchCamera);
-  bootBtn.addEventListener('click', launchCamera);
+            // ── 2. SOBEL INK STROKES ──────────────────────────────────────────
+            MODULES.push({
+                id: 'inkstrokes',
+                name: 'Sobel Ink Strokes',
+                desc: 'Directional ink strokes derived from Sobel gradient magnitude, with drift-drag trailing and pooling at stroke clusters.',
+                params: [
+                    { key: 'preblur', label: 'Pre-blur Radius', type: 'range', min: 0, max: 5, step: 0.5,
+                        default: 1 },
+                    { key: 'threshold', label: 'Stroke Threshold', type: 'range', min: 0, max: 60,
+                        step: 1, default: 8 },
+                    { key: 'driftX', label: 'Drift X', type: 'range', min: -5, max: 5, step: 1,
+                    default: 1 },
+                    { key: 'driftY', label: 'Drift Y', type: 'range', min: -5, max: 5, step: 1,
+                        default: -1 },
+                    { key: 'cycles', label: 'Drift Cycles', type: 'range', min: 0, max: 6, step: 1,
+                        default: 2 },
+                    { key: 'pool', label: 'Pool Intensity', type: 'range', min: 0, max: 1, step: 0.05,
+                        default: 0.9 },
+                ],
+                async run(ctx, w, h, v) {
+                    const id = ctx.getImageData(0, 0, w, h);
+                    const data = id.data;
+                    let gray = Core.toGray(data, w, h);
+                    setStatus('on', 'Pre-blurring…');
+                    gray = Core.gaussianApprox(gray, w, h, v.preblur);
+                    await yieldFrame();
+                    setProgress(20);
 
-  flipBtn.addEventListener('click', () => {
-    facingMode = facingMode === 'environment' ? 'user' : 'environment';
-    if (cameraReady) initCamera();
-  });
+                    setStatus('on', 'Computing gradient magnitude…');
+                    const { mag } = Core.sobel(gray, w, h);
+                    let maxMag = 0;
+                    for (let i = 0; i < mag.length; i++)
+                        if (mag[i] > maxMag) maxMag = mag[i];
+                    const norm = new Float32Array(mag.length);
+                    for (let i = 0; i < mag.length; i++) norm[i] = maxMag > 0 ? mag[i] / maxMag * 255 : 0;
+                    await yieldFrame();
+                    setProgress(40);
 
-  colorBtn.addEventListener('click', () => {
-    colorize = !colorize;
-    colorBtn.classList.toggle('lit', colorize);
-    colorBtn.textContent = colorize ? 'COLOR ▪' : 'COLOR';
-  });
+                    let stroke = new Float32Array(w * h);
+                    for (let i = 0; i < stroke.length; i++) {
+                        const inkWeight = Clamp((norm[i] - v.threshold) / (255 - v.threshold), 0, 1);
+                        stroke[i] = 255 - inkWeight * 255;
+                    }
+                    stroke = Core.gaussianApprox(stroke, w, h, 0.5);
+                    setProgress(55);
 
-  saveBtn.addEventListener('click', () => {
-    if (!outputCanvas.width) return;
-    const link = document.createElement('a');
-    link.download = `glyph_${Date.now()}.png`;
-    link.href = outputCanvas.toDataURL('image/png');
-    link.click();
-  });
+                    for (let c = 0; c < v.cycles; c++) {
+                        const dragged = new Float32Array(w * h);
+                        for (let y = 0; y < h; y++) {
+                            for (let x = 0; x < w; x++) {
+                                const sx = Clamp(x - v.driftX, 0, w - 1);
+                                const sy = Clamp(y - v.driftY, 0, h - 1);
+                                dragged[y * w + x] = stroke[sy * w + sx];
+                            }
+                        }
+                        for (let i = 0; i < stroke.length; i++) stroke[i] = Math.min(stroke[i], dragged[
+                        i]);
+                        await yieldFrame();
+                        setProgress(55 + Math.round((c + 1) / Math.max(1, v.cycles) * 20));
+                    }
 
-  pullTab.addEventListener('click', () => {
-    bottomSheet.classList.toggle('open');
-    pullTab.textContent = bottomSheet.classList.contains('open') ? '▾ UI' : '▴ UI';
-  });
-})();
-</script>
+                    const poolMask = Core.gaussianApprox(stroke.map(s => 255 - s), w, h, 2.0);
+                    for (let i = 0; i < stroke.length; i++) {
+                        const pm = Clamp(poolMask[i] * v.pool, 0, 60);
+                        stroke[i] = Clamp(stroke[i] - pm, 0, 255);
+                    }
+                    setProgress(85);
 
+                    for (let i = 0, p = 0; i < data.length; i += 4, p++) {
+                        const val = stroke[p];
+                        data[i] = val;
+                        data[i + 1] = val;
+                        data[i + 2] = val;
+                        data[i + 3] = 255;
+                    }
+                    ctx.putImageData(id, 0, 0);
+                    setProgress(100);
+                }
+            });
+
+            // ── 3. SUMI-E WASH ────────────────────────────────────────────────
+            MODULES.push({
+                id: 'sumie',
+                name: 'Sumi-e Wash',
+                desc: 'Three-layer ink wash: ghost wash (diffuse dark bloom), mid bloom (directional wet pools), and black strokes (edge-derived), composited onto paper with optional hanko seal.',
+                params: [
+                    { key: 'paperWhite', label: 'Paper Tone', type: 'range', min: 200, max: 255,
+                        step: 1, default: 252 },
+                    { key: 'ghostBlur', label: 'Ghost Blur', type: 'range', min: 0, max: 10, step: 0.5,
+                        default: 3 },
+                    { key: 'ghostOp', label: 'Ghost Opacity', type: 'range', min: 0, max: 0.6,
+                        step: 0.02, default: 0.18 },
+                    { key: 'ghostDark', label: 'Ghost Darken', type: 'range', min: 20, max: 220,
+                        step: 5, default: 130 },
+                    { key: 'bloomBlur', label: 'Bloom Blur', type: 'range', min: 0, max: 6, step: 0.5,
+                        default: 1 },
+                    { key: 'bloomOp', label: 'Bloom Opacity', type: 'range', min: 0, max: 0.5,
+                        step: 0.02, default: 0.1 },
+                    { key: 'strokeThresh', label: 'Stroke Sharpness', type: 'range', min: 0, max: 40,
+                        step: 1, default: 2 },
+                    { key: 'hanko', label: 'Hanko Seal', type: 'checkbox', default: true },
+                    { key: 'hankoPos', label: 'Seal Position', type: 'select', options: [
+                            'bottom-right', 'top-left'
+                        ], default: 'bottom-right' },
+                ],
+                async run(ctx, w, h, v) {
+                    const id = ctx.getImageData(0, 0, w, h);
+                    const data = id.data;
+                    const gray = Core.toGray(data, w, h);
+
+                    setStatus('on', 'Ghost wash…');
+                    const ghostMask = new Float32Array(w * h);
+                    for (let i = 0; i < gray.length; i++) ghostMask[i] = gray[i] < v.ghostDark ? gray[
+                        i] : 255;
+                    const ghost = Core.gaussianApprox(ghostMask, w, h, v.ghostBlur);
+                    await yieldFrame();
+                    setProgress(20);
+
+                    setStatus('on', 'Mid bloom…');
+                    const bloomMask = new Float32Array(w * h);
+                    for (let i = 0; i < gray.length; i++) bloomMask[i] = gray[i] < 60 ? gray[i] : 255;
+                    let bloom = Core.gaussianApprox(bloomMask, w, h, v.bloomBlur);
+                    const dx = -1,
+                        dy = 1;
+                    const drifted = new Float32Array(w * h);
+                    for (let y = 0; y < h; y++)
+                        for (let x = 0; x < w; x++) {
+                            const sx = Clamp(x - dx, 0, w - 1),
+                                sy = Clamp(y - dy, 0, h - 1);
+                            drifted[y * w + x] = bloom[sy * w + sx];
+                        }
+                    for (let i = 0; i < bloom.length; i++) bloom[i] = Math.min(bloom[i], drifted[i]);
+                    await yieldFrame();
+                    setProgress(40);
+
+                    setStatus('on', 'Black strokes…');
+                    const smoothed = Core.gaussianApprox(gray, w, h, 1);
+                    const { mag } = Core.sobel(smoothed, w, h);
+                    let maxMag = 0;
+                    for (let i = 0; i < mag.length; i++)
+                        if (mag[i] > maxMag) maxMag = mag[i];
+                    let strokes = new Float32Array(w * h);
+                    for (let i = 0; i < mag.length; i++) {
+                        const m = maxMag > 0 ? mag[i] / maxMag * 255 : 0;
+                        const inkWeight = Clamp((m - v.strokeThresh) / (255 - v.strokeThresh), 0, 1);
+                        strokes[i] = 255 - inkWeight * 255;
+                    }
+                    strokes = Core.gaussianApprox(strokes, w, h, 0.5);
+                    for (let c = 0; c < 2; c++) {
+                        const dr = new Float32Array(w * h);
+                        for (let y = 0; y < h; y++)
+                            for (let x = 0; x < w; x++) {
+                                const sx = Clamp(x - 1, 0, w - 1),
+                                    sy = Clamp(y + 1, 0, h - 1);
+                                dr[y * w + x] = strokes[sy * w + sx];
+                            }
+                        for (let i = 0; i < strokes.length; i++) strokes[i] = Math.min(strokes[i], dr[i]);
+                    }
+                    await yieldFrame();
+                    setProgress(65);
+
+                    setStatus('on', 'Compositing paper…');
+                    const paper = new Float32Array(w * h).fill(v.paperWhite);
+                    const blendOnto = (paperArr, layerArr, opacity) => {
+                        for (let i = 0; i < paperArr.length; i++) {
+                            const ink = Clamp(((255 - layerArr[i]) / 255) * opacity, 0, 1);
+                            paperArr[i] = paperArr[i] * (1 - ink);
+                        }
+                    };
+                    blendOnto(paper, ghost, v.ghostOp);
+                    blendOnto(paper, bloom, v.bloomOp);
+                    blendOnto(paper, strokes, 1.0);
+                    setProgress(85);
+
+                    for (let i = 0, p = 0; i < data.length; i += 4, p++) {
+                        const val = Clamp(paper[p] * 1.15 - 15, 0, 255);
+                        data[i] = val;
+                        data[i + 1] = val;
+                        data[i + 2] = val;
+                        data[i + 3] = 255;
+                    }
+
+                    // Hanko seal stamp
+                    if (v.hanko) {
+                        const size = Math.max(48, Math.round(Math.max(w, h) * 0.07));
+                        const sx = v.hankoPos === 'top-left' ? 40 : w - size - 50;
+                        const sy = v.hankoPos === 'top-left' ? 40 : h - size - 50;
+                        const pad = Math.max(3, Math.floor(size / 10));
+                        const bw = Math.max(2, Math.floor(size / 20));
+                        for (let yy = 0; yy < size; yy++) {
+                            for (let xx = 0; xx < size; xx++) {
+                                const onBorder = (xx >= pad && xx < pad + bw) || (xx >= size - pad - bw &&
+                                    xx < size - pad) ||
+                                    (yy >= pad && yy < pad + bw) || (yy >= size - pad - bw && yy < size -
+                                        pad);
+                                if (onBorder && xx >= pad && xx < size - pad && yy >= pad && yy < size -
+                                    pad) {
+                                    const px = sx + xx,
+                                        py = sy + yy;
+                                    if (px >= 0 && px < w && py >= 0 && py < h) {
+                                        const i = (py * w + px) * 4;
+                                        data[i] = 175;
+                                        data[i + 1] = 20;
+                                        data[i + 2] = 20;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    ctx.putImageData(id, 0, 0);
+                    setProgress(100);
+                }
+            });
+
+            // ── 4. ASCII / GLYPH RENDER ───────────────────────────────────────
+            MODULES.push({
+                id: 'ascii',
+                name: 'ASCII Glyph Render',
+                desc: 'Edge-traced glyph rendering with selectable character sets: directional lines, bubbly dots, or block ramps.',
+                params: [
+                    { key: 'cellSize', label: 'Cell Size (px)', type: 'range', min: 4, max: 20, step: 1,
+                        default: 8 },
+                    { key: 'glyphSet', label: 'Glyph Set', type: 'select', options: ['directional',
+                            'bubbly', 'blocks'
+                        ], default: 'directional' },
+                    { key: 'edgeSens', label: 'Edge Sensitivity', type: 'range', min: 5, max: 100,
+                        step: 1, default: 40 },
+                    { key: 'color', label: 'True Color', type: 'checkbox', default: true },
+                    { key: 'bg', label: 'Dark Background', type: 'checkbox', default: true },
+                ],
+                async run(ctx, w, h, v) {
+                    const id = ctx.getImageData(0, 0, w, h);
+                    const data = id.data;
+                    const gray = Core.toGray(data, w, h);
+                    const { mag, angle } = Core.sobel(gray, w, h);
+                    let maxMag = 0;
+                    for (let i = 0; i < mag.length; i++)
+                        if (mag[i] > maxMag) maxMag = mag[i];
+
+                    const cell = Math.round(v.cellSize);
+                    const cols = Math.ceil(w / cell),
+                        rows = Math.ceil(h / cell);
+                    const out = new Uint8ClampedArray(data.length);
+                    const bgVal = v.bg ? 8 : 255;
+                    for (let i = 0; i < out.length; i += 4) { out[i] = bgVal;
+                        out[i + 1] = bgVal;
+                        out[i + 2] = bgVal;
+                        out[i + 3] = 255; }
+
+                    setStatus('on', 'Rendering glyphs…');
+
+                    const setPx = (x, y, r, g, b) => {
+                        if (x < 0 || x >= w || y < 0 || y >= h) return;
+                        const di = (y * w + x) * 4;
+                        out[di] = r;
+                        out[di + 1] = g;
+                        out[di + 2] = b;
+                        out[di + 3] = 255;
+                    };
+
+                    for (let cy = 0; cy < rows; cy++) {
+                        for (let cx = 0; cx < cols; cx++) {
+                            const px = cx * cell,
+                                py = cy * cell;
+                            const sampleX = Math.min(w - 1, px + (cell >> 1));
+                            const sampleY = Math.min(h - 1, py + (cell >> 1));
+                            const i = sampleY * w + sampleX;
+                            const m = maxMag > 0 ? mag[i] / maxMag * 255 : 0;
+                            const lum = gray[i];
+                            let r = lum,
+                                g = lum,
+                                b = lum;
+                            if (v.color) { const di = i * 4;
+                                r = data[di];
+                                g = data[di + 1];
+                                b = data[di + 2]; }
+
+                            const drawGlyph = m > v.edgeSens;
+                            let strokeType = 'dot';
+                            if (drawGlyph && v.glyphSet !== 'blocks') {
+                                const a = ((angle[i] % 180) + 180) % 180;
+                                if (a < 22.5 || a >= 157.5) strokeType = 'h';
+                                else if (a < 67.5) strokeType = 'd1';
+                                else if (a < 112.5) strokeType = 'v';
+                                else strokeType = 'd2';
+                            }
+
+                            const thickness = Math.max(1, Math.floor(cell / 6));
+                            const midX = Math.floor((px + Math.min(w, px + cell)) / 2);
+                            const midY = Math.floor((py + Math.min(h, py + cell)) / 2);
+                            const cx0 = px,
+                                cy0 = py,
+                                cx1 = Math.min(w, px + cell),
+                                cy1 = Math.min(h, py + cell);
+
+                            if (v.glyphSet === 'blocks') {
+                                if (m > v.edgeSens * 0.6) {
+                                    for (let yy = cy0; yy < cy1; yy++)
+                                        for (let xx = cx0; xx < cx1; xx++) {
+                                            if ((xx + yy) % 2 === 0) setPx(xx, yy, r, g, b);
+                                        }
+                                }
+                            } else if (v.glyphSet === 'bubbly') {
+                                // Radius scales with brightness; always at least 1px
+                                const idx = Math.round((lum / 255) * 3); // 0–3
+                                const rad = Math.max(1, Math.floor(cell * 0.2 * (idx + 1) / 4 * 2.5));
+                                for (let yy = -rad; yy <= rad; yy++)
+                                    for (let xx = -rad; xx <= rad; xx++) {
+                                        if (xx * xx + yy * yy <= rad * rad) setPx(midX + xx, midY + yy, r,
+                                            g, b);
+                                    }
+                            } else {
+                                // Directional strokes
+                                if (drawGlyph) {
+                                    const half = Math.floor(cell / 2) - 1;
+                                    for (let t = -half; t <= half; t++) {
+                                        let xx = midX,
+                                            yy = midY;
+                                        if (strokeType === 'h') { xx = midX + t;
+                                            yy = midY; } else if (strokeType === 'v') { xx = midX;
+                                            yy = midY + t; } else if (strokeType === 'd1') { xx = midX +
+                                                t;
+                                            yy = midY + t; } else { xx = midX + t;
+                                            yy = midY - t; }
+                                        for (let tt = 0; tt < thickness; tt++) setPx(xx, yy + tt, r, g, b);
+                                    }
+                                }
+                            }
+                        }
+                        if (cy % 20 === 0) { setProgress(Math.round(cy / rows * 100));
+                            await yieldFrame(); }
+                    }
+
+                    for (let i = 0; i < data.length; i++) data[i] = out[i];
+                    ctx.putImageData(id, 0, 0);
+                    setProgress(100);
+                }
+            });
+
+            // ── 5. ORDERED DITHER ─────────────────────────────────────────────
+            MODULES.push({
+                id: 'bayer',
+                name: 'Ordered Dither',
+                desc: 'Bayer 8×8 ordered dithering with median-cut palette extraction. Crisp cross-hatch grid pattern.',
+                params: [
+                    { key: 'colors', label: 'Palette Size', type: 'range', min: 2, max: 32, step: 1,
+                        default: 6 },
+                    { key: 'spread', label: 'Dither Spread', type: 'range', min: 0, max: 120, step: 5,
+                        default: 50 },
+                    { key: 'pixelate', label: 'Pixelate', type: 'range', min: 1, max: 12, step: 1,
+                    default: 1 },
+                ],
+                async run(ctx, w, h, v) {
+                    const id = ctx.getImageData(0, 0, w, h);
+                    const data = id.data;
+                    setStatus('on', 'Extracting palette…');
+                    const palette = Core.extractPalette(data, w, h, Math.round(v.colors));
+                    await yieldFrame();
+                    setProgress(30);
+
+                    if (v.pixelate > 1) {
+                        const p = Math.round(v.pixelate);
+                        for (let y = 0; y < h; y += p) {
+                            for (let x = 0; x < w; x += p) {
+                                let r = 0,
+                                    g = 0,
+                                    b = 0,
+                                    n = 0;
+                                for (let yy = y; yy < Math.min(h, y + p); yy++)
+                                    for (let xx = x; xx < Math.min(w, x + p); xx++) {
+                                        const i = (yy * w + xx) * 4;
+                                        r += data[i];
+                                        g += data[i + 1];
+                                        b += data[i + 2];
+                                        n++;
+                                    }
+                                r /= n;
+                                g /= n;
+                                b /= n;
+                                for (let yy = y; yy < Math.min(h, y + p); yy++)
+                                    for (let xx = x; xx < Math.min(w, x + p); xx++) {
+                                        const i = (yy * w + xx) * 4;
+                                        data[i] = r;
+                                        data[i + 1] = g;
+                                        data[i + 2] = b;
+                                    }
+                            }
+                        }
+                    }
+                    setStatus('on', 'Applying ordered dither…');
+                    await yieldFrame();
+                    setProgress(60);
+                    Core.bayerDither(data, w, h, palette, v.spread);
+                    ctx.putImageData(id, 0, 0);
+                    setProgress(100);
+                }
+            });
+
+            // ── 6. FLOYD-STEINBERG ────────────────────────────────────────────
+            MODULES.push({
+                id: 'floyd',
+                name: 'Floyd-Steinberg',
+                desc: 'Error-diffusion dithering mapped to an auto-extracted palette. Smoother, more organic grain than ordered dither.',
+                params: [
+                    { key: 'colors', label: 'Palette Size', type: 'range', min: 2, max: 32, step: 1,
+                        default: 12 },
+                    { key: 'grayscale', label: 'Luminance Mode', type: 'checkbox', default: false },
+                    { key: 'pixelate', label: 'Pixelate', type: 'range', min: 1, max: 10, step: 1,
+                    default: 1 },
+                ],
+                async run(ctx, w, h, v) {
+                    const id = ctx.getImageData(0, 0, w, h);
+                    const data = id.data;
+
+                    if (v.pixelate > 1) {
+                        const p = Math.round(v.pixelate);
+                        for (let y = 0; y < h; y += p)
+                            for (let x = 0; x < w; x += p) {
+                                let r = 0,
+                                    g = 0,
+                                    b = 0,
+                                    n = 0;
+                                for (let yy = y; yy < Math.min(h, y + p); yy++)
+                                    for (let xx = x; xx < Math.min(w, x + p); xx++) {
+                                        const i = (yy * w + xx) * 4;
+                                        r += data[i];
+                                        g += data[i + 1];
+                                        b += data[i + 2];
+                                        n++;
+                                    }
+                                r /= n;
+                                g /= n;
+                                b /= n;
+                                for (let yy = y; yy < Math.min(h, y + p); yy++)
+                                    for (let xx = x; xx < Math.min(w, x + p); xx++) {
+                                        const i = (yy * w + xx) * 4;
+                                        data[i] = r;
+                                        data[i + 1] = g;
+                                        data[i + 2] = b;
+                                    }
+                            }
+                    }
+
+                    setStatus('on', 'Extracting palette…');
+                    let palette;
+                    if (v.grayscale) {
+                        const n = Math.round(v.colors);
+                        palette = Array.from({ length: n }, (_, i) => {
+                            const g = Math.round(i * 255 / (n - 1 || 1));
+                            return [g, g, g];
+                        });
+                    } else {
+                        palette = Core.extractPalette(data, w, h, Math.round(v.colors));
+                    }
+                    await yieldFrame();
+                    setProgress(30);
+
+                    setStatus('on', 'Diffusing error…');
+                    await yieldFrame();
+                    Core.floydSteinberg(data, w, h, palette);
+                    ctx.putImageData(id, 0, 0);
+                    setProgress(100);
+                }
+            });
+
+            // ── 7. CRT SIMULATOR ──────────────────────────────────────────────
+            MODULES.push({
+                id: 'crt',
+                name: 'CRT Simulator',
+                desc: 'Pixelate + quantize + scanlines + glowing bezel frame. Simulates an old television or arcade monitor.',
+                params: [
+                    { key: 'pixelSize', label: 'Pixel Size', type: 'range', min: 2, max: 14, step: 1,
+                        default: 6 },
+                    { key: 'colors', label: 'Color Count', type: 'range', min: 2, max: 32, step: 1,
+                        default: 6 },
+                    { key: 'scanGap', label: 'Scanline Gap', type: 'range', min: 1, max: 8, step: 1,
+                        default: 3 },
+                    { key: 'frameSize', label: 'Bezel Size', type: 'range', min: 0, max: 60, step: 2,
+                        default: 20 },
+                ],
+                async run(ctx, w, h, v) {
+                    const id = ctx.getImageData(0, 0, w, h);
+                    const data = id.data;
+                    const p = Math.round(v.pixelSize);
+
+                    setStatus('on', 'Pixel-crushing…');
+                    let avgR = 0,
+                        avgG = 0,
+                        avgB = 0;
+                    for (let i = 0; i < data.length; i += 4) { avgR += data[i];
+                        avgG += data[i + 1];
+                        avgB += data[i + 2]; }
+                    const pc = data.length / 4;
+                    avgR /= pc;
+                    avgG /= pc;
+                    avgB /= pc;
+
+                    for (let y = 0; y < h; y += p)
+                        for (let x = 0; x < w; x += p) {
+                            let r = 0,
+                                g = 0,
+                                b = 0,
+                                n = 0;
+                            for (let yy = y; yy < Math.min(h, y + p); yy++)
+                                for (let xx = x; xx < Math.min(w, x + p); xx++) {
+                                    const i = (yy * w + xx) * 4;
+                                    r += data[i];
+                                    g += data[i + 1];
+                                    b += data[i + 2];
+                                    n++;
+                                }
+                            r /= n;
+                            g /= n;
+                            b /= n;
+                            for (let yy = y; yy < Math.min(h, y + p); yy++)
+                                for (let xx = x; xx < Math.min(w, x + p); xx++) {
+                                    const i = (yy * w + xx) * 4;
+                                    data[i] = r;
+                                    data[i + 1] = g;
+                                    data[i + 2] = b;
+                                }
+                        }
+                    await yieldFrame();
+                    setProgress(35);
+
+                    setStatus('on', 'Quantizing palette…');
+                    const palette = Core.extractPalette(data, w, h, Math.round(v.colors));
+                    for (let i = 0; i < data.length; i += 4) {
+                        const nc = Core.nearestColor(data[i], data[i + 1], data[i + 2], palette);
+                        data[i] = nc[0];
+                        data[i + 1] = nc[1];
+                        data[i + 2] = nc[2];
+                    }
+                    await yieldFrame();
+                    setProgress(65);
+
+                    setStatus('on', 'Scanlines + bezel…');
+                    const gap = Math.round(v.scanGap);
+                    for (let y = 0; y < h; y += gap)
+                        for (let x = 0; x < w; x++) { const i = (y * w + x) * 4;
+                            data[i] = 0;
+                            data[i + 1] = 0;
+                            data[i + 2] = 0; }
+
+                    const frame = Math.round(v.frameSize);
+                    if (frame > 0) {
+                        const cw = w + frame * 2,
+                            ch = h + frame * 2;
+                        const glow = [Math.min(255, avgR * 1.3), Math.min(255, avgG * 1.3), Math.min(255,
+                            avgB * 1.3)];
+                        const outCanvas = document.createElement('canvas');
+                        outCanvas.width = cw;
+                        outCanvas.height = ch;
+                        const octx = outCanvas.getContext('2d');
+                        octx.fillStyle = `rgb(${glow[0]},${glow[1]},${glow[2]})`;
+                        octx.fillRect(0, 0, cw, ch);
+                        octx.fillStyle = '#000';
+                        const pad = Math.round(frame * 0.5);
+                        octx.fillRect(frame - pad, frame - pad, cw - 2 * (frame - pad), ch - 2 * (frame -
+                            pad));
+                        const tmp = document.createElement('canvas');
+                        tmp.width = w;
+                        tmp.height = h;
+                        tmp.getContext('2d').putImageData(id, 0, 0);
+                        octx.drawImage(tmp, frame, frame);
+                        // Resize main canvas to include bezel; working dims updated
+                        mainCvs.width = cw;
+                        mainCvs.height = ch;
+                        workingWidth = cw;
+                        workingHeight = ch;
+                        ctx.drawImage(outCanvas, 0, 0);
+                        setProgress(100);
+                        return;
+                    }
+                    ctx.putImageData(id, 0, 0);
+                    setProgress(100);
+                }
+            });
+
+            // ── 8. GLITCH COLLAPSE ────────────────────────────────────────────
+            MODULES.push({
+                id: 'glitch',
+                name: 'Glitch Collapse',
+                desc: 'Pixelate + quantize, random slab tearing, scanlines, and fake system-error text overlays.',
+                params: [
+                    { key: 'pixelSize', label: 'Pixel Size', type: 'range', min: 1, max: 8, step: 1,
+                        default: 2 },
+                    { key: 'colors', label: 'Color Count', type: 'range', min: 2, max: 32, step: 1,
+                        default: 16 },
+                    { key: 'slabCount', label: 'Glitch Slabs', type: 'range', min: 0, max: 200, step: 5,
+                        default: 80 },
+                    { key: 'textDensity', label: 'Error Text', type: 'range', min: 0, max: 200, step: 5,
+                        default: 40 },
+                    { key: 'scanGap', label: 'Scanline Gap', type: 'range', min: 1, max: 8, step: 1,
+                        default: 3 },
+                ],
+                async run(ctx, w, h, v) {
+                    const id = ctx.getImageData(0, 0, w, h);
+                    const data = id.data;
+                    const p = Math.round(v.pixelSize);
+                    const rng = mulberry32((Date.now() & 0xffffffff) >>> 0);
+
+                    setStatus('on', 'Pixel-crushing…');
+                    if (p > 1) {
+                        for (let y = 0; y < h; y += p)
+                            for (let x = 0; x < w; x += p) {
+                                let r = 0,
+                                    g = 0,
+                                    b = 0,
+                                    n = 0;
+                                for (let yy = y; yy < Math.min(h, y + p); yy++)
+                                    for (let xx = x; xx < Math.min(w, x + p); xx++) {
+                                        const i = (yy * w + xx) * 4;
+                                        r += data[i];
+                                        g += data[i + 1];
+                                        b += data[i + 2];
+                                        n++;
+                                    }
+                                r /= n;
+                                g /= n;
+                                b /= n;
+                                for (let yy = y; yy < Math.min(h, y + p); yy++)
+                                    for (let xx = x; xx < Math.min(w, x + p); xx++) {
+                                        const i = (yy * w + xx) * 4;
+                                        data[i] = r;
+                                        data[i + 1] = g;
+                                        data[i + 2] = b;
+                                    }
+                            }
+                    }
+                    await yieldFrame();
+                    setProgress(30);
+
+                    setStatus('on', 'Quantizing…');
+                    const palette = Core.extractPalette(data, w, h, Math.round(v.colors));
+                    for (let i = 0; i < data.length; i += 4) {
+                        const nc = Core.nearestColor(data[i], data[i + 1], data[i + 2], palette);
+                        data[i] = nc[0];
+                        data[i + 1] = nc[1];
+                        data[i + 2] = nc[2];
+                    }
+                    ctx.putImageData(id, 0, 0);
+                    await yieldFrame();
+                    setProgress(55);
+
+                    setStatus('on', 'Tearing slabs…');
+                    const glitchPalette = palette.concat([
+                        [0, 0, 0],
+                        [255, 255, 255],
+                        [255, 0, 255],
+                        [0, 255, 255]
+                    ]);
+                    const pick = () => glitchPalette[Math.floor(rng() * glitchPalette.length)];
+                    for (let s = 0; s < Math.round(v.slabCount); s++) {
+                        const c = pick();
+                        ctx.fillStyle = `rgb(${c[0]},${c[1]},${c[2]})`;
+                        if (rng() > 0.5) {
+                            const y = Math.floor(rng() * h);
+                            ctx.fillRect(0, y, w, 1 + Math.floor(rng() * 5));
+                        } else {
+                            const x = Math.floor(rng() * w);
+                            ctx.fillRect(x, 0, 1 + Math.floor(rng() * 3), h);
+                        }
+                        if (s % 30 === 0) await yieldFrame();
+                    }
+                    setProgress(75);
+
+                    setStatus('on', 'Scanlines + glyphs…');
+                    const gap = Math.round(v.scanGap);
+                    ctx.fillStyle = 'rgba(0,0,0,1)';
+                    for (let y = 0; y < h; y += gap) ctx.fillRect(0, y, w, 1);
+                    for (let x = 0; x < w; x += gap * 2) ctx.fillRect(x, 0, 1, h);
+
+                    const phrases = ['SYSTEM_REBOOT_FAIL', 'TOKEN_ID_UNDEFINED', 'FATAL_ERROR',
+                        '0x000000_COLLAPSE', 'RECONSTRUCTING_REALITY'
+                    ];
+                    ctx.font = `${Math.max(8, Math.round(w / 60))}px monospace`;
+                    const density = Math.round(v.textDensity);
+                    for (let t = 0; t < density; t++) {
+                        const c = pick();
+                        ctx.fillStyle = `rgb(${c[0]},${c[1]},${c[2]})`;
+                        const hexCode = Math.floor(rng() * 0xffffffff).toString(16).toUpperCase();
+                        const phrase = phrases[Math.floor(rng() * phrases.length)];
+                        const tx = rng() * Math.max(1, w - 160),
+                            ty = 10 + rng() * Math.max(1, h - 20);
+                        ctx.fillText(`${phrase} // ${hexCode}`, tx, ty);
+                        if (t % 20 === 0) await yieldFrame();
+                    }
+                    setProgress(100);
+                }
+            });
+
+            // ── 9. CASCADE SORT ───────────────────────────────────────────────
+            MODULES.push({
+                id: 'cascade',
+                name: 'Cascade Sort',
+                desc: 'Column-wise pixel sorting between edge-detected ledges, with overhang shadow and highlight faking.',
+                params: [
+                    { key: 'edgeThresh', label: 'Edge Threshold', type: 'range', min: 5, max: 100,
+                        step: 1, default: 32 },
+                    { key: 'streakMax', label: 'Max Streak', type: 'range', min: 20, max: 500, step: 10,
+                        default: 200 },
+                    { key: 'shadowLen', label: 'Shadow Length', type: 'range', min: 0, max: 60, step: 2,
+                        default: 20 },
+                    { key: 'reverse', label: 'Reverse Gravity', type: 'checkbox', default: false },
+                ],
+                async run(ctx, w, h, v) {
+                    const id = ctx.getImageData(0, 0, w, h);
+                    const data = id.data;
+                    const gray = Core.toGray(data, w, h);
+                    const { mag } = Core.sobel(gray, w, h);
+                    const src = new Uint8ClampedArray(data);
+                    setStatus('on', 'Sorting cascades…');
+
+                    for (let x = 0; x < w; x++) {
+                        let y = 0;
+                        while (y < h) {
+                            let yEnd = y + 1;
+                            while (yEnd < h && mag[yEnd * w + x] < v.edgeThresh && (yEnd - y) < v
+                                .streakMax) yEnd++;
+                            const segment = [];
+                            for (let sy = y; sy < yEnd; sy++) {
+                                const i = (sy * w + x) * 4;
+                                segment.push([src[i], src[i + 1], src[i + 2]]);
+                            }
+                            segment.sort((a, b) => {
+                                const la = 0.299 * a[0] + 0.587 * a[1] + 0.114 * a[2];
+                                const lb = 0.299 * b[0] + 0.587 * b[1] + 0.114 * b[2];
+                                return v.reverse ? la - lb : lb - la;
+                            });
+                            for (let idx = 0, sy = y; sy < yEnd; sy++, idx++) {
+                                let [r, g, b] = segment[idx];
+                                if (y > 0 && idx < v.shadowLen) {
+                                    const shadeFactor = idx / v.shadowLen;
+                                    const shade = 0.2 + 0.8 * Math.pow(shadeFactor, 0.5);
+                                    r *= shade;
+                                    g *= shade;
+                                    b *= shade;
+                                }
+                                if (sy === yEnd - 1 && yEnd < h) {
+                                    r = Math.min(255, r + 40);
+                                    g = Math.min(255, g + 40);
+                                    b = Math.min(255, b + 40);
+                                }
+                                const di = (sy * w + x) * 4;
+                                data[di] = Clamp(Math.round(r), 0, 255);
+                                data[di + 1] = Clamp(Math.round(g), 0, 255);
+                                data[di + 2] = Clamp(Math.round(b), 0, 255);
+                                data[di + 3] = 255;
+                            }
+                            y = yEnd;
+                        }
+                        if (x % 30 === 0) { setProgress(Math.round(x / w * 100));
+                            await yieldFrame(); }
+                    }
+                    ctx.putImageData(id, 0, 0);
+                    setProgress(100);
+                }
+            });
+
+            // ── 10. CONSTELLATION WEAVE ───────────────────────────────────────
+            MODULES.push({
+                id: 'constellation',
+                name: 'Constellation Weave',
+                desc: 'Extracts edge-strength node coordinates, then weaves faint threads between nearby nodes — a Delaunay-ish vector reconstruction.',
+                params: [
+                    { key: 'sampleRate', label: 'Sample Rate', type: 'range', min: 4, max: 24, step: 1,
+                        default: 10 },
+                    { key: 'edgeThresh', label: 'Node Threshold', type: 'range', min: 10, max: 100,
+                        step: 5, default: 40 },
+                    { key: 'maxDist', label: 'Max Connection', type: 'range', min: 20, max: 200, step: 5,
+                        default: 80 },
+                    { key: 'lineAlpha', label: 'Line Strength', type: 'range', min: 5, max: 100, step: 5,
+                        default: 40 },
+                    { key: 'onWhite', label: 'White Background', type: 'checkbox', default: true },
+                ],
+                async run(ctx, w, h, v) {
+                    const id = ctx.getImageData(0, 0, w, h);
+                    const data = id.data;
+                    const gray = Core.toGray(data, w, h);
+                    const { mag } = Core.sobel(gray, w, h);
+
+                    setStatus('on', 'Extracting nodes…');
+                    const nodes = [];
+                    const step = Math.round(v.sampleRate);
+                    for (let y = 0; y < h; y += step) {
+                        for (let x = 0; x < w; x += step) {
+                            if (mag[y * w + x] > v.edgeThresh) nodes.push([x, y]);
+                        }
+                    }
+                    await yieldFrame();
+                    setProgress(25);
+
+                    const bg = v.onWhite ? 255 : 0;
+                    for (let i = 0; i < data.length; i += 4) { data[i] = bg;
+                        data[i + 1] = bg;
+                        data[i + 2] = bg;
+                        data[i + 3] = 255; }
+                    ctx.putImageData(id, 0, 0);
+
+                    setStatus('on', `Weaving ${nodes.length} nodes…`);
+                    const lineColor = v.onWhite ? '40,40,50' : '200,200,220';
+                    const maxD = v.maxDist;
+                    const n = nodes.length;
+                    const capped = n > 1200;
+                    for (let i = 0; i < n; i++) {
+                        const [x1, y1] = nodes[i];
+                        const jEndLimit = capped ? Math.min(n, i + 400) : n;
+                        for (let j = i + 1; j < jEndLimit; j++) {
+                            const [x2, y2] = nodes[j];
+                            const dist = Math.hypot(x2 - x1, y2 - y1);
+                            if (dist < maxD) {
+                                const alpha = (1 - dist / maxD) * (v.lineAlpha / 255);
+                                ctx.strokeStyle = `rgba(${lineColor},${alpha.toFixed(3)})`;
+                                ctx.lineWidth = 1;
+                                ctx.beginPath();
+                                ctx.moveTo(x1, y1);
+                                ctx.lineTo(x2, y2);
+                                ctx.stroke();
+                            }
+                        }
+                        if (i % 60 === 0) { setProgress(25 + Math.round(i / n * 65));
+                            await yieldFrame(); }
+                    }
+                    ctx.fillStyle = `rgba(${lineColor},0.4)`;
+                    for (const [x, y] of nodes) ctx.fillRect(x - 1, y - 1, 2, 2);
+                    setProgress(100);
+                }
+            });
+
+            // ═══════════════════════════════════════════════════════════════════
+            // CONTROLLER
+            // ═══════════════════════════════════════════════════════════════════
+
+            /** Build module tab buttons */
+            function buildTabs() {
+                tabsEl.innerHTML = '';
+                MODULES.forEach((m, i) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'mtab';
+                    btn.innerHTML =
+                        `<span class="mnum">${String(i + 1).padStart(2, '0')}</span>${m.name}`;
+                    btn.addEventListener('click', () => selectModule(m.id));
+                    btn.dataset.id = m.id;
+                    tabsEl.appendChild(btn);
+                });
+            }
+
+            /** Select a module by ID, rebuild param UI, schedule render */
+            function selectModule(id) {
+                activeModule = MODULES.find(m => m.id === id);
+                [...tabsEl.children].forEach(el => el.classList.toggle('active', el.dataset.id ===
+                id));
+                descEl.innerHTML = `<div class="effect-desc">${activeModule.desc}</div>`;
+                currentVals = {};
+                activeModule.params.forEach(p => currentVals[p.key] = p.default);
+                buildParamUI();
+                if (srcCanvas) scheduleRender();
+            }
+
+            /** Build parameter controls for the active module */
+            function buildParamUI() {
+                paramsEl.innerHTML = '';
+                const wrap = document.createElement('div');
+                wrap.className = 'params';
+                activeModule.params.forEach(p => {
+                    const row = document.createElement('div');
+                    row.className = 'param';
+                    if (p.type === 'range') {
+                        const stepInt = Number.isInteger(p.step);
+                        const displayVal = stepInt ? p.default : p.default.toFixed(2);
+                        row.innerHTML = `
+                  <div class="param-row">
+                    <span class="param-name">${p.label}</span>
+                    <span class="param-val" data-val="${p.key}">${displayVal}</span>
+                  </div>
+                  <input type="range" min="${p.min}" max="${p.max}" step="${p.step}" value="${p.default}" data-key="${p.key}">
+                `;
+                        const input = row.querySelector('input');
+                        const valEl = row.querySelector('.param-val');
+                        input.addEventListener('input', () => {
+                            const num = parseFloat(input.value);
+                            currentVals[p.key] = num;
+                            valEl.textContent = stepInt ? Math.round(num) : num.toFixed(2);
+                            scheduleRender();
+                        });
+                    } else if (p.type === 'select') {
+                        const opts = p.options.map(o =>
+                            `<option value="${o}" ${o === p.default ? 'selected' : ''}>${o}</option>`
+                        ).join('');
+                        row.innerHTML = `
+                  <div class="param-name">${p.label}</div>
+                  <div class="select-wrap">
+                    <select data-key="${p.key}">${opts}</select>
+                    <span class="select-arrow">▾</span>
+                  </div>
+                `;
+                        row.querySelector('select').addEventListener('change', (e) => {
+                            currentVals[p.key] = e.target.value;
+                            scheduleRender();
+                        });
+                    } else if (p.type === 'checkbox') {
+                        row.innerHTML = `
+                  <label class="checkrow">
+                    <input type="checkbox" ${p.default ? 'checked' : ''} data-key="${p.key}">
+                    <span>${p.label}</span>
+                  </label>
+                `;
+                        row.querySelector('input').addEventListener('change', (e) => {
+                            currentVals[p.key] = e.target.checked;
+                            scheduleRender();
+                        });
+                    }
+                    wrap.appendChild(row);
+                });
+                paramsEl.appendChild(wrap);
+            }
+
+            /** Debounced render trigger */
+            function scheduleRender() {
+                if (!srcCanvas || !activeModule) return;
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(runActiveModule, 120);
+            }
+
+            /** Downscale source to maxDim for processing */
+            function downscaleForProcessing(source, maxDim) {
+                const w = source.width,
+                    h = source.height;
+                const longest = Math.max(w, h);
+                const scale = longest > maxDim ? maxDim / longest : 1;
+                const cw = Math.max(1, Math.round(w * scale));
+                const ch = Math.max(1, Math.round(h * scale));
+                const c = document.createElement('canvas');
+                c.width = cw;
+                c.height = ch;
+                c.getContext('2d').drawImage(source, 0, 0, cw, ch);
+                return { canvas: c, scale, width: cw, height: ch };
+            }
+
+            /** Run the active module on the current source */
+            async function runActiveModule() {
+                if (running || !srcCanvas || !activeModule) return;
+                running = true;
+                btnPng.disabled = true;
+                btnReset.disabled = true;
+
+                // Reset working canvas to a fresh downscaled copy each run
+                const work = downscaleForProcessing(srcCanvas, MAX_DIM);
+                mainCvs.width = work.width;
+                mainCvs.height = work.height;
+                workingWidth = work.width;
+                workingHeight = work.height;
+                ctx.drawImage(work.canvas, 0, 0);
+
+                try {
+                    await activeModule.run(ctx, workingWidth, workingHeight, currentVals);
+                    // Update working dims in case module changed canvas size (e.g. CRT bezel)
+                    workingWidth = mainCvs.width;
+                    workingHeight = mainCvs.height;
+                    setStatus('ok', `${activeModule.name} — ready`);
+                } catch (err) {
+                    setStatus('', 'Error — see console');
+                    console.error('Module error:', err);
+                }
+                setProgress(0);
+                running = false;
+                btnPng.disabled = false;
+                btnReset.disabled = false;
+            }
+
+            // ── FILE LOADING ──────────────────────────────────────────────────
+            function loadImageFile(file) {
+                if (!file || !file.type.startsWith('image/')) return;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        srcImg = img;
+                        srcCanvas = document.createElement('canvas');
+                        srcCanvas.width = img.naturalWidth;
+                        srcCanvas.height = img.naturalHeight;
+                        srcCanvas.getContext('2d').drawImage(img, 0, 0);
+
+                        empty.style.display = 'none';
+                        mainCvs.classList.add('show');
+                        btnReset.disabled = false;
+                        setStatus('ok', `Loaded ${img.naturalWidth}×${img.naturalHeight}`);
+
+                        if (!activeModule) selectModule(MODULES[0].id);
+                        else scheduleRender();
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+
+            // Drop zone events
+            dropZone.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files[0]) loadImageFile(e.target.files[0]);
+            });
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('over');
+            });
+            dropZone.addEventListener('dragleave', () => dropZone.classList.remove('over'));
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('over');
+                if (e.dataTransfer.files[0]) loadImageFile(e.dataTransfer.files[0]);
+            });
+
+            // Also allow dropping anywhere on the viewport
+            viewport.addEventListener('dragover', (e) => e.preventDefault());
+            viewport.addEventListener('drop', (e) => {
+                e.preventDefault();
+                if (e.dataTransfer.files[0]) loadImageFile(e.dataTransfer.files[0]);
+            });
+
+            // ── EXPORT ────────────────────────────────────────────────────────
+            btnPng.addEventListener('click', () => {
+                if (!srcCanvas) return;
+                // Export at current working resolution (preserves bezel etc.)
+                const outCanvas = document.createElement('canvas');
+                outCanvas.width = workingWidth;
+                outCanvas.height = workingHeight;
+                const octx = outCanvas.getContext('2d');
+                octx.imageSmoothingEnabled = false;
+                octx.drawImage(mainCvs, 0, 0);
+
+                outCanvas.toBlob((blob) => {
+                    if (!blob) return;
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `PYFORGE_${activeModule ? activeModule.id : 'export'}_${Date.now()}.png`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                }, 'image/png');
+            });
+
+            // ── RESET ─────────────────────────────────────────────────────────
+            btnReset.addEventListener('click', () => {
+                if (!srcCanvas || !activeModule) return;
+                currentVals = {};
+                activeModule.params.forEach(p => currentVals[p.key] = p.default);
+                buildParamUI();
+                scheduleRender();
+            });
+
+            // ── INIT ──────────────────────────────────────────────────────────
+            buildTabs();
+            selectModule(MODULES[0].id);
+            setStatus('', 'Drop an image to begin');
+            workingWidth = mainCvs.width;
+            workingHeight = mainCvs.height;
+
+        })();
+    </script>
 </body>
 </html>
