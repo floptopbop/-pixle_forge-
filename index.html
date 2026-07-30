@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>GLYPH_FORGE</title>
+<title>PIXEL_FORGE</title>
 <style>
 @font-face {
   font-family: 'IBM VGA';
@@ -12,8 +12,8 @@
   font-style: mono;
 }
 :root{
-  --bg:#2D2C2E; --layer:#110F10; --layer2:#262626; --line:#c0c0c8;
-  --txt:#f4f4f4; --dim:#605D5E; --venom:#00e5ff; --amber:#ffb000;
+  --bg:#2D2C2E; --layer:#605D5E; --layer2:#b99e78; --line:#241811;
+  --txt:#F7E3C3; --dim:#F7E3C3; --venom:#00e5ff; --amber:#ffb000;
   --mono:"IBM VGA",ui-monospace,"SF Mono",Menlo,monospace;
 }
 *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
@@ -80,36 +80,50 @@ input[type=color]::-moz-color-swatch{border:none; border-radius:0;}
 
 #outimg{display:none; width:100%; margin-top:10px; border:1px solid var(--line);
   image-rendering:pixelated; -webkit-touch-callout:default;}
-#outtxt{display:none; background:#050505; color:#e8e8e8; border:1px solid var(--line);
-
-  margin-top:10px; padding:8px; font-size:10px; line-height:1.05; overflow-x:auto; white-space:pre;}
 #outbtns{display:none; margin-top:10px;}
 a.btn{text-decoration:none; display:inline-block;}
 .note{font-size:11px; color:var(--dim); line-height:1.5; margin-top:8px;}
 .note code{color:var(--venom);}
-html, body {
-  font-family: "IBM VGA", monospace;
-}
 
-button, input, select, textarea {
-  font-family: inherit;
-}
+#chain{font-size:11px; color:var(--dim); line-height:1.6; word-break:break-word;}
+#chain .step{color:var(--venom);}
+.ghostPanel{margin-top:12px; padding-top:12px; border-top:1px solid var(--line);}
+.ghostPanel label{display:block; font-size:11px; color:var(--dim); margin-bottom:8px;}
+.ghostPanel output{color:var(--venom); font-weight:bold;}
+#ghostList{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;}
+.ghostChip{position:relative; width:64px; height:64px; border:1px solid var(--line); overflow:hidden;}
+.ghostChip img{width:100%; height:100%; object-fit:cover; display:block;}
+.ghostRm{position:absolute; top:2px; right:2px; width:18px; height:18px; line-height:1;
+  padding:0; border:none; background:rgba(0,0,0,.7); color:#fff; cursor:pointer; font-size:11px;}
+#sfPane{position:relative; border:1px solid var(--line); background:#111; overflow:hidden;}
+#sfCanvas{display:none; width:100%; height:auto; touch-action:none; cursor:crosshair;}
+#sfEmpty{padding:24px 12px; font-size:11px; color:var(--dim); text-align:center; line-height:1.5;}
+#sfSwatches{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; min-height:32px; align-items:center;}
+.sfNone{font-size:11px; color:var(--dim);}
+.sfChip{position:relative; width:30px; height:30px; border:1px solid var(--line);}
+.sfChip .x{position:absolute; top:-7px; right:-7px; width:17px; height:17px; line-height:15px;
+  text-align:center; font-size:10px; background:var(--bg); color:var(--txt); border:1px solid var(--line); cursor:pointer;}
+#sfLive{width:40px; height:40px; border:1px solid var(--venom); background:#000; flex:0 0 auto;}
+html, body { font-family: "IBM VGA", monospace; }
+button, input, select, textarea { font-family: inherit; }
 </style>
 </head>
+
 <body>
 
 <header>
-  <h1>GLYPH_FORGE<span class="cur">▮</span></h1>
-  <div class="sub">SOVEREIGN ASCII SUITE · 6 ENGINES · SINGLE FILE</div>
+  <h1>PIXEL_FORGE<span class="cur">▮</span></h1>
+  <div class="sub">SOVEREIGN IMAGE SUITE · 7 GROUPS · 31 ENGINES · SINGLE FILE</div>
 </header>
 
 <div id="tabs" role="tablist">
-  <button class="tab" data-e="SKELETON" aria-selected="true">SKELETON</button>
-  <button class="tab" data-e="DUST" aria-selected="false">DUST</button>
-  <button class="tab" data-e="SOVEREIGN" aria-selected="false">SOVEREIGN</button>
-  <button class="tab" data-e="MATRIX" aria-selected="false">MATRIX</button>
-  <button class="tab" data-e="ATLAS" aria-selected="false">ATLAS</button>
-  <button class="tab" data-e="TEXT" aria-selected="false">TEXTMODE</button>
+  <button class="tab" data-e="WARP" aria-selected="true">WARP</button>
+  <button class="tab" data-e="COLOR" aria-selected="false">COLOR</button>
+  <button class="tab" data-e="STRUCT" aria-selected="false">STRUCTURE</button>
+  <button class="tab" data-e="QUAD" aria-selected="false">QUAD</button>
+  <button class="tab" data-e="LIGHT" aria-selected="false">LIGHT</button>
+  <button class="tab" data-e="GHOST" aria-selected="false">GHOST</button>
+  <button class="tab" data-e="OVER" aria-selected="false">OVERLAY</button>
 </div>
 
 <section class="card">
@@ -119,161 +133,693 @@ button, input, select, textarea {
     <input type="file" id="pickLib" accept="image/*">
     <label class="btn" for="pickCam">REAR CAM</label>
     <input type="file" id="pickCam" accept="image/*" capture="environment">
+    <button class="btn small" id="feedback" disabled>FEED OUTPUT BACK IN</button>
   </div>
   <img id="thumb" alt="">
-  <div class="ctl" data-eng="SKELETON DUST SOVEREIGN MATRIX ATLAS">
-    <label>SRC RES CAP <output id="o_srcres">1400</output></label>
-    <input type="range" id="srcres" data-out="o_srcres" min="600" max="6000" step="100" value="1400">
+  <div class="ctl">
+    <label>WORK RES CAP <output id="o_srcres">1400</output></label>
+    <input type="range" id="srcres" data-out="o_srcres" min="400" max="4000" step="100" value="1400">
+  </div>
+  <div id="chain">CHAIN: <span class="step">—</span></div>
+  <div class="ghostPanel" data-eng="QUAD GHOST" data-sub="TRIAD BURN LEGION">
+    <label>EXTRA IMAGES <output id="ghostCount">0</output> loaded — host is the main image above</label>
+    <div class="btnrow">
+      <label class="btn small" for="pickGhost">ADD IMAGE</label>
+      <input type="file" id="pickGhost" accept="image/*" multiple>
+      <button class="btn small" id="ghostClear">CLEAR EXTRAS</button>
+    </div>
+    <div id="ghostList"></div>
+    <div class="note">TRIAD SWAP needs 2 extras (3 total). GHOST BURN needs 1. LEGION uses as many as you add (up to 3).</div>
   </div>
 </section>
 
 <section class="card">
   <h2>CONTROLS</h2>
 
-  <!-- shared render px -->
-  <div class="ctl" data-eng="SKELETON DUST MATRIX ATLAS TEXT">
-    <label>GLYPH PX <output id="o_fpx">24</output></label>
-    <input type="range" id="fpx" data-out="o_fpx" min="8" max="74" step="1" value="24">
-  </div>
-
-  <!-- SKELETON -->
-  <div class="ctl" data-eng="SKELETON DUST MATRIX ATLAS">
-    <label>COLUMNS <output id="o_cols">120</output></label>
-    <input type="range" id="cols" data-out="o_cols" min="40" max="360" step="4" value="120">
-  </div>
-  <div class="ctl" data-eng="SKELETON">
-    <label>NOISE GATE <output id="o_gateSkel">8</output></label>
-    <input type="range" id="gateSkel" data-out="o_gateSkel" min="0" max="240" step="1" value="8">
-  </div>
-  <div class="pair" data-eng="SKELETON">
-    <div class="ctl">
-      <label>STROKE WEIGHT <output id="o_weight">1.5</output></label>
-      <input type="range" id="weight" data-out="o_weight" min="0.5" max="8" step="0.5" value="1.5">
-    </div>
-    <div class="ctl">
-      <label>PRUNE <output id="o_prune">1</output></label>
-      <input type="range" id="prune" data-out="o_prune" min="0" max="5" step="1" value="1">
-    </div>
-  </div>
-  <div class="note" data-eng="SKELETON">Strokes span the full cell so neighbours connect.
-    PRUNE drops specks with fewer than N stroke-neighbours — raise it for fewer, longer lines.</div>
-  <div class="btnrow" data-eng="SKELETON" style="margin-top:10px">
-    <button class="btn small" id="preS9">S9 VENOM PRESET</button>
-  </div>
-
-  <!-- DUST -->
-  <div class="ctl" data-eng="DUST">
-    <label>EDGE THRESH <output id="o_edgeThresh">45</output></label>
-    <input type="range" id="edgeThresh" data-out="o_edgeThresh" min="5" max="100" step="1" value="45">
-  </div>
-  <div class="pair" data-eng="DUST ATLAS">
-    <div class="ctl">
-      <label>GAMMA <output id="o_gamma">0.20</output></label>
-      <input type="range" id="gamma" data-out="o_gamma" min="0.05" max="1.50" step="0.05" value="0.20">
-    </div>
-    <div class="ctl">
-      <label>AUTOCONTRAST <output id="o_autoc">2</output></label>
-      <input type="range" id="autoc" data-out="o_autoc" min="0" max="10" step="1" value="2">
-    </div>
-  </div>
-  <div class="ctl" data-eng="DUST">
-    <label>GLITCH % <output id="o_glitch">3.5</output></label>
-    <input type="range" id="glitch" data-out="o_glitch" min="0" max="15" step="0.5" value="3.5">
-  </div>
-  <div class="ctl" data-eng="DUST">
-    <label>COLOR MODE</label>
-    <select id="colorMode">
-      <option value="MONO">MONO (FG on BG)</option>
-      <option value="TRUE">TRUECOLOR (per glyph)</option>
+  <!-- ══ WARP ══ -->
+  <div class="ctl" data-eng="WARP">
+    <label>ENGINE</label>
+    <select id="warpEng">
+      <option value="CHAOS">CHAOS LOOP — polarity flip + drift</option>
+      <option value="RECALL">TOTAL RECALL — full-stack flip</option>
+      <option value="SINGULARITY">SINGULARITY — hyper-shell + bitcrush</option>
+      <option value="UNRAVEL">UNRAVEL — inverse shell map</option>
+      <option value="LIQUID">LIQUID — sine wobble soup</option>
+      <option value="LATTICE">CRYSTAL LATTICE — luminance shear</option>
+      <option value="VORTEX">PHI VORTEX — golden spiral screen</option>
     </select>
   </div>
-  <div class="ctl" data-eng="DUST">
-    <label>DUST RAMP (bright→dark)</label>
-    <input type="text" id="rampDust" value="·°ºoO0#@" autocomplete="off">
-  </div>
-  <div class="pair" data-eng="DUST">
+  <div class="pair" data-eng="WARP" data-sub="VORTEX">
     <div class="ctl">
-      <label>GLITCH MAP</label>
-      <input type="text" id="rampGlitch" value="λ[]⊦Σ" autocomplete="off">
+      <label>RECURSIONS <output id="o_pvRec">20</output></label>
+      <input type="range" id="pvRec" data-out="o_pvRec" min="2" max="60" step="1" value="20">
     </div>
     <div class="ctl">
-      <label>EDGES H,/,|,\</label>
-      <input type="text" id="rampEdge" value="-/|\" autocomplete="off">
+      <label>SPIN CODE <output id="o_pvCode">45</output></label>
+      <input type="range" id="pvCode" data-out="o_pvCode" min="0" max="360" step="1" value="45">
     </div>
   </div>
-  <div class="btnrow" data-eng="DUST" style="margin-top:10px">
-    <button class="btn small" id="preTerm">TERMINAL</button>
-    <button class="btn small" id="preBlue">BLUEPRINT</button>
+  <div class="pair" data-eng="WARP" data-sub="VORTEX">
+    <div class="ctl">
+      <label>TIGHTEN <output id="o_pvTight">1.00</output></label>
+      <input type="range" id="pvTight" data-out="o_pvTight" min="0.3" max="2" step="0.05" value="1">
+    </div>
+    <div class="ctl">
+      <label>BLEND</label>
+      <select id="pvBlend">
+        <option value="screen">SCREEN — bright stack</option>
+        <option value="normal">NORMAL — 50% dissolve</option>
+      </select>
+    </div>
+  </div>
+  <div class="ctl" data-eng="WARP" data-sub="CHAOS RECALL SINGULARITY UNRAVEL">
+    <label>ITERATIONS <output id="o_iters">12</output></label>
+    <input type="range" id="iters" data-out="o_iters" min="1" max="80" step="1" value="12">
+  </div>
+  <div class="pair" data-eng="WARP" data-sub="CHAOS RECALL">
+    <div class="ctl">
+      <label>LENS <output id="o_lens">0.80</output></label>
+      <input type="range" id="lens" data-out="o_lens" min="-9" max="9" step="0.1" value="0.8">
+    </div>
+    <div class="ctl">
+      <label>WOBBLE <output id="o_wobble">0.15</output></label>
+      <input type="range" id="wobble" data-out="o_wobble" min="0" max="4" step="0.05" value="0.15">
+    </div>
+  </div>
+  <div class="pair" data-eng="WARP" data-sub="CHAOS RECALL">
+    <div class="ctl">
+      <label>AC HUM <output id="o_hum">20</output></label>
+      <input type="range" id="hum" data-out="o_hum" min="0" max="60" step="1" value="20">
+    </div>
+    <div class="ctl">
+      <label>CHAOS DRIFT <output id="o_drift">0.02</output></label>
+      <input type="range" id="drift" data-out="o_drift" min="0" max="0.4" step="0.01" value="0.02">
+    </div>
+  </div>
+  <div class="pair" data-eng="WARP" data-sub="SINGULARITY UNRAVEL">
+    <div class="ctl">
+      <label>DIM POWER <output id="o_dim">100</output></label>
+      <input type="range" id="dim" data-out="o_dim" min="2" max="300" step="1" value="100">
+    </div>
+    <div class="ctl">
+      <label>BIT CRUNCH <output id="o_crunch">16</output></label>
+      <input type="range" id="crunch" data-out="o_crunch" min="1" max="64" step="1" value="16">
+    </div>
+  </div>
+  <div class="ctl" data-eng="WARP" data-sub="SINGULARITY UNRAVEL">
+    <label>SPIRAL PHASE <output id="o_spiral">0.25</output></label>
+    <input type="range" id="spiral" data-out="o_spiral" min="0" max="2" step="0.05" value="0.25">
+  </div>
+  <div class="pair" data-eng="WARP" data-sub="LIQUID">
+    <div class="ctl">
+      <label>G_CHAOS <output id="o_gchaos">1.95</output></label>
+      <input type="range" id="gchaos" data-out="o_gchaos" min="0.2" max="6" step="0.05" value="1.95">
+    </div>
+    <div class="ctl">
+      <label>BLUR <output id="o_lqblur">4</output></label>
+      <input type="range" id="lqblur" data-out="o_lqblur" min="0" max="20" step="1" value="4">
+    </div>
+  </div>
+  <div class="pair" data-eng="WARP" data-sub="LIQUID">
+    <div class="ctl">
+      <label>SATURATION <output id="o_lqsat">2.50</output></label>
+      <input type="range" id="lqsat" data-out="o_lqsat" min="0" max="4" step="0.1" value="2.5">
+    </div>
+    <div class="ctl">
+      <label>CONTRAST <output id="o_lqcon">1.20</output></label>
+      <input type="range" id="lqcon" data-out="o_lqcon" min="0.5" max="3" step="0.05" value="1.2">
+    </div>
+  </div>
+  <div class="pair" data-eng="WARP" data-sub="LATTICE">
+    <div class="ctl">
+      <label>SHEAR X <output id="o_shx">0.25</output></label>
+      <input type="range" id="shx" data-out="o_shx" min="-2" max="2" step="0.01" value="0.25">
+    </div>
+    <div class="ctl">
+      <label>SHEAR Y <output id="o_shy">0.20</output></label>
+      <input type="range" id="shy" data-out="o_shy" min="-2" max="2" step="0.01" value="0.2">
+    </div>
+  </div>
+  <div class="pair" data-eng="WARP" data-sub="LATTICE">
+    <div class="ctl">
+      <label>EDGE THRESH <output id="o_latEdge">40</output></label>
+      <input type="range" id="latEdge" data-out="o_latEdge" min="0" max="160" step="1" value="40">
+    </div>
+    <div class="ctl">
+      <label>LATTICE STEP <output id="o_latStep">12</output></label>
+      <input type="range" id="latStep" data-out="o_latStep" min="2" max="64" step="1" value="12">
+    </div>
+  </div>
+  <div class="note" data-eng="WARP" data-sub="CHAOS">Even passes go positive, odd passes negative. DRIFT stops the math cancelling out — that's where the unexpected outcomes live. Set it to 0 for clean cancellation.</div>
+  <div class="note" data-eng="WARP" data-sub="UNRAVEL">Runs the shell map in reverse. Feed it a SINGULARITY output to partially recover the original — the bit-cracks stay.</div>
+
+  <!-- ══ COLOR ══ -->
+  <div class="ctl" data-eng="COLOR">
+    <label>ENGINE</label>
+    <select id="colEng">
+      <option value="HARDWARE">HARDWARE PALETTE — console sets</option>
+      <option value="EXTRACT">PURE SWAP — palette from image</option>
+      <option value="SAMPLE">SAMPLE FILL — hand-picked swatches</option>
+      <option value="PASTEL">CHROMA RAZOR — band + outline</option>
+      <option value="STRATA">STRATA SORT — cascading pixel drips</option>
+    </select>
+  </div>
+  <div class="pair" data-eng="COLOR" data-sub="STRATA">
+    <div class="ctl">
+      <label>EDGE THRESH <output id="o_stThr">32</output></label>
+      <input type="range" id="stThr" data-out="o_stThr" min="4" max="120" step="1" value="32">
+    </div>
+    <div class="ctl">
+      <label>STREAK MAX <output id="o_stStreak">320</output></label>
+      <input type="range" id="stStreak" data-out="o_stStreak" min="20" max="800" step="10" value="320">
+    </div>
+  </div>
+  <div class="ctl" data-eng="COLOR" data-sub="STRATA">
+    <label>SHADOW LENGTH <output id="o_stShadow">20</output></label>
+    <input type="range" id="stShadow" data-out="o_stShadow" min="0" max="80" step="1" value="20">
+  </div>
+  <div class="note" data-eng="COLOR" data-sub="STRATA">Each column pools into ledges where edges spike, sorts darkest-to-top, and casts an overhang shadow on the layer beneath. Low EDGE THRESH = more, thinner ledges.</div>
+  <div class="ctl" data-eng="COLOR" data-sub="HARDWARE">
+    <label>PALETTE</label>
+    <select id="hwPal">
+      <option value="PICO_8">PICO-8 (16)</option>
+      <option value="GAMEBOY_DMG">GAME BOY DMG (4)</option>
+      <option value="GAMEBOY_COLOR">GAME BOY COLOR (16)</option>
+      <option value="NES">NES (52)</option>
+      <option value="SEGA_GENESIS">SEGA GENESIS (23)</option>
+      <option value="CGA">CGA (4)</option>
+      <option value="TELETEXT">TELETEXT (8)</option>
+      <option value="MONO_AMBER">MONO AMBER (2)</option>
+      <option value="MONO_GREEN">MONO GREEN (2)</option>
+    </select>
+  </div>
+  <div class="ctl" data-eng="COLOR" data-sub="HARDWARE EXTRACT SAMPLE">
+    <label>DITHER</label>
+    <select id="ditherMode">
+      <option value="NONE">NONE — hard quantize</option>
+      <option value="FS">FLOYD-STEINBERG</option>
+      <option value="BAYER4">BAYER 4×4 — ordered</option>
+      <option value="BAYER8">BAYER 8×8 — ordered</option>
+      <option value="SCANLINE">SCANLINE — CRT interlace</option>
+    </select>
+  </div>
+  <div class="ctl" data-eng="COLOR" data-sub="HARDWARE EXTRACT SAMPLE">
+    <label>DITHER AMOUNT <output id="o_dAmt">1.00</output></label>
+    <input type="range" id="dAmt" data-out="o_dAmt" min="0" max="2" step="0.05" value="1">
+  </div>
+  <div class="pair" data-eng="COLOR" data-sub="HARDWARE EXTRACT SAMPLE">
+    <div class="ctl">
+      <label>PIXEL SIZE <output id="o_pxSize">1</output></label>
+      <input type="range" id="pxSize" data-out="o_pxSize" min="1" max="24" step="1" value="1">
+    </div>
+    <div class="ctl">
+      <label>SCANLINE GAP <output id="o_scanGap">0</output></label>
+      <input type="range" id="scanGap" data-out="o_scanGap" min="0" max="8" step="1" value="0">
+    </div>
+  </div>
+  <div class="ctl" data-eng="COLOR" data-sub="EXTRACT">
+    <label>PALETTE SIZE <output id="o_palN">16</output></label>
+    <input type="range" id="palN" data-out="o_palN" min="2" max="64" step="1" value="16">
+  </div>
+  <div class="btnrow" data-eng="COLOR" data-sub="EXTRACT SAMPLE" style="margin-top:10px">
+    <label class="btn small" for="palRef">LOAD PALETTE REF</label>
+    <input type="file" id="palRef" accept="image/*">
+    <button class="btn small" id="palClear">USE SOURCE ITSELF</button>
+  </div>
+  <div class="note" data-eng="COLOR" data-sub="EXTRACT">No reference loaded = palette gets pulled from the working image. Load a reference to graft one image's colour DNA onto another.</div>
+  <div class="ctl" data-eng="COLOR" data-sub="SAMPLE">
+    <label>REFERENCE — DRAG, RELEASE TO KEEP <output id="o_sfHex">—</output></label>
+    <div id="sfPane">
+      <div id="sfEmpty">LOAD A SOURCE IMAGE — OR A PALETTE REF ABOVE — TO SAMPLE FROM</div>
+      <canvas id="sfCanvas"></canvas>
+    </div>
+    <div id="sfSwatches"><span class="sfNone">no swatches yet</span></div>
+    <div class="btnrow" style="margin-top:12px">
+      <div id="sfLive"></div>
+      <input type="color" id="sfPick" value="#00e5ff">
+      <button class="btn small" id="sfAdd">ADD PICKED</button>
+      <button class="btn small" id="sfClear">CLEAR SWATCHES</button>
+    </div>
+  </div>
+  <div class="pair" data-eng="COLOR" data-sub="SAMPLE">
+    <div class="ctl">
+      <label>MATCH</label>
+      <select id="sfMatch">
+        <option value="RGB">NEAREST RGB — pure swap</option>
+        <option value="LUMA">LUMA RAMP — brightness bands</option>
+      </select>
+    </div>
+    <div class="ctl">
+      <label>PALETTE CYCLE <output id="o_sfCycle">0</output></label>
+      <input type="range" id="sfCycle" data-out="o_sfCycle" min="0" max="31" step="1" value="0">
+    </div>
+  </div>
+  <div class="note" data-eng="COLOR" data-sub="SAMPLE">Every swatch you keep gets used — no averaging, no median cut. NEAREST RGB swaps each pixel for its closest swatch. LUMA RAMP sorts the swatches darkest→brightest and maps them onto brightness bands instead, so hand-picked colours read as a graded ramp. PALETTE CYCLE rotates which swatch each match lands on (wraps at your swatch count) — same match map, different skin. Sampling reads from the palette ref if one is loaded, otherwise from the source.</div>
+  <div class="pair" data-eng="COLOR" data-sub="PASTEL">
+    <div class="ctl">
+      <label>CLUMP SCALE <output id="o_paScale">3</output></label>
+      <input type="range" id="paScale" data-out="o_paScale" min="1" max="16" step="1" value="3">
+    </div>
+    <div class="ctl">
+      <label>BANDS <output id="o_paBands">3</output></label>
+      <input type="range" id="paBands" data-out="o_paBands" min="2" max="12" step="1" value="3">
+    </div>
+  </div>
+  <div class="pair" data-eng="COLOR" data-sub="PASTEL">
+    <div class="ctl">
+      <label>WASH <output id="o_paWash">0.55</output></label>
+      <input type="range" id="paWash" data-out="o_paWash" min="0" max="1" step="0.05" value="0.55">
+    </div>
+    <div class="ctl">
+      <label>LIFT <output id="o_paLift">70</output></label>
+      <input type="range" id="paLift" data-out="o_paLift" min="0" max="255" step="1" value="70">
+    </div>
+  </div>
+  <label class="check" data-eng="COLOR" data-sub="PASTEL"><input type="checkbox" id="paOutline" checked> BLACK EDGE OUTLINE</label>
+  <div class="note" data-eng="COLOR" data-sub="PASTEL">WASH squeezes the tonal range, LIFT slides it up. The original script ran WASH 0.10 / LIFT 220 — everything crushed into a near-white band with the outlines doing all the work. Dial those in if you want that exact look back.</div>
+
+  <!-- ══ STRUCTURE ══ -->
+  <div class="ctl" data-eng="STRUCT">
+    <label>ENGINE</label>
+    <select id="stEng">
+      <option value="COSMO">COSMO — delaunay constellation</option>
+      <option value="SHARD">TOPO SHARD — quadtree contour burn</option>
+      <option value="POLARITY">POLARITY — metallic ridge recursion</option>
+      <option value="JITTER">JITTER — cyclic diagonal accumulation</option>
+      <option value="EXTRUDE">EXTRUSION — mid-tone depth drag</option>
+      <option value="SONATA">SONATA — staff scribe</option>
+      <option value="EDGE">ADAPTIVE EDGE — canny / lattice / walker</option>
+    </select>
+  </div>
+  <div class="ctl" data-eng="STRUCT" data-sub="EDGE">
+    <label>MODE</label>
+    <select id="edMode">
+      <option value="CANNY">CANNY — adaptive double-threshold</option>
+      <option value="LATTICE">WHITE LATTICE — dual-axis grid</option>
+      <option value="WALKER">LINE DRIFT — dual-pass line walker</option>
+    </select>
+  </div>
+  <div class="ctl" data-eng="STRUCT" data-sub="EDGE">
+    <label>SIGMA / NOISE <output id="o_edSigma">0.53</output></label>
+    <input type="range" id="edSigma" data-out="o_edSigma" min="0.1" max="3" step="0.01" value="0.53">
+  </div>
+  <div class="pair" data-eng="STRUCT" data-sub="EDGE">
+    <div class="ctl">
+      <label>WALK STEP <output id="o_edStep">10</output></label>
+      <input type="range" id="edStep" data-out="o_edStep" min="2" max="40" step="1" value="10">
+    </div>
+    <div class="ctl">
+      <label>WALK FLOOR <output id="o_edFloor">2.2</output></label>
+      <input type="range" id="edFloor" data-out="o_edFloor" min="0.5" max="5" step="0.1" value="2.2">
+    </div>
+  </div>
+  <div class="note" data-eng="STRUCT" data-sub="EDGE">Three edge engines folded into one. CANNY = filled contour map. WHITE LATTICE = grid of both-axis edges. LINE DRIFT = the dual-pass walker that traces horizontal then rotates 90° and traces again, so it catches lines both ways. SIGMA drives Canny width and lattice noise gate; STEP/FLOOR only affect LINE DRIFT.</div>
+  <div class="pair" data-eng="STRUCT" data-sub="COSMO">
+    <div class="ctl">
+      <label>SAMPLE RATE <output id="o_coSamp">69</output></label>
+      <input type="range" id="coSamp" data-out="o_coSamp" min="8" max="160" step="1" value="69">
+    </div>
+    <div class="ctl">
+      <label>EDGE THRESH <output id="o_coEdge">5</output></label>
+      <input type="range" id="coEdge" data-out="o_coEdge" min="1" max="120" step="1" value="5">
+    </div>
+  </div>
+  <div class="pair" data-eng="STRUCT" data-sub="COSMO">
+    <div class="ctl">
+      <label>MAX NODES <output id="o_coNodes">400</output></label>
+      <input type="range" id="coNodes" data-out="o_coNodes" min="20" max="900" step="10" value="400">
+    </div>
+    <div class="ctl">
+      <label>LINE WIDTH <output id="o_coLW">2</output></label>
+      <input type="range" id="coLW" data-out="o_coLW" min="0" max="10" step="1" value="2">
+    </div>
+  </div>
+  <div class="ctl" data-eng="STRUCT" data-sub="COSMO">
+    <label>SATURATION <output id="o_coSat">1.05</output></label>
+    <input type="range" id="coSat" data-out="o_coSat" min="0" max="3" step="0.05" value="1.05">
+  </div>
+  <div class="pair" data-eng="STRUCT" data-sub="COSMO">
+    <div class="ctl">
+      <label>LINE COLOR</label>
+      <input type="color" id="coLine" value="#1e1e2d">
+    </div>
+    <div class="ctl">
+      <label>NODE DOTS <output id="o_coVert">3</output></label>
+      <input type="range" id="coVert" data-out="o_coVert" min="0" max="12" step="1" value="3">
+    </div>
+  </div>
+  <label class="check" data-eng="STRUCT" data-sub="COSMO"><input type="checkbox" id="coFill" checked> FILL POLYGONS</label>
+  <div class="pair" data-eng="STRUCT" data-sub="SHARD">
+    <div class="ctl">
+      <label>LEVELS <output id="o_shLev">12</output></label>
+      <input type="range" id="shLev" data-out="o_shLev" min="2" max="32" step="1" value="12">
+    </div>
+    <div class="ctl">
+      <label>ENTROPY GATE <output id="o_shEnt">30</output></label>
+      <input type="range" id="shEnt" data-out="o_shEnt" min="2" max="90" step="1" value="30">
+    </div>
+  </div>
+  <div class="pair" data-eng="STRUCT" data-sub="SHARD">
+    <div class="ctl">
+      <label>MIN SHARD <output id="o_shMin">15</output></label>
+      <input type="range" id="shMin" data-out="o_shMin" min="4" max="128" step="1" value="15">
+    </div>
+    <div class="ctl">
+      <label>SMOOTHING <output id="o_shSmooth">1</output></label>
+      <input type="range" id="shSmooth" data-out="o_shSmooth" min="0" max="6" step="1" value="1">
+    </div>
+  </div>
+  <div class="pair" data-eng="STRUCT" data-sub="POLARITY JITTER EXTRUDE">
+    <div class="ctl">
+      <label>ITERATIONS <output id="o_gmIter">20</output></label>
+      <input type="range" id="gmIter" data-out="o_gmIter" min="1" max="80" step="1" value="20">
+    </div>
+    <div class="ctl">
+      <label>AUTOCONTRAST <output id="o_gmCut">1</output></label>
+      <input type="range" id="gmCut" data-out="o_gmCut" min="0" max="12" step="1" value="1">
+    </div>
+  </div>
+  <div class="pair" data-eng="STRUCT" data-sub="POLARITY EXTRUDE">
+    <div class="ctl">
+      <label>SHIFT X <output id="o_gmSx">1</output></label>
+      <input type="range" id="gmSx" data-out="o_gmSx" min="-8" max="8" step="1" value="1">
+    </div>
+    <div class="ctl">
+      <label>SHIFT Y <output id="o_gmSy">-1</output></label>
+      <input type="range" id="gmSy" data-out="o_gmSy" min="-8" max="8" step="1" value="-1">
+    </div>
+  </div>
+  <div class="ctl" data-eng="STRUCT" data-sub="POLARITY">
+    <label>BLEND</label>
+    <select id="gmBlend">
+      <option value="lighter">LIGHTER — ridge build</option>
+      <option value="difference">DIFFERENCE — burn out</option>
+    </select>
+  </div>
+  <div class="pair" data-eng="STRUCT" data-sub="SONATA">
+    <div class="ctl">
+      <label>STAFF SPACING <output id="o_soStaff">80</output></label>
+      <input type="range" id="soStaff" data-out="o_soStaff" min="20" max="200" step="4" value="80">
+    </div>
+    <div class="ctl">
+      <label>MIN BLOCK <output id="o_soMin">8</output></label>
+      <input type="range" id="soMin" data-out="o_soMin" min="4" max="48" step="1" value="8">
+    </div>
+  </div>
+  <div class="ctl" data-eng="STRUCT" data-sub="SONATA">
+    <label>DETAIL THRESH <output id="o_soThr">15</output></label>
+    <input type="range" id="soThr" data-out="o_soThr" min="1" max="80" step="1" value="15">
+  </div>
+  <div class="note" data-eng="STRUCT" data-sub="COSMO">Delaunay runs on CPU — above ~500 nodes it gets slow on a phone. Drop SAMPLE RATE for a denser mesh, raise MAX NODES only if you're willing to wait.</div>
+
+  <!-- ══ QUAD ══ -->
+  <div class="ctl" data-eng="QUAD">
+    <label>ENGINE</label>
+    <select id="qdEng">
+      <option value="BITSHIFT">BIT SHIFT — quad leaf channel XOR</option>
+      <option value="SWARM">KINETIC SWARM — tremor block stack</option>
+      <option value="GLYPH">QUAD GLYPH — dense glyph mosaic</option>
+      <option value="PIT">SINGULARITY PIT — wave shatter</option>
+      <option value="TRIAD">TRIAD SWAP — 3-image DNA cycle</option>
+    </select>
+  </div>
+  <!-- BIT SHIFT -->
+  <div class="pair" data-eng="QUAD" data-sub="BITSHIFT">
+    <div class="ctl">
+      <label>MIN LEAF <output id="o_bsLeaf">5</output></label>
+      <input type="range" id="bsLeaf" data-out="o_bsLeaf" min="2" max="64" step="1" value="5">
+    </div>
+    <div class="ctl">
+      <label>MAX DEPTH <output id="o_bsDepth">10</output></label>
+      <input type="range" id="bsDepth" data-out="o_bsDepth" min="2" max="14" step="1" value="10">
+    </div>
+  </div>
+  <div class="ctl" data-eng="QUAD" data-sub="BITSHIFT">
+    <label>SHIFT SEED T <output id="o_bsT">0.355</output></label>
+    <input type="range" id="bsT" data-out="o_bsT" min="0" max="1" step="0.005" value="0.355">
+  </div>
+  <label class="check" data-eng="QUAD" data-sub="BITSHIFT"><input type="checkbox" id="bsFlipB" checked> HARD-FLIP BLUE (^0xFF)</label>
+  <div class="note" data-eng="QUAD" data-sub="BITSHIFT">Quadtree splits to leaves, then XORs red by a depth-driven shift and hard-inverts blue. The blue flip is where the electric-teal glitch comes from — uncheck to XOR blue softly like red instead.</div>
+  <!-- KINETIC SWARM -->
+  <div class="pair" data-eng="QUAD" data-sub="SWARM">
+    <div class="ctl">
+      <label>STACK <output id="o_ksStack">12</output></label>
+      <input type="range" id="ksStack" data-out="o_ksStack" min="1" max="30" step="1" value="12">
+    </div>
+    <div class="ctl">
+      <label>TREMOR <output id="o_ksTremor">42</output></label>
+      <input type="range" id="ksTremor" data-out="o_ksTremor" min="0" max="120" step="1" value="42">
+    </div>
+  </div>
+  <div class="pair" data-eng="QUAD" data-sub="SWARM">
+    <div class="ctl">
+      <label>DETAIL CUTOFF <output id="o_ksCut">36</output></label>
+      <input type="range" id="ksCut" data-out="o_ksCut" min="4" max="90" step="1" value="36">
+    </div>
+    <div class="ctl">
+      <label>VISCOSITY <output id="o_ksVisc">0</output></label>
+      <input type="range" id="ksVisc" data-out="o_ksVisc" min="0" max="12" step="1" value="0">
+    </div>
+  </div>
+  <div class="pair" data-eng="QUAD" data-sub="SWARM">
+    <div class="ctl">
+      <label>SATURATION <output id="o_ksSat">1.50</output></label>
+      <input type="range" id="ksSat" data-out="o_ksSat" min="0" max="3" step="0.05" value="1.5">
+    </div>
+    <div class="ctl">
+      <label>ATTENUATION <output id="o_ksAtten">0.99</output></label>
+      <input type="range" id="ksAtten" data-out="o_ksAtten" min="0.9" max="1" step="0.005" value="0.99">
+    </div>
+  </div>
+  <div class="note" data-eng="QUAD" data-sub="SWARM">Quadtree blocks get stacked STACK times, each shaken by a random TREMOR offset and screen-blended, dimming slightly per layer. High tremor + high stack = a vibrating ghost swarm.</div>
+  <!-- QUAD GLYPH -->
+  <div class="pair" data-eng="QUAD" data-sub="GLYPH">
+    <div class="ctl">
+      <label>MAX BLOCK <output id="o_qgMax">64</output></label>
+      <input type="range" id="qgMax" data-out="o_qgMax" min="16" max="128" step="8" value="64">
+    </div>
+    <div class="ctl">
+      <label>MIN BLOCK <output id="o_qgMin">4</output></label>
+      <input type="range" id="qgMin" data-out="o_qgMin" min="2" max="32" step="1" value="4">
+    </div>
+  </div>
+  <div class="ctl" data-eng="QUAD" data-sub="GLYPH">
+    <label>SPLIT THRESHOLD <output id="o_qgThr">14</output></label>
+    <input type="range" id="qgThr" data-out="o_qgThr" min="2" max="60" step="1" value="14">
+  </div>
+  <label class="check" data-eng="QUAD" data-sub="GLYPH"><input type="checkbox" id="qgColor" checked> COLORIZE GLYPHS FROM SOURCE</label>
+  <div class="note" data-eng="QUAD" data-sub="GLYPH">Recursive quadtree renders one glyph per cell, sized to the cell — detailed areas split into small dense glyphs, flat areas stay big. Lower threshold = splits harder = denser.</div>
+  <!-- SINGULARITY PIT -->
+  <div class="pair" data-eng="QUAD" data-sub="PIT">
+    <div class="ctl">
+      <label>DEPTH <output id="o_spDepth">11</output></label>
+      <input type="range" id="spDepth" data-out="o_spDepth" min="4" max="13" step="1" value="11">
+    </div>
+    <div class="ctl">
+      <label>DISPLACE <output id="o_spDisp">4</output></label>
+      <input type="range" id="spDisp" data-out="o_spDisp" min="1" max="16" step="1" value="4">
+    </div>
+  </div>
+  <div class="pair" data-eng="QUAD" data-sub="PIT">
+    <div class="ctl">
+      <label>PHASE <output id="o_spPhase">0.50</output></label>
+      <input type="range" id="spPhase" data-out="o_spPhase" min="0" max="6.28" step="0.02" value="0.5">
+    </div>
+    <div class="ctl">
+      <label>SEED <output id="o_spSeed">88</output></label>
+      <input type="range" id="spSeed" data-out="o_spSeed" min="0" max="254" step="1" value="88">
+    </div>
+  </div>
+  <label class="check" data-eng="QUAD" data-sub="PIT"><input type="checkbox" id="spPost" checked> 1-BIT POSTERIZE AT DEEP CELLS</label>
+  <div class="note" data-eng="QUAD" data-sub="PIT">Recursive cells shift on a sine/phi interference wave; the deepest cells collapse to 1-bit. PHASE moves the whole wave — scrub it for different shatter patterns off the same image.</div>
+  <!-- TRIAD SWAP -->
+  <div class="pair" data-eng="QUAD" data-sub="TRIAD">
+    <div class="ctl">
+      <label>MAX DEPTH <output id="o_tsDepth">12</output></label>
+      <input type="range" id="tsDepth" data-out="o_tsDepth" min="4" max="14" step="1" value="12">
+    </div>
+    <div class="ctl">
+      <label>DETAIL GATE <output id="o_tsDetail">5</output></label>
+      <input type="range" id="tsDetail" data-out="o_tsDetail" min="1" max="60" step="1" value="5">
+    </div>
+  </div>
+  <div class="ctl" data-eng="QUAD" data-sub="TRIAD">
+    <label>SWAP PASSES <output id="o_tsPasses">81</output></label>
+    <input type="range" id="tsPasses" data-out="o_tsPasses" min="4" max="400" step="1" value="81">
+  </div>
+  <label class="check" data-eng="QUAD" data-sub="TRIAD"><input type="checkbox" id="tsTear" checked> SHARP ROW TEARS</label>
+  <div class="note" data-eng="QUAD" data-sub="TRIAD">Needs 2 extra images loaded above (3 total). Builds one detail map from the host, then cycles pixel blocks A→B→C→A at matched coordinates. All three come out cross-contaminated; this shows the host's result.</div>
+
+  <!-- ══ LIGHT ══ -->
+  <div class="ctl" data-eng="LIGHT">
+    <label>ENGINE</label>
+    <select id="ltEng">
+      <option value="BLOOM">BLOOM — cascading screen aura</option>
+      <option value="KINTSUGI">KINTSUGI — molten gold fractures</option>
+    </select>
+  </div>
+  <div class="pair" data-eng="LIGHT" data-sub="KINTSUGI">
+    <div class="ctl">
+      <label>COILS <output id="o_kiCoils">18</output></label>
+      <input type="range" id="kiCoils" data-out="o_kiCoils" min="3" max="40" step="1" value="18">
+    </div>
+    <div class="ctl">
+      <label>FANG SIZE <output id="o_kiFang">1</output></label>
+      <input type="range" id="kiFang" data-out="o_kiFang" min="0" max="4" step="1" value="1">
+    </div>
+  </div>
+  <div class="ctl" data-eng="LIGHT" data-sub="KINTSUGI">
+    <label>SMOOTHING <output id="o_kiSmooth">1</output></label>
+    <input type="range" id="kiSmooth" data-out="o_kiSmooth" min="0" max="6" step="1" value="1">
+  </div>
+  <div class="note" data-eng="LIGHT" data-sub="KINTSUGI">Walks 18 brightness thresholds, traces the contour at each, and floods the fracture lines with molten gold — dark bronze in the shadows climbing to pale gold in the highlights.</div>
+  <div class="pair" data-eng="LIGHT">
+    <div class="ctl">
+      <label>THRESHOLD <output id="o_blThr">120</output></label>
+      <input type="range" id="blThr" data-out="o_blThr" min="0" max="250" step="1" value="120">
+    </div>
+    <div class="ctl">
+      <label>SPREAD <output id="o_blSpread">1.00</output></label>
+      <input type="range" id="blSpread" data-out="o_blSpread" min="0.1" max="4" step="0.1" value="1">
+    </div>
+  </div>
+  <div class="pair" data-eng="LIGHT">
+    <div class="ctl">
+      <label>LAYERS <output id="o_blLayers">4</output></label>
+      <input type="range" id="blLayers" data-out="o_blLayers" min="1" max="6" step="1" value="4">
+    </div>
+    <div class="ctl">
+      <label>OVERCLOCK <output id="o_blBoost">1</output></label>
+      <input type="range" id="blBoost" data-out="o_blBoost" min="0" max="4" step="1" value="1">
+    </div>
+  </div>
+  <div class="note" data-eng="LIGHT" data-sub="BLOOM">OVERCLOCK screens the aura onto itself N times. 0 is a soft glow, 2+ is the neon punch.</div>
+
+  <!-- ══ GHOST ══ -->
+  <div class="ctl" data-eng="GHOST">
+    <label>ENGINE</label>
+    <select id="ghEng">
+      <option value="BURN">GHOST BURN — host + 1 ghost, 8 passes</option>
+      <option value="LEGION">LEGION — host + up to 3 ghosts</option>
+    </select>
+  </div>
+  <div class="pair" data-eng="GHOST" data-sub="BURN">
+    <div class="ctl">
+      <label>ITERATIONS <output id="o_gbIters">8</output></label>
+      <input type="range" id="gbIters" data-out="o_gbIters" min="1" max="16" step="1" value="8">
+    </div>
+    <div class="ctl">
+      <label>START THRESH <output id="o_gbThr0">50</output></label>
+      <input type="range" id="gbThr0" data-out="o_gbThr0" min="10" max="150" step="1" value="50">
+    </div>
+  </div>
+  <div class="pair" data-eng="GHOST" data-sub="BURN">
+    <div class="ctl">
+      <label>THRESH STEP <output id="o_gbStep">20</output></label>
+      <input type="range" id="gbStep" data-out="o_gbStep" min="0" max="40" step="1" value="20">
+    </div>
+    <div class="ctl">
+      <label>GLOW/PASS <output id="o_gbGlow">0.15</output></label>
+      <input type="range" id="gbGlow" data-out="o_gbGlow" min="0" max="0.6" step="0.01" value="0.15">
+    </div>
+  </div>
+  <div class="ctl" data-eng="GHOST" data-sub="BURN">
+    <label>SHARPEN <output id="o_gbSharp">1.6</output></label>
+    <input type="range" id="gbSharp" data-out="o_gbSharp" min="0" max="3" step="0.1" value="1.6">
+  </div>
+  <div class="note" data-eng="GHOST" data-sub="BURN">Load 1 extra image above — it's the ghost. Each pass masks the host's shadows, glows the ghost hotter, and composites it into the dark areas, pushing the threshold deeper into the blacks so the ghost bleeds further out every iteration.</div>
+  <div class="pair" data-eng="GHOST" data-sub="LEGION">
+    <div class="ctl">
+      <label>GHOST DEPTH <output id="o_lgDepth">3</output></label>
+      <input type="range" id="lgDepth" data-out="o_lgDepth" min="1" max="3" step="1" value="3">
+    </div>
+    <div class="ctl">
+      <label>THRESHOLD <output id="o_lgThr">95</output></label>
+      <input type="range" id="lgThr" data-out="o_lgThr" min="20" max="180" step="1" value="95">
+    </div>
+  </div>
+  <div class="pair" data-eng="GHOST" data-sub="LEGION">
+    <div class="ctl">
+      <label>GLOW <output id="o_lgGlow">1.60</output></label>
+      <input type="range" id="lgGlow" data-out="o_lgGlow" min="1" max="2.5" step="0.05" value="1.6">
+    </div>
+    <div class="ctl">
+      <label>SHARPEN <output id="o_lgSharp">1.2</output></label>
+      <input type="range" id="lgSharp" data-out="o_lgSharp" min="0" max="3" step="0.1" value="1.2">
+    </div>
+  </div>
+  <div class="note" data-eng="GHOST" data-sub="LEGION">Load up to 3 extra images — each haunts the host in sequence, every ghost hiding in the shadows the previous one left. GHOST DEPTH caps how many of the loaded extras get used.</div>
+
+  <!-- ══ OVERLAY ══ -->
+  <div class="ctl" data-eng="OVER">
+    <label>ENGINE</label>
+    <select id="ovEng">
+      <option value="TEXTBOX">TEXT BOX — retro dialogue</option>
+    </select>
+  </div>
+  <div class="ctl" data-eng="OVER">
+    <label>TEXT</label>
+    <input type="text" id="tbText" value="Sir Flobberton what happend to your fainting couch.?!?!" autocomplete="off">
+  </div>
+  <div class="pair" data-eng="OVER">
+    <div class="ctl">
+      <label>CANVAS WIDTH <output id="o_tbCanvas">220</output></label>
+      <input type="range" id="tbCanvas" data-out="o_tbCanvas" min="80" max="640" step="10" value="220">
+    </div>
+    <div class="ctl">
+      <label>FONT SIZE <output id="o_tbFont">12</output></label>
+      <input type="range" id="tbFont" data-out="o_tbFont" min="5" max="40" step="1" value="12">
+    </div>
+  </div>
+  <div class="pair" data-eng="OVER">
+    <div class="ctl">
+      <label>MARGIN X <output id="o_tbMx">10</output></label>
+      <input type="range" id="tbMx" data-out="o_tbMx" min="0" max="80" step="1" value="10">
+    </div>
+    <div class="ctl">
+      <label>MARGIN BOTTOM <output id="o_tbMb">20</output></label>
+      <input type="range" id="tbMb" data-out="o_tbMb" min="0" max="200" step="1" value="20">
+    </div>
+  </div>
+  <div class="pair" data-eng="OVER">
+    <div class="ctl">
+      <label>PADDING <output id="o_tbPad">12</output></label>
+      <input type="range" id="tbPad" data-out="o_tbPad" min="0" max="40" step="1" value="12">
+    </div>
+    <div class="ctl">
+      <label>LINE SPACING <output id="o_tbLine">2</output></label>
+      <input type="range" id="tbLine" data-out="o_tbLine" min="0" max="20" step="1" value="2">
+    </div>
+  </div>
+  <div class="ctl" data-eng="OVER">
+    <label>ANCHOR</label>
+    <select id="tbAnchor">
+      <option value="bottom">BOTTOM</option>
+      <option value="top">TOP</option>
+      <option value="center">CENTER</option>
+    </select>
+  </div>
+  <div class="pair" data-eng="OVER">
+    <div class="ctl">
+      <label>BOX FILL</label>
+      <input type="color" id="tbBg" value="#0000c8">
+    </div>
+    <div class="ctl">
+      <label>BOX ALPHA <output id="o_tbAlpha">200</output></label>
+      <input type="range" id="tbAlpha" data-out="o_tbAlpha" min="0" max="255" step="1" value="200">
+    </div>
+  </div>
+  <div class="pair" data-eng="OVER">
+    <div class="ctl">
+      <label>BORDER</label>
+      <input type="color" id="tbBorder" value="#ffffff">
+    </div>
+    <div class="ctl">
+      <label>TEXT</label>
+      <input type="color" id="tbFg" value="#ffffff">
+    </div>
   </div>
 
-  <!-- SOVEREIGN -->
-  <div class="ctl" data-eng="SOVEREIGN">
-    <label>GRID WIDTH <output id="o_sovW">45</output></label>
-    <input type="range" id="sovW" data-out="o_sovW" min="20" max="120" step="1" value="45">
-  </div>
-  <div class="pair" data-eng="SOVEREIGN">
-    <div class="ctl">
-      <label>COLOR BANDS <output id="o_bands">24</output></label>
-      <input type="range" id="bands" data-out="o_bands" min="2" max="64" step="1" value="24">
-    </div>
-    <div class="ctl">
-      <label>NOISE GATE <output id="o_gateSov">3</output></label>
-      <input type="range" id="gateSov" data-out="o_gateSov" min="1" max="60" step="1" value="3">
-    </div>
-  </div>
-  <div class="ctl" data-eng="SOVEREIGN">
-    <label>GLYPH SCALE <output id="o_gscale">2.4</output></label>
-    <input type="range" id="gscale" data-out="o_gscale" min="0.3" max="4" step="0.1" value="2.4">
-  </div>
-  <div class="ctl" data-eng="SOVEREIGN">
-    <label>KANA ー ヽ 丨 ノ</label>
-    <input type="text" id="rampKana" value="ーヽ丨ノ" autocomplete="off">
-  </div>
-
-  <!-- ATLAS -->
-  <div class="ctl" data-eng="ATLAS">
-    <label>RAMP (light→dark)</label>
-    <input type="text" id="rampAtlas" value=" .'`^&quot;,:;Il!i&gt;&lt;~+_-?][}{1)(|\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&amp;8%B@$" autocomplete="off">
-  </div>
-
-  <!-- MATRIX -->
-  <div class="ctl" data-eng="BLOCK RAMP">
-    <label>BLOCK RAMP (void→full)</label>
-    <input type="text" id="rampMatrix" value=" ░▒▓█" autocomplete="off">
-  </div>
-
-  <!-- TEXT -->
-  <div class="pair" data-eng="TEXT">
-    <div class="ctl">
-      <label>WIDTH <output id="o_twidth">44</output></label>
-      <input type="range" id="twidth" data-out="o_twidth" min="24" max="96" step="1" value="44">
-    </div>
-    <div class="ctl">
-      <label>SMUSH RATIO <output id="o_tratio">0.30</output></label>
-      <input type="range" id="tratio" data-out="o_tratio" min="0.18" max="0.60" step="0.01" value="0.30">
-    </div>
-  </div>
-  <div class="ctl" data-eng="TEXT">
-    <label>RAMP (dark→bright)</label>
-    <input type="text" id="rampText" value=" .,·°o" autocomplete="off">
-  </div>
-  <div class="btnrow" data-eng="TEXT" style="margin-top:10px">
-    <button class="btn small" id="preSmush">SMUSH</button>
-    <button class="btn small" id="preRigid">RIGID</button>
-  </div>
-  <label class="check" data-eng="TEXT"><input type="checkbox" id="bakePng" checked> BAKE PNG TOO</label>
-
-  <!-- shared colors -->
-  <div class="pair" data-eng="SKELETON DUST SOVEREIGN MATRIX ATLAS TEXT">
-    <div class="ctl">
-      <label>FOREGROUND</label>
-      <input type="color" id="fg" value="#00ffff">
-    </div>
-    <div class="ctl">
-      <label>BACKGROUND</label>
-      <input type="color" id="bg" value="#050505">
-    </div>
-  </div>
 </section>
 
 <button id="runBtn" disabled>RUN ENGINE</button>
@@ -281,708 +827,1917 @@ button, input, select, textarea {
 <section class="card">
   <h2>OUTPUT</h2>
   <img id="outimg" alt="engine output — long-press to save">
-   <div id="log"></div>
-  <pre id="outtxt"></pre>
+  <div id="log"></div>
   <div id="outbtns" class="btnrow">
-    <a class="btn" id="dl" href="#" download="GLYPH.png">DOWNLOAD PNG</a>
-    <button class="btn" id="copyTxt" style="display:none">COPY TEXT</button>
+    <a class="btn" id="dl" href="#" download="PIXEL_FORGE.png">DOWNLOAD PNG</a>
+    <button class="btn" id="chainBtn">CHAIN → NEXT ENGINE</button>
   </div>
-  <div class="note">PNG output: long-press the image → Save to Photos, or use DOWNLOAD.</div>
+  <div class="note">CHAIN loads this output back in as the source so the next engine stacks on top. DOWNLOAD or long-press the image to save.</div>
 </section>
 
-<section class="card">
-  <h2>FONT VAULT</h2>
-  <div class="btnrow">
-    <label class="btn small" for="fontVga">LOAD .TTF → VGA</label>
-    <input type="file" id="fontVga" accept=".ttf,.otf,.woff,.woff2">
-    <label class="btn small" for="fontKana">LOAD .TTF → KANA</label>
-    <input type="file" id="fontKana" accept=".ttf,.otf,.woff,.woff2">
-  </div>
-  <div class="note">
-    Permanent embed: paste your full Web437 base64 into <code>USER_FONT_B64.VGA</code> at the very top
-    of the script (raw base64 or full data-URI, either works). <code>KANA</code> slot feeds the
-    SOVEREIGN engine (Migu 1M / DotGothic16). No font = system mono fallback, still runs.
-  </div>
-</section>
+</body>
+</html>
 
 <script>
-/* ╔═══════════════════════════════════════════════════════════════╗
-   ║  FONT VAULT — paste base64 TTF between the quotes below.       ║
-   ║  Raw base64 OR a full "data:font/ttf;base64,..." string both   ║
-   ║  work. Whitespace/newlines in the paste are fine.              ║
-   ║    VGA  → Web437_IBM_VGA_9x16 (SKELETON / DUST / TEXT bake)    ║
-   ║    KANA → Migu 1M / DotGothic16 (SOVEREIGN katakana)           ║
-   ╚═══════════════════════════════════════════════════════════════╝ */
-const USER_FONT_B64 = {
-  VGA:  "IBM VGA",   /* ←←← PASTE VGA BASE64 HERE */
-  KANA: ""    /* ←←← optional kana font    */
+/* ╔══════════════════════════════════════════════════════════════╗
+   ║  PIXEL_FORGE — JS ports of the Python_IMG engine set.         ║
+   ║  Every engine takes {data,w,h} RGBA and returns the same.     ║
+   ╚══════════════════════════════════════════════════════════════╝ */
+
+const $ = id => document.getElementById(id);
+const logBox = $('log');
+let SRC = null;          // HTMLImageElement / ImageBitmap
+let PALREF = null;       // optional palette reference image
+let GHOSTS = [];         // extra images for multi-image engines (up to 3)
+let CHAIN = [];          // engine names applied so far
+let BUSY = false;
+
+function log(msg, warn){
+  const d = document.createElement('div');
+  if(warn) d.className = 'warn';
+  d.innerHTML = '<span class="tg">▸</span> ' + msg;
+  logBox.appendChild(d);
+  logBox.scrollTop = logBox.scrollHeight;
+}
+function clearLog(){ logBox.innerHTML = ''; }
+
+/* ── slider readouts ─────────────────────────────────────────── */
+document.querySelectorAll('input[data-out]').forEach(r=>{
+  const out = $(r.dataset.out);
+  const fmt = v => (r.step.includes('.') ? (+v).toFixed(r.step.split('.')[1].length) : v);
+  out.textContent = fmt(r.value);
+  r.addEventListener('input', ()=> out.textContent = fmt(r.value));
+});
+
+/* ── tab + sub-engine gating ─────────────────────────────────── */
+let TAB = 'WARP';
+const SUBSEL = {WARP:'warpEng', COLOR:'colEng', STRUCT:'stEng', QUAD:'qdEng', LIGHT:'ltEng', GHOST:'ghEng', OVER:'ovEng'};
+
+function currentEngine(){ return $(SUBSEL[TAB]).value; }
+
+function sync(){
+  const sub = currentEngine();
+  document.querySelectorAll('[data-eng]').forEach(el=>{
+    const tabOK = el.dataset.eng.split(' ').includes(TAB);
+    const subOK = !el.dataset.sub || el.dataset.sub.split(' ').includes(sub);
+    el.style.display = (tabOK && subOK) ? '' : 'none';
+  });
+  if(TAB === 'COLOR' && sub === 'SAMPLE') refreshSampler();
+}
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected','false'));
+    t.setAttribute('aria-selected','true');
+    TAB = t.dataset.e; sync();
+  });
+});
+Object.values(SUBSEL).forEach(id => $(id).addEventListener('change', sync));
+
+/* ── canvas helpers ──────────────────────────────────────────── */
+function mkCanvas(w,h){ const c=document.createElement('canvas'); c.width=w; c.height=h; return c; }
+function imgToData(img, cap){
+  let w = img.width, h = img.height;
+  const m = Math.max(w,h);
+  if(m > cap){ const s = cap/m; w = Math.round(w*s); h = Math.round(h*s); }
+  const c = mkCanvas(w,h), x = c.getContext('2d', {willReadFrequently:true});
+  x.drawImage(img, 0, 0, w, h);
+  return x.getImageData(0,0,w,h);
+}
+function dataToCanvas(id){
+  const c = mkCanvas(id.width, id.height);
+  c.getContext('2d').putImageData(id, 0, 0);
+  return c;
+}
+const clamp = (v,a,b) => v<a?a:(v>b?b:v);
+const hex2rgb = h => [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)];
+
+/* Grayscale float array from RGBA */
+function toGray(id){
+  const n = id.width*id.height, g = new Float32Array(n), d = id.data;
+  for(let i=0;i<n;i++) g[i] = (d[i*4] + d[i*4+1] + d[i*4+2]) / 3;
+  return g;
+}
+/* Separable box blur approximating gaussian — 3 passes */
+function blurGray(g, w, h, r){
+  if(r < 1) return g;
+  let src = g, dst = new Float32Array(g.length);
+  for(let pass=0; pass<3; pass++){
+    for(let y=0;y<h;y++){
+      let acc=0; const row=y*w;
+      for(let x=-r;x<=r;x++) acc += src[row + clamp(x,0,w-1)];
+      for(let x=0;x<w;x++){
+        dst[row+x] = acc/(2*r+1);
+        acc += src[row + clamp(x+r+1,0,w-1)] - src[row + clamp(x-r,0,w-1)];
+      }
+    }
+    [src,dst] = [dst,src];
+    for(let x=0;x<w;x++){
+      let acc=0;
+      for(let y=-r;y<=r;y++) acc += src[clamp(y,0,h-1)*w + x];
+      for(let y=0;y<h;y++){
+        dst[y*w+x] = acc/(2*r+1);
+        acc += src[clamp(y+r+1,0,h-1)*w+x] - src[clamp(y-r,0,h-1)*w+x];
+      }
+    }
+    [src,dst] = [dst,src];
+  }
+  return src;
+}
+/* RGB box blur in place on an ImageData clone */
+function blurRGB(id, r){
+  if(r < 1) return id;
+  const c = dataToCanvas(id), x = c.getContext('2d');
+  x.filter = `blur(${r}px)`;
+  const c2 = mkCanvas(id.width, id.height), x2 = c2.getContext('2d', {willReadFrequently:true});
+  x2.filter = `blur(${r}px)`;
+  x2.drawImage(c, 0, 0);
+  return x2.getImageData(0,0,id.width,id.height);
+}
+function cloneData(id){
+  return new ImageData(new Uint8ClampedArray(id.data), id.width, id.height);
+}
+/* autocontrast with percentile cutoff, matches ImageOps.autocontrast */
+function autocontrast(id, cutoff){
+  const d = id.data, n = id.width*id.height;
+  for(let ch=0; ch<3; ch++){
+    const hist = new Uint32Array(256);
+    for(let i=0;i<n;i++) hist[d[i*4+ch]]++;
+    let lo=0, hi=255;
+    if(cutoff > 0){
+      const cut = n * cutoff / 100;
+      let acc=0;
+      for(let i=0;i<256;i++){ acc+=hist[i]; if(acc>cut){ lo=i; break; } }
+      acc=0;
+      for(let i=255;i>=0;i--){ acc+=hist[i]; if(acc>cut){ hi=i; break; } }
+    } else {
+      while(lo<255 && !hist[lo]) lo++;
+      while(hi>0 && !hist[hi]) hi--;
+    }
+    if(hi<=lo) continue;
+    const scale = 255/(hi-lo);
+    for(let i=0;i<n;i++) d[i*4+ch] = clamp((d[i*4+ch]-lo)*scale, 0, 255);
+  }
+  return id;
+}
+
+/* ── multi-image ghost pool ──────────────────────────────────── */
+function renderGhosts(){
+  const wrap = $('ghostList');
+  if(!wrap) return;
+  wrap.innerHTML = '';
+  GHOSTS.forEach((img, i)=>{
+    const chip = document.createElement('div');
+    chip.className = 'ghostChip';
+    const im = document.createElement('img'); im.src = img.__url;
+    const rm = document.createElement('button'); rm.textContent = '✕'; rm.className='ghostRm';
+    rm.onclick = ()=>{ GHOSTS.splice(i,1); renderGhosts(); log(`ghost ${i+1} removed — ${GHOSTS.length} loaded`); };
+    chip.appendChild(im); chip.appendChild(rm);
+    wrap.appendChild(chip);
+  });
+  const cnt = $('ghostCount');
+  if(cnt) cnt.textContent = GHOSTS.length;
+}
+
+/* ── hand-sampled swatch palette (SAMPLE FILL) ───────────────── */
+const SF_MAX = 32, SF_CAP = 900;
+let SWATCH = [], SFBUF = null, SFDATA = null, SFREF = null, SFPT = null, SFLAST = null, SFDRAG = false;
+
+const rgb2hex = (r,g,b) => '#' + [r,g,b].map(v => clamp(v|0,0,255).toString(16).padStart(2,'0')).join('');
+const lumOf = c => 0.299*c[0] + 0.587*c[1] + 0.114*c[2];
+
+function renderSwatches(){
+  const row = $('sfSwatches');
+  if(!row) return;
+  row.innerHTML = '';
+  if(!SWATCH.length){
+    const s = document.createElement('span');
+    s.className = 'sfNone';
+    s.textContent = 'no swatches yet — drag on the reference above';
+    row.appendChild(s);
+    return;
+  }
+  SWATCH.forEach((hex, i)=>{
+    const chip = document.createElement('div');
+    chip.className = 'sfChip'; chip.style.background = hex; chip.title = hex;
+    const x = document.createElement('div');
+    x.className = 'x'; x.textContent = '✕';
+    x.onclick = e => { e.stopPropagation(); SWATCH.splice(i,1); renderSwatches(); log(`swatch dropped — ${SWATCH.length} left`); };
+    chip.appendChild(x);
+    row.appendChild(chip);
+  });
+}
+function addSwatch(hex){
+  hex = hex.toLowerCase();
+  if(SWATCH.includes(hex)) return false;
+  if(SWATCH.length >= SF_MAX){ log(`swatch palette full — ${SF_MAX} max`, true); return false; }
+  SWATCH.push(hex); renderSwatches();
+  return true;
+}
+function drawSampler(){
+  const cvs = $('sfCanvas');
+  if(!cvs || !SFBUF) return;
+  const x = cvs.getContext('2d');
+  x.clearRect(0,0,cvs.width,cvs.height);
+  x.drawImage(SFBUF, 0, 0);
+  if(!SFPT) return;
+  const r = Math.max(7, Math.round(Math.max(cvs.width,cvs.height)/55));
+  x.lineWidth = Math.max(1, r/5);
+  x.strokeStyle = '#00e5ff';
+  x.beginPath(); x.arc(SFPT.x, SFPT.y, r, 0, Math.PI*2); x.stroke();
+  x.beginPath();
+  x.moveTo(SFPT.x-r*2, SFPT.y); x.lineTo(SFPT.x-r*0.6, SFPT.y);
+  x.moveTo(SFPT.x+r*0.6, SFPT.y); x.lineTo(SFPT.x+r*2, SFPT.y);
+  x.moveTo(SFPT.x, SFPT.y-r*2); x.lineTo(SFPT.x, SFPT.y-r*0.6);
+  x.moveTo(SFPT.x, SFPT.y+r*0.6); x.lineTo(SFPT.x, SFPT.y+r*2);
+  x.stroke();
+}
+function refreshSampler(){
+  const cvs = $('sfCanvas'), empty = $('sfEmpty');
+  if(!cvs || !empty) return;
+  const ref = PALREF || SRC;
+  if(!ref){
+    cvs.style.display = 'none'; empty.style.display = 'block';
+    SFBUF = null; SFDATA = null; SFREF = null; SFPT = null;
+    return;
+  }
+  if(SFREF !== ref){
+    let w = ref.width, h = ref.height;
+    const m = Math.max(w,h);
+    if(m > SF_CAP){ const s = SF_CAP/m; w = Math.max(1, Math.round(w*s)); h = Math.max(1, Math.round(h*s)); }
+    SFBUF = mkCanvas(w,h);
+    const bx = SFBUF.getContext('2d', {willReadFrequently:true});
+    bx.drawImage(ref, 0, 0, w, h);
+    SFDATA = bx.getImageData(0,0,w,h);
+    SFREF = ref; SFPT = null;
+    cvs.width = w; cvs.height = h;
+  }
+  cvs.style.display = 'block'; empty.style.display = 'none';
+  drawSampler();
+}
+function sfPos(e){
+  const cvs = $('sfCanvas'), rect = cvs.getBoundingClientRect();
+  if(!rect.width || !rect.height) return null;
+  const t = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]) || e;
+  const x = Math.floor((t.clientX - rect.left) * (cvs.width/rect.width));
+  const y = Math.floor((t.clientY - rect.top) * (cvs.height/rect.height));
+  if(x < 0 || y < 0 || x >= cvs.width || y >= cvs.height) return null;
+  return {x,y};
+}
+function sfPeek(e){
+  if(!SFDATA) return;
+  if(e.cancelable) e.preventDefault();
+  const p = sfPos(e);
+  if(!p) return;
+  const d = SFDATA.data, i = (p.y*SFDATA.width + p.x)*4;
+  SFLAST = rgb2hex(d[i], d[i+1], d[i+2]);
+  SFPT = p; drawSampler();
+  $('sfLive').style.background = SFLAST;
+  $('o_sfHex').textContent = SFLAST.toUpperCase();
+}
+function sfCommit(){
+  if(!SFLAST) return;
+  if(addSwatch(SFLAST)) log(`swatch ${SFLAST.toUpperCase()} sampled — ${SWATCH.length} in palette`);
+}
+(function(){
+  const cvs = $('sfCanvas');
+  if(!cvs) return;
+  cvs.addEventListener('touchstart', e=>{ SFDRAG = true; sfPeek(e); }, {passive:false});
+  cvs.addEventListener('touchmove',  e=>{ if(SFDRAG) sfPeek(e); }, {passive:false});
+  cvs.addEventListener('touchend',   e=>{ if(SFDRAG){ sfPeek(e); sfCommit(); } SFDRAG = false; }, {passive:false});
+  cvs.addEventListener('touchcancel', ()=>{ SFDRAG = false; });
+  cvs.addEventListener('mousedown', e=>{ SFDRAG = true; sfPeek(e); });
+  cvs.addEventListener('mousemove', e=>{ if(SFDRAG) sfPeek(e); });
+  window.addEventListener('mouseup', ()=>{ if(SFDRAG){ sfCommit(); SFDRAG = false; } });
+  $('sfAdd').addEventListener('click', ()=>{
+    const hex = $('sfPick').value.toLowerCase();
+    if(addSwatch(hex)) log(`swatch ${hex.toUpperCase()} added — ${SWATCH.length} in palette`);
+  });
+  $('sfClear').addEventListener('click', ()=>{ SWATCH = []; SFLAST = null; renderSwatches(); log('swatch palette cleared'); });
+})();
+
+
+/* ╔═══════════════════════════════════════════════════╗
+   ║  GROUP 1 :: WARP — polar / field displacement     ║
+   ╚═══════════════════════════════════════════════════╝ */
+
+/* Shared remap: build int index maps, gather pixels. Mirrors
+   `data = data[y_map, x_map]` from the Python. */
+function remap(id, mapX, mapY){
+  const {width:w, height:h, data:src} = id;
+  const out = new Uint8ClampedArray(src.length);
+  for(let i=0, n=w*h; i<n; i++){
+    const s = (mapY[i]*w + mapX[i]) << 2, t = i << 2;
+    out[t]=src[s]; out[t+1]=src[s+1]; out[t+2]=src[s+2]; out[t+3]=255;
+  }
+  return new ImageData(out, w, h);
+}
+
+/* Roll a single channel horizontally — the AC hum / chromatic flip */
+function rollChannel(id, ch, shift){
+  const {width:w, height:h, data:d} = id;
+  if(!shift) return id;
+  const row = new Uint8ClampedArray(w);
+  for(let y=0;y<h;y++){
+    for(let x=0;x<w;x++) row[x] = d[(y*w+x)*4+ch];
+    for(let x=0;x<w;x++){
+      let sx = (x - shift) % w; if(sx<0) sx += w;
+      d[(y*w+x)*4+ch] = row[sx];
+    }
+  }
+  return id;
+}
+
+/* CHAOS LOOP + TOTAL RECALL — same engine, drift is the only difference.
+   Polarity flips each pass; drift stops the math perfectly cancelling. */
+function warpChaos(id, P){
+  const {width:w, height:h} = id;
+  const cx = w/2, cy = h/2;
+  const mapX = new Int32Array(w*h), mapY = new Int32Array(w*h);
+  let maxR = Math.sqrt(cx*cx + cy*cy) || 1;
+
+  for(let i=0; i<P.iters; i++){
+    const mult = (i % 2 === 0) ? 1 : -1;
+    const drift = 1 + (P.drift ? (Math.random()*2-1)*P.drift : 0);
+    const lens = P.lens * mult * drift;
+    const wob  = P.wobble * mult * drift;
+    const hum  = Math.round(P.hum * mult);
+
+    for(let y=0, k=0; y<h; y++){
+      const yc = y - cy;
+      for(let x=0; x<w; x++, k++){
+        const xc = x - cx;
+        const r = Math.sqrt(xc*xc + yc*yc);
+        const rn = r / maxR;
+        const th = Math.atan2(yc, xc) + wob * (1 - rn);
+        const rw = r * (1 + lens * (1 - rn));
+        mapX[k] = clamp(Math.round(rw*Math.cos(th) + cx), 0, w-1);
+        mapY[k] = clamp(Math.round(rw*Math.sin(th) + cy), 0, h-1);
+      }
+    }
+    id = remap(id, mapX, mapY);
+    if(hum) rollChannel(id, 0, hum);
+  }
+  return id;
+}
+
+/* SINGULARITY — hyper-shell map. r^(1/D) with D growing exponentially,
+   spiral phase per iteration, bit-crush per iteration. */
+function warpSingularity(id, P, inverse){
+  const {width:w, height:h} = id;
+  const cx = w/2, cy = h/2;
+  const mapX = new Int32Array(w*h), mapY = new Int32Array(w*h);
+  const order = inverse ? [...Array(P.iters).keys()].reverse() : [...Array(P.iters).keys()];
+
+  for(const i of order){
+    // Python did dim_power = 100 ** (i+1), which saturates almost instantly:
+    // by iteration 2 every radius maps to r≈1 and the frame samples a single
+    // ring. Ramp the exponent linearly instead so the DIM dial stays live
+    // across its whole range — same shell-collapse character, controllable.
+    const dimPower = Math.max(1.01, P.dim * (1 + i * 0.35));
+    const phase = P.spiral * Math.PI * (i+1) * (inverse ? -1 : 1);
+
+    for(let y=0, k=0; y<h; y++){
+      const ny = (y - cy)/cy;
+      for(let x=0; x<w; x++, k++){
+        const nx = (x - cx)/cx;
+        const r = Math.sqrt(nx*nx + ny*ny);
+        const th = Math.atan2(ny, nx) + phase;
+        const rw = inverse ? Math.pow(r, dimPower) : Math.pow(r, 1/dimPower);
+        mapX[k] = clamp(Math.round(rw*Math.cos(th)*cx + cx), 0, w-1);
+        mapY[k] = clamp(Math.round(rw*Math.sin(th)*cy + cy), 0, h-1);
+      }
+    }
+    id = remap(id, mapX, mapY);
+
+    if(!inverse && P.crunch > 1){
+      const cr = P.crunch * (i+1), d = id.data;
+      for(let j=0;j<d.length;j+=4){
+        d[j]   = Math.floor(d[j]  /cr)*cr;
+        d[j+1] = Math.floor(d[j+1]/cr)*cr;
+        d[j+2] = Math.floor(d[j+2]/cr)*cr;
+      }
+    }
+  }
+  return inverse ? id : autocontrast(id, 3);
+}
+
+/* LIQUID — sine/cosine wobble field, then blur + saturation + contrast */
+function warpLiquid(id, P){
+  const {width:w, height:h} = id;
+  const G = P.gchaos, WOB = Math.round(45*G);
+  const mapX = new Int32Array(w*h), mapY = new Int32Array(w*h);
+
+  for(let y=0, k=0; y<h; y++){
+    const sx = Math.round(Math.sin(y/(12*G)) * WOB);
+    for(let x=0; x<w; x++, k++){
+      const sy = Math.round(Math.cos(x/(8*G)) * Math.round(WOB*1.5));
+      mapX[k] = clamp(x + sx, 0, w-1);
+      mapY[k] = clamp(y + sy, 0, h-1);
+    }
+  }
+  id = remap(id, mapX, mapY);
+  if(P.blur > 0) id = blurRGB(id, P.blur);
+
+  const d = id.data;
+  for(let i=0;i<d.length;i+=4){
+    const g = (d[i]+d[i+1]+d[i+2])/3;
+    for(let c=0;c<3;c++){
+      let v = g + (d[i+c]-g)*P.sat;          // ImageEnhance.Color
+      v = 128 + (v-128)*P.con;               // ImageEnhance.Contrast
+      d[i+c] = clamp(v, 0, 255);
+    }
+  }
+  return id;
+}
+
+/* CRYSTAL LATTICE — per-channel shear driven by row/col luminance profiles,
+   then edge×grid bitwise inversion and an edge-fidelity blend back. */
+function warpLattice(id, P){
+  const {width:w, height:h, data:src} = id;
+  const gray = toGray(id);
+
+  const rowP = new Float32Array(h), colP = new Float32Array(w);
+  for(let y=0;y<h;y++){ let s=0; for(let x=0;x<w;x++) s+=gray[y*w+x]; rowP[y]=s/w; }
+  for(let x=0;x<w;x++){ let s=0; for(let y=0;y<h;y++) s+=gray[y*w+x]; colP[x]=s/h; }
+
+  const median = a => { const s=[...a].sort((p,q)=>p-q); return s[s.length>>1]; };
+  const rMed = median(rowP), cMed = median(colP);
+
+  const rOff = new Int32Array(h), bOff = new Int32Array(w), gOff = new Int32Array(h);
+  for(let y=0;y<h;y++) rOff[y] = ((rowP[y]-rMed) * P.shx) | 0;
+  for(let x=0;x<w;x++) bOff[x] = ((colP[x]-cMed) * P.shy) | 0;
+  const roll = Math.floor(h/3);
+  for(let y=0;y<h;y++) gOff[y] = (rOff[(y - roll + h) % h] * 0.5) | 0;
+
+  const out = new Uint8ClampedArray(src.length);
+  for(let y=0;y<h;y++){
+    for(let x=0;x<w;x++){
+      const t = (y*w+x)<<2;
+      let xr = (x - rOff[y]) % w; if(xr<0) xr+=w;
+      let xg = (x - gOff[y]) % w; if(xg<0) xg+=w;
+      let yb = (y - bOff[x]) % h; if(yb<0) yb+=h;
+      out[t]   = src[((y*w+xr)<<2)];
+      out[t+1] = src[((y*w+xg)<<2)+1];
+      out[t+2] = src[((yb*w+x)<<2)+2];
+      out[t+3] = 255;
+    }
+  }
+
+  // FIND_EDGES + MaxFilter(3), then lattice interference
+  const edge = new Uint8Array(w*h);
+  for(let y=1;y<h-1;y++){
+    for(let x=1;x<w-1;x++){
+      const c = gray[y*w+x];
+      const v = Math.abs(4*c - gray[(y-1)*w+x] - gray[(y+1)*w+x] - gray[y*w+x-1] - gray[y*w+x+1]);
+      if(v > P.edge) edge[y*w+x] = 1;
+    }
+  }
+  const dil = new Uint8Array(w*h);
+  for(let y=1;y<h-1;y++) for(let x=1;x<w-1;x++){
+    if(edge[y*w+x] || edge[(y-1)*w+x] || edge[(y+1)*w+x] || edge[y*w+x-1] || edge[y*w+x+1]) dil[y*w+x]=1;
+  }
+
+  const step = P.latStep;
+  for(let y=0;y<h;y++){
+    for(let x=0;x<w;x++){
+      const i = y*w+x, t = i<<2;
+      if(!dil[i]) continue;
+      if(x % step === 0 || y % step === 0){
+        out[t] = 255-out[t]; out[t+1] = 255-out[t+1]; out[t+2] = 255-out[t+2];
+      }
+      out[t]   = out[t]  *0.4 + src[t]  *0.6;
+      out[t+1] = out[t+1]*0.4 + src[t+1]*0.6;
+      out[t+2] = out[t+2]*0.4 + src[t+2]*0.6;
+    }
+  }
+
+  let res = new ImageData(out, w, h);
+  const d = res.data;
+  for(let i=0;i<d.length;i+=4){          // contrast 1.25, sharpness handled by contrast
+    for(let c=0;c<3;c++) d[i+c] = clamp(128 + (d[i+c]-128)*1.25, 0, 255);
+  }
+  return res;
+}
+
+
+/* ╔═══════════════════════════════════════════════════╗
+   ║  GROUP 2 :: COLOR — palette, dither, CRT          ║
+   ╚═══════════════════════════════════════════════════╝ */
+
+const PALETTES = {
+  PICO_8: [[0,0,0],[29,43,83],[126,37,83],[0,135,81],[171,82,54],[95,87,79],[194,195,199],[255,241,232],
+    [255,0,77],[255,163,0],[255,236,39],[0,228,54],[41,173,255],[131,118,156],[255,119,168],[255,204,170]],
+  GAMEBOY_DMG: [[15,56,15],[48,98,48],[139,172,15],[155,188,15]],
+  GAMEBOY_COLOR: [[0,0,0],[248,56,0],[0,168,0],[248,168,0],[0,0,188],[188,0,188],[0,168,168],[188,188,188],
+    [124,124,124],[248,120,112],[120,248,120],[248,248,120],[112,112,248],[248,112,248],[112,248,248],[248,248,248]],
+  SEGA_GENESIS: [[0,0,0],[34,34,34],[68,68,68],[102,102,102],[153,153,153],[204,204,204],[238,238,238],[255,255,255],
+    [0,0,136],[0,0,221],[0,102,255],[102,170,255],[170,221,255],[136,0,0],[221,0,0],[255,102,0],[255,170,0],
+    [255,221,136],[0,136,0],[0,221,0],[0,255,102],[102,255,170],[170,255,221]],
+  NES: [[124,124,124],[0,0,252],[0,0,188],[68,40,188],[148,0,132],[168,0,32],[168,16,0],[136,20,0],[80,48,0],
+    [0,120,0],[0,104,0],[0,88,0],[0,64,88],[0,0,0],[188,188,188],[0,120,248],[0,88,248],[104,68,252],[216,0,204],
+    [228,0,88],[248,56,0],[228,92,16],[172,124,0],[0,184,0],[0,168,0],[0,168,68],[0,136,136],[248,248,248],
+    [60,188,252],[104,136,252],[152,120,248],[248,120,248],[248,88,152],[248,120,88],[252,160,68],[248,184,0],
+    [184,248,24],[88,216,84],[88,248,152],[0,232,216],[120,120,120],[252,252,252],[164,228,252],[184,184,248],
+    [216,184,248],[248,184,248],[248,164,192],[240,208,176],[252,224,168],[248,216,120],[216,248,120],[184,248,184],
+    [184,248,216],[0,252,252]],
+  CGA: [[0,0,0],[85,255,255],[255,85,255],[255,255,255]],
+  TELETEXT: [[0,0,0],[255,0,0],[0,255,0],[255,255,0],[0,0,255],[255,0,255],[0,255,255],[255,255,255]],
+  MONO_AMBER: [[20,10,0],[255,176,0]],
+  MONO_GREEN: [[8,16,8],[51,255,51]]
 };
 
-/* ═══ ENGINE LINEAGE ═════════════════════════════════════════════
-   SKELETON  ← Oneline.py + Serpent 9  (FIND_EDGES → vector strokes)
-   DUST      ← Uitascii/Ultuktaskkii/Ultcolirascii (Sobel + NMS +
-               glitch injection + dust ramp, mono or truecolor)
-   SOVEREIGN ← Jasci.py (katakana vector calculus, quantized color)
-   MATRIX    ← KintsugiSoldier recon (VGA block slate, gold omitted)
-   ATLAS     ← atlas_dust.py (glyph cached once, drawImage blit)
-   TEXTMODE  ← Ouscii.py (SMUSH / RIGID copy-paste ascii)
-   ════════════════════════════════════════════════════════════════ */
+const BAYER4 = [[0,8,2,10],[12,4,14,6],[3,11,1,9],[15,7,13,5]];
+const BAYER8 = (()=>{
+  const m = [], N = 8;
+  for(let y=0;y<N;y++){ m.push([]); for(let x=0;x<N;x++){
+    let v=0, mask=N>>1, xc=x, yc=y;
+    while(mask){ v = (v<<2) | ((((yc&mask)?1:0)<<1) ^ ((xc&mask)?1:0)); mask>>=1; }
+    m[y].push(v);
+  }}
+  return m;
+})();
 
-"IBM VGA";
-const $ = id => document.getElementById(id);
-const V = id => parseFloat($(id).value);
-const S = id => $(id).value;
-const state = { img:null, name:"", eng:"SKELETON", bchar:"-" };
-const FSTATE = { VGA:false, KANA:false };
-const logEl = $("log");
+/* Nearest palette entry by squared euclidean distance — the vectorized
+   argmin from Cswap.py, done per-pixel. */
+function nearestIdx(pal, r, g, b){
+  let best=0, bd=Infinity;
+  for(let i=0;i<pal.length;i++){
+    const dr=r-pal[i][0], dg=g-pal[i][1], db=b-pal[i][2];
+    const d = dr*dr + dg*dg + db*db;
+    if(d < bd){ bd = d; best = i; }
+  }
+  return best;
+}
+function nearest(pal, r, g, b){ return pal[nearestIdx(pal, r, g, b)]; }
 
-/* ── log panel ─────────────────────────────────────────────── */
-function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
-function log(m){
-  const el = document.createElement("div");
-  const i = m.indexOf("]");
-  if (m[0] === "[" && i > 0)
-    el.innerHTML = '<span class="tg">' + esc(m.slice(0, i+1)) + "</span> " + esc(m.slice(i+1));
-  else el.textContent = m;
-  if (/FAULT|HALT|CLAMP|WARN/.test(m)) el.classList.add("warn");
-  logEl.prepend(el);
-  while (logEl.children.length > 18) logEl.lastChild.remove();
-}
+/* Median-cut palette extraction — stands in for PIL's quantize() */
+function extractPalette(id, n){
+  const d = id.data, px = [];
+  const stride = Math.max(1, Math.floor((id.width*id.height) / 20000));
+  for(let i=0;i<id.width*id.height;i+=stride) px.push([d[i*4],d[i*4+1],d[i*4+2]]);
 
-/* ── canvas + pixel utils ──────────────────────────────────── */
-function guardArea(W, H){
-  /* iOS/Safari silently returns a BLANK canvas past ~16.7M px (4096^2).
-     We do not throttle — we tell you when you have crossed it. */
-  const A = W*H, CAP = 16777216;
-  if (A > CAP) log("[LIMIT] " + W + "×" + H + " = " + (A/1e6).toFixed(1)
-    + "M px · past the ~16.7M ceiling — may come back blank. Full send anyway.");
-}
-function hexRgb(hx){ const n = parseInt(hx.slice(1), 16); return [(n>>16)&255, (n>>8)&255, n&255]; }
-function mkC(w,h){ const c = document.createElement("canvas"); c.width = w; c.height = h; return c; }
-function ctx2(c){ return c.getContext("2d", { willReadFrequently:true }); }
-
-function drawCapped(img, maxDim){
-  let w = img.naturalWidth, h = img.naturalHeight;
-  const s = Math.min(1, maxDim / Math.max(w, h));
-  w = Math.max(1, Math.round(w*s)); h = Math.max(1, Math.round(h*s));
-  const c = mkC(w,h); const x = ctx2(c);
-  x.imageSmoothingEnabled = true; x.imageSmoothingQuality = "high";
-  x.drawImage(img, 0, 0, w, h);
-  return c;
-}
-function scaleC(src, w, h, smooth){
-  const c = mkC(w,h); const x = ctx2(c);
-  x.imageSmoothingEnabled = !!smooth;
-  if (smooth) x.imageSmoothingQuality = "high";
-  x.drawImage(src, 0, 0, w, h);
-  return c;
-}
-function grayOf(canvas){
-  const w = canvas.width, h = canvas.height;
-  const d = ctx2(canvas).getImageData(0,0,w,h).data;
-  const g = new Float32Array(w*h);
-  for (let i=0, j=0; i<g.length; i++, j+=4)
-    g[i] = 0.299*d[j] + 0.587*d[j+1] + 0.114*d[j+2];
-  return g;
-}
-function grayToCanvas(g, w, h){
-  const c = mkC(w,h); const x = ctx2(c);
-  const id = x.createImageData(w,h); const d = id.data;
-  for (let i=0, j=0; i<g.length; i++, j+=4){
-    const v = Math.max(0, Math.min(255, Math.round(g[i])));
-    d[j] = d[j+1] = d[j+2] = v; d[j+3] = 255;
+  let boxes = [px];
+  while(boxes.length < n){
+    let bi=-1, brange=-1, bch=0;
+    boxes.forEach((bx,i)=>{
+      if(bx.length < 2) return;
+      for(let c=0;c<3;c++){
+        let lo=255, hi=0;
+        for(const p of bx){ if(p[c]<lo) lo=p[c]; if(p[c]>hi) hi=p[c]; }
+        if(hi-lo > brange){ brange = hi-lo; bi = i; bch = c; }
+      }
+    });
+    if(bi < 0) break;
+    const bx = boxes[bi];
+    bx.sort((p,q)=>p[bch]-q[bch]);
+    const mid = bx.length >> 1;
+    boxes.splice(bi, 1, bx.slice(0,mid), bx.slice(mid));
   }
-  x.putImageData(id, 0, 0);
-  return c;
-}
-function autocontrast(g, cutoffPct){
-  const n = g.length, hist = new Uint32Array(256);
-  for (let i=0;i<n;i++) hist[g[i]|0]++;
-  const clip = n * cutoffPct / 100;
-  let lo = 0, hi = 255, acc = 0;
-  for (lo=0; lo<256; lo++){ acc += hist[lo]; if (acc > clip) break; }
-  acc = 0;
-  for (hi=255; hi>=0; hi--){ acc += hist[hi]; if (acc > clip) break; }
-  if (hi <= lo) return g;
-  const sc = 255/(hi-lo);
-  for (let i=0;i<n;i++) g[i] = Math.max(0, Math.min(255, (g[i]-lo)*sc));
-  return g;
-}
-function median3(g, w, h){
-  const o = Float32Array.from(g);
-  for (let r=1; r<h-1; r++) for (let c=1; c<w-1; c++){
-    const t = [
-      g[(r-1)*w+c-1], g[(r-1)*w+c], g[(r-1)*w+c+1],
-      g[r*w+c-1],     g[r*w+c],     g[r*w+c+1],
-      g[(r+1)*w+c-1], g[(r+1)*w+c], g[(r+1)*w+c+1]
-    ].sort((a,b)=>a-b);
-    o[r*w+c] = t[4];
-  }
-  return o;
-}
-function sobel(g, w, h){
-  const gx = new Float32Array(w*h), gy = new Float32Array(w*h), mag = new Float32Array(w*h);
-  for (let r=1; r<h-1; r++) for (let c=1; c<w-1; c++){
-    const i = r*w+c;
-    const a=g[i-w-1], b=g[i-w], cc=g[i-w+1],
-          d=g[i-1],              f=g[i+1],
-          gg=g[i+w-1], hh=g[i+w], ii=g[i+w+1];
-    const dx = (cc + 2*f + ii) - (a + 2*d + gg);
-    const dy = (gg + 2*hh + ii) - (a + 2*b + cc);
-    gx[i]=dx; gy[i]=dy; mag[i]=Math.hypot(dx,dy);
-  }
-  return { gx, gy, mag };
-}
-function centralGrad(g, w, h){   /* np.gradient */
-  const gx = new Float32Array(w*h), gy = new Float32Array(w*h);
-  for (let r=0; r<h; r++) for (let c=0; c<w; c++){
-    const i = r*w+c;
-    gx[i] = (w<2) ? 0 : (c===0) ? g[i+1]-g[i] : (c===w-1) ? g[i]-g[i-1] : (g[i+1]-g[i-1])/2;
-    gy[i] = (h<2) ? 0 : (r===0) ? g[i+w]-g[i] : (r===h-1) ? g[i]-g[i-w] : (g[i+w]-g[i-w])/2;
-  }
-  return { gx, gy };
-}
-function findEdges8(g, w, h){    /* PIL FIND_EDGES kernel */
-  const o = new Float32Array(w*h);
-  for (let r=1; r<h-1; r++) for (let c=1; c<w-1; c++){
-    const i = r*w+c;
-    const v = 8*g[i] - (g[i-w-1]+g[i-w]+g[i-w+1]+g[i-1]+g[i+1]+g[i+w-1]+g[i+w]+g[i+w+1]);
-    o[i] = Math.max(0, Math.min(255, v));
-  }
-  return o;
-}
-
-/* ── fonts ─────────────────────────────────────────────────── */
-function fontStack(kana){
-  return kana
-    ? '"GF_KANA","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif'
-    : '"GF_VGA","IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace';
-}
-function metrics(px){
-  const x = ctx2(mkC(8,8));
-  x.font = px + "px " + fontStack(false);
-  const cw = x.measureText("@").width || px*0.5625;
-  return { cw, ch:px };
-}
-async function loadFontBuf(slot, buf){
-  const fam = slot === "VGA" ? "GF_VGA" : "GF_KANA";
-  const f = new FontFace(fam, buf);
-  await f.load();
-  document.fonts.add(f);
-  FSTATE[slot] = true;
-  log("[FONT] " + slot + " loaded ✓");
-}
-function cleanB64(s){ return s.replace(/^data:[^,]*,/, "").replace(/\s+/g, ""); }
-async function bootFonts(){
-  for (const k of ["VGA","KANA"]){
-    const b = USER_FONT_B64[k];
-    if (!b) continue;
-    try {
-      const s = atob(cleanB64(b));
-      const u = new Uint8Array(s.length);
-      for (let i=0;i<s.length;i++) u[i] = s.charCodeAt(i);
-      await loadFontBuf(k, u.buffer);
-    } catch(e){ log("[WARN] " + k + " b64 failed: " + e.message); }
-  }
-  if (!FSTATE.VGA) log("[FONT] no VGA embed — system mono fallback");
-}
-function hookFontInput(inputId, slot){
-  $(inputId).addEventListener("change", async e => {
-    const f = e.target.files[0]; if (!f) return;
-    try { await loadFontBuf(slot, await f.arrayBuffer()); }
-    catch(err){ log("[FAULT] font load: " + err.message); }
+  return boxes.filter(b=>b.length).map(bx=>{
+    let r=0,g=0,b=0;
+    for(const p of bx){ r+=p[0]; g+=p[1]; b+=p[2]; }
+    return [Math.round(r/bx.length), Math.round(g/bx.length), Math.round(b/bx.length)];
   });
 }
 
-/* ── glyph grid renderer (shared) ──────────────────────────── */
-function renderGrid(cells, cols, rows, px, bgc, pad){
-  let m = metrics(px);
-  let W = Math.ceil(cols*m.cw) + pad*2, H = rows*m.ch + pad*2;
-  guardArea(W, H);
-  const c = mkC(W,H); const x = ctx2(c);
-  x.fillStyle = bgc; x.fillRect(0,0,W,H);
-  x.font = px + "px " + fontStack(false);
-  x.textBaseline = "top";
-  let cur = "";
-  for (let r=0; r<rows; r++){
-    const row = cells[r];
-    for (let cc=0; cc<cols; cc++){
-      const cell = row[cc];
-      if (!cell || cell.ch === " ") continue;
-      if (cell.fill !== cur){ x.fillStyle = cell.fill; cur = cell.fill; }
-      x.fillText(cell.ch, pad + cc*m.cw, pad + r*m.ch);
+/* Chunky-pixel downsample before quantizing (the console-look block step) */
+function pixelate(id, size){
+  if(size <= 1) return id;
+  const {width:w, height:h, data:d} = id;
+  for(let by=0; by<h; by+=size){
+    for(let bx=0; bx<w; bx+=size){
+      let r=0,g=0,b=0,n=0;
+      for(let y=by; y<Math.min(by+size,h); y++)
+        for(let x=bx; x<Math.min(bx+size,w); x++){
+          const t=(y*w+x)<<2; r+=d[t]; g+=d[t+1]; b+=d[t+2]; n++;
+        }
+      r=r/n|0; g=g/n|0; b=b/n|0;
+      for(let y=by; y<Math.min(by+size,h); y++)
+        for(let x=bx; x<Math.min(bx+size,w); x++){
+          const t=(y*w+x)<<2; d[t]=r; d[t+1]=g; d[t+2]=b;
+        }
     }
   }
-  return c;
+  return id;
 }
 
-/* ══ ENGINE: SKELETON (vector strokes, edge-to-edge) ════════
-   Strokes are chosen by Sobel ANGLE, not magnitude, and drawn as
-   real lines spanning the full cell — so neighbours touch.
-   Edge direction = gradient direction + 90°.                    */
-function runSKELETON(){
-  const img = state.img, cols = V("cols")|0, gate = V("gateSkel");
-  const cell = V("fpx")|0;                     /* square cell → true 45° */
-  const rows = Math.max(1, Math.round(cols * img.naturalHeight / img.naturalWidth));
+function quantize(id, pal, P){
+  const {width:w, height:h, data:d} = id;
+  const OUT = (P.palOut && P.palOut.length === pal.length) ? P.palOut : pal;
+  if(P.pxSize > 1) pixelate(id, P.pxSize);
 
-  /* downsample FIRST, gradient at grid res — sharper than blurring an edge map */
-  const full = drawCapped(img, V("srcres"));
-  let g = grayOf(full);
-  autocontrast(g, 0);
-  const a = grayOf(scaleC(grayToCanvas(g, full.width, full.height), cols, rows, true));
-  const { gx, gy, mag } = sobel(a, cols, rows);
-
-  /* pass 1 — which cells survive gate + non-max suppression */
-  const live = new Uint8Array(cols*rows);
-  for (let r=0; r<rows; r++) for (let c=0; c<cols; c++){
-    const i = r*cols+c, M = mag[i];
-    if (M < gate) continue;
-    let mx = 0;
-    if (c>0)      mx = Math.max(mx, mag[i-1]);
-    if (c<cols-1) mx = Math.max(mx, mag[i+1]);
-    if (r>0)      mx = Math.max(mx, mag[i-cols]);
-    if (r<rows-1) mx = Math.max(mx, mag[i+cols]);
-    if (M >= mx) live[i] = 1;
-  }
-
-  /* pass 2 — prune isolated specks. fewest lines that still carry the form */
-  const prune = V("prune")|0;
-  let keep = live;
-  if (prune > 0){
-    keep = new Uint8Array(cols*rows);
-    for (let r=0; r<rows; r++) for (let c=0; c<cols; c++){
-      const i = r*cols+c;
-      if (!live[i]) continue;
-      let n = 0;
-      for (let dr=-1; dr<=1; dr++) for (let dc=-1; dc<=1; dc++){
-        if (!dr && !dc) continue;
-        const rr = r+dr, cc2 = c+dc;
-        if (rr<0 || rr>=rows || cc2<0 || cc2>=cols) continue;
-        if (live[rr*cols+cc2]) n++;
-      }
-      if (n >= prune) keep[i] = 1;
-    }
-  }
-
-  const W = cols*cell, H = rows*cell;
-  guardArea(W, H);
-  const cv = mkC(W,H); const x = ctx2(cv);
-  x.fillStyle = S("bg"); x.fillRect(0,0,W,H);
-  x.strokeStyle = S("fg");
-  x.lineWidth = V("weight");
-  x.lineCap = "round";
-  x.lineJoin = "round";
-
-  x.beginPath();                                /* one path, one stroke */
-  let drawn = 0;
-  for (let r=0; r<rows; r++) for (let c=0; c<cols; c++){
-    const i = r*cols+c;
-    if (!keep[i]) continue;
-    let ang = Math.atan2(gy[i], gx[i]) * 180/Math.PI + 90;   /* ← the +90 */
-    ang = ((ang % 180) + 180) % 180;
-    const ox = c*cell, oy = r*cell, h = cell/2;
-    if (ang < 22.5 || ang >= 157.5){            /* ─ horizontal */
-      x.moveTo(ox, oy+h);        x.lineTo(ox+cell, oy+h);
-    } else if (ang < 67.5){                     /* \ down-right (Jasci ヽ) */
-      x.moveTo(ox, oy);          x.lineTo(ox+cell, oy+cell);
-    } else if (ang < 112.5){                    /* │ vertical */
-      x.moveTo(ox+h, oy);        x.lineTo(ox+h, oy+cell);
-    } else {                                    /* / down-left (Jasci ノ) */
-      x.moveTo(ox, oy+cell);     x.lineTo(ox+cell, oy);
-    }
-    drawn++;
-  }
-  x.stroke();
-  log("[GRID] " + cols + "×" + rows + " · " + drawn + " strokes");
-  return cv;
-}
-
-/* ══ ENGINE: DUST ═══════════════════════════════════════════ */
-function runDUST(){
-  const img = state.img, cols = V("cols")|0, px = V("fpx")|0;
-  const thresh = V("edgeThresh"), gamma = V("gamma"), glitchP = V("glitch")/100;
-  const iw = img.naturalWidth, ih = img.naturalHeight;
-  const m = metrics(px);
-  const rows = Math.max(1, Math.round(cols * m.cw * ih / (iw * m.ch)));
-
-  const full = drawCapped(img, V("srcres"));
-  let gFull = grayOf(full);
-  autocontrast(gFull, V("autoc"));
-  const gc = grayToCanvas(gFull, full.width, full.height);
-  let a = grayOf(scaleC(gc, cols, rows, true));
-  a = median3(a, cols, rows);
-  const rd = ctx2(scaleC(full, cols, rows, true)).getImageData(0,0,cols,rows).data;
-  const { gx, gy, mag } = sobel(a, cols, rows);
-
-  let ramp = [...S("rampDust")]; if (ramp.length < 2) ramp = [..."·°ºoO0#@"];
-  const rmax = ramp.length - 1;
-  const gl = [...S("rampGlitch")];
-  let eg = [...S("rampEdge")]; while (eg.length < 4) eg.push(eg[eg.length-1] || "-");
-  const mode = S("colorMode"), fg = S("fg");
-
-  const cells = [];
-  for (let r=0; r<rows; r++){
-    const row = [];
-    for (let c=0; c<cols; c++){
-      const i = r*cols+c;
-      let ch = null;
-      const M = mag[i];
-      if (M >= thresh){
-        let mx = 0;
-        if (c>0)      mx = Math.max(mx, mag[i-1]);
-        if (c<cols-1) mx = Math.max(mx, mag[i+1]);
-        if (r>0)      mx = Math.max(mx, mag[i-cols]);
-        if (r<rows-1) mx = Math.max(mx, mag[i+cols]);
-        if (M >= mx){   /* non-max suppression survivor */
-          if (M > 120 && gl.length && Math.random() < glitchP)
-            ch = gl[(Math.random()*gl.length)|0];
-          else {
-            let ang = Math.atan2(gy[i], gx[i]) * 180/Math.PI;
-            ang = ((ang % 180) + 180) % 180;
-            ch = (ang < 22.5 || ang >= 157.5) ? eg[0] : (ang < 67.5) ? eg[1] : (ang < 112.5) ? eg[2] : eg[3];
+  if(P.dither === 'FS'){
+    // Floyd-Steinberg. Work in float so error can go negative.
+    const buf = new Float32Array(w*h*3);
+    for(let i=0;i<w*h;i++){ buf[i*3]=d[i*4]; buf[i*3+1]=d[i*4+1]; buf[i*3+2]=d[i*4+2]; }
+    const push = (i,ch,e,f)=>{ if(i>=0 && i<w*h) buf[i*3+ch] += e*f*P.dAmt; };
+    for(let y=0;y<h;y++){
+      for(let x=0;x<w;x++){
+        const i = y*w+x;
+        const old = [buf[i*3], buf[i*3+1], buf[i*3+2]];
+        const qi = nearestIdx(pal, old[0], old[1], old[2]);
+        const mc = pal[qi], oc = OUT[qi];
+        for(let c=0;c<3;c++){
+          const err = old[c] - mc[c];
+          d[i*4+c] = oc[c];
+          if(x+1<w)          push(i+1,   c, err, 7/16);
+          if(y+1<h){
+            if(x>0)          push(i+w-1, c, err, 3/16);
+                             push(i+w,   c, err, 5/16);
+            if(x+1<w)        push(i+w+1, c, err, 1/16);
           }
         }
       }
-      if (!ch){
-        let idx = Math.floor((Math.pow(a[i]/255, gamma)*255|0) * rmax / 255);
-        idx = Math.max(0, Math.min(rmax, idx));
-        ch = ramp[rmax - idx];
-      }
-      const fill = (mode === "TRUE")
-        ? "rgb(" + rd[i*4] + "," + rd[i*4+1] + "," + rd[i*4+2] + ")"
-        : fg;
-      row.push({ ch, fill });
     }
-    cells.push(row);
+  } else if(P.dither === 'BAYER4' || P.dither === 'BAYER8'){
+    const M = P.dither === 'BAYER4' ? BAYER4 : BAYER8;
+    const N = M.length, denom = N*N;
+    const spread = (255/pal.length) * P.dAmt * 1.6;
+    for(let y=0;y<h;y++) for(let x=0;x<w;x++){
+      const i=(y*w+x)<<2;
+      const th = (M[y%N][x%N]/denom - 0.5) * spread;
+      const nc = OUT[nearestIdx(pal, clamp(d[i]+th,0,255), clamp(d[i+1]+th,0,255), clamp(d[i+2]+th,0,255))];
+      d[i]=nc[0]; d[i+1]=nc[1]; d[i+2]=nc[2];
+    }
+  } else if(P.dither === 'SCANLINE'){
+    const amp = 40 * P.dAmt;
+    for(let y=0;y<h;y++){
+      const bias = (y % 2 === 0) ? amp : -amp;
+      for(let x=0;x<w;x++){
+        const i=(y*w+x)<<2;
+        const nc = OUT[nearestIdx(pal, clamp(d[i]+bias,0,255), clamp(d[i+1]+bias,0,255), clamp(d[i+2]+bias,0,255))];
+        d[i]=nc[0]; d[i+1]=nc[1]; d[i+2]=nc[2];
+      }
+    }
+  } else {
+    for(let i=0;i<w*h;i++){
+      const t=i<<2;
+      const nc = OUT[nearestIdx(pal, d[t], d[t+1], d[t+2])];
+      d[t]=nc[0]; d[t+1]=nc[1]; d[t+2]=nc[2];
+    }
   }
-  log("[GRID] " + cols + "×" + rows + " · cell " + m.cw.toFixed(1) + "×" + m.ch);
-  return renderGrid(cells, cols, rows, px, S("bg"), 8);
+
+  // CRT gap lines — darken every Nth row
+  if(P.scanGap > 0){
+    for(let y=0;y<h;y++){
+      if(y % (P.scanGap+1) !== 0) continue;
+      for(let x=0;x<w;x++){
+        const t=(y*w+x)<<2;
+        d[t]*=0.45; d[t+1]*=0.45; d[t+2]*=0.45;
+      }
+    }
+  }
+  return id;
 }
 
-/* ══ ENGINE: ATLAS (glyph cached once, blitted) ═════════════
-   Every other engine calls fillText once per cell — at 400 cols
-   that is ~100k rasterisations of ~70 distinct glyphs. Here each
-   glyph is rasterised ONCE into an offscreen strip, then every
-   cell is a drawImage blit off that strip.                      */
-function buildAtlas(ramp, px, fill){
-  const m = metrics(px);
-  const cw = Math.max(1, Math.ceil(m.cw)), ch = Math.max(1, m.ch);
-  const a = mkC(cw*ramp.length, ch);
-  const x = ctx2(a);
-  x.font = px + "px " + fontStack(false);
-  x.textBaseline = "top";
-  x.fillStyle = fill;
-  for (let i=0; i<ramp.length; i++) x.fillText(ramp[i], i*cw, 0);
-  return { canvas:a, cw, ch };
-}
-function runATLAS(){
-  const img = state.img, cols = V("cols")|0, px = V("fpx")|0;
-  let ramp = [...S("rampAtlas")];
-  if (ramp.length < 2) ramp = [..." .'`^\",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$"];
-  const t0 = performance.now();
-  const A = buildAtlas(ramp, px, S("fg"));
-  const rows = Math.max(1, Math.round(cols * A.cw * img.naturalHeight / (img.naturalWidth * A.ch)));
+/* SAMPLE FILL — quantize to a hand-sampled swatch set. Match map is built
+   once, then the output palette can be rotated under it. */
+function sampleFill(id, P){
+  const pal = P.pal, n = pal.length;
+  const k = ((P.cycle % n) + n) % n;
+  const out = k ? pal.slice(k).concat(pal.slice(0,k)) : pal;
 
-  const full = drawCapped(img, V("srcres"));
-  let g = grayOf(full);
-  autocontrast(g, V("autoc"));
-  const a = grayOf(scaleC(grayToCanvas(g, full.width, full.height), cols, rows, true));
+  if(P.match !== 'LUMA') return quantize(id, pal, {...P, palOut: out});
 
-  const W = cols*A.cw, H = rows*A.ch;
-  guardArea(W, H);
-  const cv = mkC(W,H); const x = ctx2(cv);
-  x.fillStyle = S("bg"); x.fillRect(0,0,W,H);
-
-  const gamma = V("gamma"), L = ramp.length - 1;
-  let blits = 0;
-  for (let r=0; r<rows; r++) for (let c=0; c<cols; c++){
-    const v = Math.pow(a[r*cols+c]/255, gamma);
-    const idx = Math.max(0, Math.min(L, Math.round((1-v)*L)));
-    if (ramp[idx] === " ") continue;
-    x.drawImage(A.canvas, idx*A.cw, 0, A.cw, A.ch, c*A.cw, r*A.ch, A.cw, A.ch);
-    blits++;
+  if(P.pxSize > 1) pixelate(id, P.pxSize);
+  const order = pal.map((c,i)=>i).sort((a,b)=> lumOf(pal[a]) - lumOf(pal[b]));
+  const {width:w, height:h, data:d} = id;
+  const M = P.dither === 'BAYER4' ? BAYER4 : (P.dither === 'BAYER8' ? BAYER8 : null);
+  const N = M ? M.length : 0, denom = N*N;
+  const spread = (255/n) * P.dAmt * 1.6;
+  for(let y=0;y<h;y++){
+    for(let x=0;x<w;x++){
+      const t = (y*w+x)<<2;
+      let L = 0.299*d[t] + 0.587*d[t+1] + 0.114*d[t+2];
+      if(M) L += (M[y%N][x%N]/denom - 0.5) * spread;
+      else if(P.dither === 'SCANLINE') L += (y%2===0 ? 40 : -40) * P.dAmt;
+      const band = clamp(Math.floor(clamp(L,0,255)/256*n), 0, n-1);
+      const c = out[order[band]];
+      d[t]=c[0]; d[t+1]=c[1]; d[t+2]=c[2];
+    }
   }
-  log("[ATLAS] " + ramp.length + " glyphs cached · " + blits + " blits · "
-      + (performance.now()-t0).toFixed(0) + "ms");
-  log("[GRID] " + cols + "×" + rows);
-  return cv;
+  if(P.scanGap > 0){
+    for(let y=0;y<h;y++){
+      if(y % (P.scanGap+1) !== 0) continue;
+      for(let x=0;x<w;x++){ const t=(y*w+x)<<2; d[t]*=0.45; d[t+1]*=0.45; d[t+2]*=0.45; }
+    }
+  }
+  return id;
 }
 
-/* ══ ENGINE: SOVEREIGN (katakana) ═══════════════════════════ */
-function runSOVEREIGN(){
-  const img = state.img;
-  const full = drawCapped(img, V("srcres"));
-  const W = full.width, H = full.height;
-  const tw = V("sovW")|0, th = Math.max(1, Math.round(tw * H / W));
-  const bands = Math.max(2, V("bands")|0), gate = V("gateSov");
+/* CHROMA RAZOR — downsample, median, band-quantize, wash, edge outline */
+function colorPastel(id, P){
+  const {width:w, height:h} = id;
+  const sw = Math.max(1, Math.floor(w/P.scale)), sh = Math.max(1, Math.floor(h/P.scale));
 
-  const d = ctx2(scaleC(full, tw, th, true)).getImageData(0,0,tw,th).data;
-  const step = 255/(bands-1);
-  const q = new Uint8ClampedArray(d.length);
-  for (let i=0; i<d.length; i+=4){
-    q[i]   = Math.round(d[i]  /step)*step;
-    q[i+1] = Math.round(d[i+1]/step)*step;
-    q[i+2] = Math.round(d[i+2]/step)*step;
-    q[i+3] = 255;
+  const c = mkCanvas(sw, sh), x = c.getContext('2d', {willReadFrequently:true});
+  x.imageSmoothingEnabled = false;
+  x.drawImage(dataToCanvas(id), 0, 0, sw, sh);
+  const small = x.getImageData(0,0,sw,sh);
+
+  // median filter 3x3 approximating MedianFilter(size=9)
+  const sd = small.data, med = new Uint8ClampedArray(sd.length);
+  const win = new Uint8Array(9);
+  for(let y=0;y<sh;y++) for(let px=0;px<sw;px++){
+    for(let ch=0;ch<3;ch++){
+      let n=0;
+      for(let dy=-1;dy<=1;dy++) for(let dx=-1;dx<=1;dx++)
+        win[n++] = sd[((clamp(y+dy,0,sh-1)*sw + clamp(px+dx,0,sw-1))<<2)+ch];
+      const s = Array.from(win.slice(0,n)).sort((a,b)=>a-b);
+      med[((y*sw+px)<<2)+ch] = s[4];
+    }
+    med[((y*sw+px)<<2)+3] = 255;
   }
-  const gq = new Float32Array(tw*th);
-  for (let i=0, j=0; i<gq.length; i++, j+=4)
-    gq[i] = 0.299*q[j] + 0.587*q[j+1] + 0.114*q[j+2];
-  const { gx, gy } = centralGrad(gq, tw, th);
 
-  let K = [...S("rampKana")];
-  while (K.length < 4) K.push(K[K.length-1] || "ー");
+  // staircase quantize + wash toward the lift value
+  const step = 200/(P.bands-1);
+  for(let i=0;i<med.length;i+=4)
+    for(let ch=0;ch<3;ch++)
+      med[i+ch] = clamp(Math.round(med[i+ch]/step)*step * P.wash + P.lift, 0, 255);
 
-  const out = mkC(W,H); const x = ctx2(out);
-  x.fillStyle = S("bg"); x.fillRect(0,0,W,H);
-  const sx = W/tw, sy = H/th;
-  const px = Math.max(4, Math.round(sy * V("gscale")));
-  x.font = px + "px " + fontStack(true);
-  x.textBaseline = "top";
+  // NEAREST upscale back to full size
+  const c2 = mkCanvas(sw, sh);
+  c2.getContext('2d').putImageData(new ImageData(med, sw, sh), 0, 0);
+  const c3 = mkCanvas(w, h), x3 = c3.getContext('2d', {willReadFrequently:true});
+  x3.imageSmoothingEnabled = false;
+  x3.drawImage(c2, 0, 0, w, h);
+  const full = x3.getImageData(0,0,w,h);
 
-  let drawn = 0;
-  for (let r=0; r<th; r++) for (let c=0; c<tw; c++){
-    const i = r*tw+c;
-    const M = Math.hypot(gx[i], gy[i]);
-    if (M < gate) continue;
-    let ang = (Math.atan2(gy[i], gx[i]) * 180/Math.PI + 90) % 180;
-    if (ang < 0) ang += 180;
-    const ch = (ang < 22.5 || ang >= 157.5) ? K[0] : (ang < 67.5) ? K[1] : (ang < 112.5) ? K[2] : K[3];
-    const j = i*4;
-    x.fillStyle = "rgb(" + q[j] + "," + q[j+1] + "," + q[j+2] + ")";
-    x.fillText(ch, c*sx, r*sy);
-    drawn++;
+  if(P.outline){
+    const fd = full.data, edges = new Uint8Array(w*h);
+    for(let y=0;y<h;y++) for(let px=0;px<w;px++){
+      const t=(y*w+px)<<2;
+      for(let ch=0;ch<3;ch++){
+        if(px+1<w && fd[t+ch] !== fd[t+4+ch]) edges[y*w+px]=1;
+        if(y+1<h && fd[t+ch] !== fd[t+w*4+ch]) edges[y*w+px]=1;
+      }
+    }
+    for(let i=0;i<w*h;i++) if(edges[i]){ const t=i<<2; fd[t]=0; fd[t+1]=0; fd[t+2]=0; }
   }
-  log("[GRID] " + tw + "×" + th + " · " + drawn + " glyphs @ " + px + "px");
+  return full;
+}
+
+
+/* ╔═══════════════════════════════════════════════════╗
+   ║  GROUP 3 :: STRUCTURE — geometry from the image   ║
+   ╚═══════════════════════════════════════════════════╝ */
+
+/* Bowyer-Watson, straight port of the Python delaunay_triangulation */
+function delaunay(pts, w, h){
+  const A = [-w*3, -h*3], B = [w*5, -h*3], C = [(w/2)|0, h*5];
+  let tris = [[A,B,C]];
+
+  const inCircum = (t, p)=>{
+    const [[ax,ay],[bx,by],[cx,cy]] = t, [px,py] = p;
+    const dd = 2*(ax*(by-cy) + bx*(cy-ay) + cx*(ay-by));
+    if(Math.abs(dd) < 1e-9) return false;
+    const a2=ax*ax+ay*ay, b2=bx*bx+by*by, c2=cx*cx+cy*cy;
+    const ux = (a2*(by-cy) + b2*(cy-ay) + c2*(ay-by))/dd;
+    const uy = (a2*(cx-bx) + b2*(ax-cx) + c2*(bx-ax))/dd;
+    const r2 = (ax-ux)**2 + (ay-uy)**2;
+    return (px-ux)**2 + (py-uy)**2 <= r2;
+  };
+  const key = e => e[0][0]+','+e[0][1]+'|'+e[1][0]+','+e[1][1];
+
+  for(const p of pts){
+    const bad = tris.filter(t => inCircum(t, p));
+    const count = new Map();
+    for(const t of bad){
+      for(const [i,j] of [[0,1],[1,2],[2,0]]){
+        const e = [t[i], t[j]];
+        const k = key(e), rk = key([e[1], e[0]]);
+        if(count.has(rk)) count.set(rk, {e: count.get(rk).e, n: count.get(rk).n+1});
+        else if(count.has(k)) count.set(k, {e, n: count.get(k).n+1});
+        else count.set(k, {e, n:1});
+      }
+    }
+    tris = tris.filter(t => !bad.includes(t));
+    for(const {e,n} of count.values()) if(n === 1) tris.push([e[0], e[1], p]);
+  }
+  const sup = new Set([A,B,C].map(p=>p[0]+','+p[1]));
+  return tris.filter(t => !t.some(p => sup.has(p[0]+','+p[1])));
+}
+
+function structCosmo(id, P){
+  const {width:w, height:h} = id;
+  const gray = toGray(id);
+
+  // FIND_EDGES then threshold-sample on a grid.
+  // The Python used a raw pixel stride, which means the same slider value
+  // gives a totally different mesh density depending on image size. Scale it
+  // against a 900px reference so the dial means the same thing every time.
+  const step = Math.max(2, Math.round(P.samp * Math.max(w,h) / 900));
+  const nodes = [[0,0],[w-1,0],[0,h-1],[w-1,h-1],[(w/2)|0,0],[(w/2)|0,h-1],[0,(h/2)|0],[w-1,(h/2)|0]];
+  for(let y=1;y<h-1;y+=step){
+    for(let x=1;x<w-1;x+=step){
+      // Sobel magnitude — the 4-neighbour laplacian reads ~0 across smooth
+      // gradients and starves the mesh of nodes.
+      const gx = (gray[(y-1)*w+x+1] + 2*gray[y*w+x+1] + gray[(y+1)*w+x+1])
+               - (gray[(y-1)*w+x-1] + 2*gray[y*w+x-1] + gray[(y+1)*w+x-1]);
+      const gy = (gray[(y+1)*w+x-1] + 2*gray[(y+1)*w+x] + gray[(y+1)*w+x+1])
+               - (gray[(y-1)*w+x-1] + 2*gray[(y-1)*w+x] + gray[(y-1)*w+x+1]);
+      if(Math.sqrt(gx*gx + gy*gy) > P.edge) nodes.push([x,y]);
+    }
+  }
+  // A mesh needs points to be a mesh. If the image is too flat to yield any,
+  // fall back to a jittered grid so the engine still returns something.
+  if(nodes.length < 24){
+    const gs = Math.max(2, Math.round(Math.sqrt(w*h/220)));
+    for(let y=gs; y<h-gs; y+=gs)
+      for(let x=gs; x<w-gs; x+=gs)
+        nodes.push([x + ((Math.random()*gs/2)|0), y + ((Math.random()*gs/2)|0)]);
+    log('image too flat for edge nodes — using jittered grid', true);
+  }
+  let pts = nodes;
+  if(pts.length > P.maxNodes){
+    pts = [...pts];
+    for(let i=pts.length-1;i>0;i--){ const j=(Math.random()*(i+1))|0; [pts[i],pts[j]]=[pts[j],pts[i]]; }
+    pts = pts.slice(0, P.maxNodes);
+  }
+  log(`excavated ${pts.length} structural nodes`);
+
+  const tris = delaunay(pts, w, h);
+  log(`${tris.length} triangles`);
+
+  const ss = (w*h < 900*900) ? 2 : 1;          // supersample when it's affordable
+  const c = mkCanvas(w*ss, h*ss), x = c.getContext('2d');
+  x.fillStyle = '#fff'; x.fillRect(0,0,w*ss,h*ss);
+  const d = id.data;
+
+  if(P.fill){
+    for(const t of tris){
+      const cxp = clamp(((t[0][0]+t[1][0]+t[2][0])/3)|0, 0, w-1);
+      const cyp = clamp(((t[0][1]+t[1][1]+t[2][1])/3)|0, 0, h-1);
+      let r=0,g=0,b=0,n=0;
+      for(let yy=Math.max(0,cyp-1); yy<Math.min(h,cyp+2); yy++)
+        for(let xx=Math.max(0,cxp-1); xx<Math.min(w,cxp+2); xx++){
+          const i=(yy*w+xx)<<2; r+=d[i]; g+=d[i+1]; b+=d[i+2]; n++;
+        }
+      r=clamp((r/n)*P.sat,0,255)|0; g=clamp((g/n)*P.sat,0,255)|0; b=clamp((b/n)*P.sat,0,255)|0;
+      x.fillStyle = `rgb(${r},${g},${b})`;
+      x.beginPath();
+      x.moveTo(t[0][0]*ss, t[0][1]*ss);
+      x.lineTo(t[1][0]*ss, t[1][1]*ss);
+      x.lineTo(t[2][0]*ss, t[2][1]*ss);
+      x.closePath(); x.fill();
+    }
+  }
+  if(P.lw > 0){
+    const [lr,lg,lb] = hex2rgb(P.lineColor);
+    x.strokeStyle = `rgba(${lr},${lg},${lb},${110/255})`;
+    x.lineWidth = P.lw * ss;
+    const seen = new Set();
+    for(const t of tris){
+      for(const [i,j] of [[0,1],[1,2],[2,0]]){
+        const a=t[i], b2=t[j];
+        const k = [a,b2].sort().join('|');
+        if(seen.has(k)) continue;
+        seen.add(k);
+        x.beginPath(); x.moveTo(a[0]*ss,a[1]*ss); x.lineTo(b2[0]*ss,b2[1]*ss); x.stroke();
+      }
+    }
+  }
+  if(P.vert > 0){
+    x.fillStyle = 'rgba(20,20,30,0.55)';
+    for(const p of pts){
+      x.beginPath(); x.arc(p[0]*ss, p[1]*ss, P.vert*ss, 0, Math.PI*2); x.fill();
+    }
+  }
+
+  const out = mkCanvas(w,h), ox = out.getContext('2d', {willReadFrequently:true});
+  ox.drawImage(c, 0, 0, w, h);
+  return ox.getImageData(0,0,w,h);
+}
+
+/* TOPO SHARD — recursive entropy quadtree, contour burn per shard */
+function structShard(id, P){
+  const {width:w, height:h} = id;
+  const gray = blurGray(toGray(id), w, h, P.smooth);
+  const src = id.data;
+  const out = new Uint8ClampedArray(w*h*4);
+  for(let i=0;i<w*h;i++){ const t=i<<2; out[t]=5; out[t+1]=5; out[t+2]=10; out[t+3]=255; }
+
+  // palette sampled down the middle of the source, like Tooop's DNA extraction
+  const pal = [];
+  for(let i=0;i<8;i++){
+    const py = clamp((((i+0.5)*h/8)|0), 0, h-1), px = (w/2)|0;
+    const t = (py*w+px)<<2;
+    pal.push([src[t], src[t+1], src[t+2]]);
+  }
+
+  const stddev = (x0,y0,x1,y1)=>{
+    let s=0, s2=0, n=0;
+    const stp = Math.max(1, ((x1-x0)/16)|0);
+    for(let y=y0;y<y1;y+=stp) for(let x=x0;x<x1;x+=stp){ const v=gray[y*w+x]; s+=v; s2+=v*v; n++; }
+    if(!n) return 0;
+    const m = s/n;
+    return Math.sqrt(Math.max(0, s2/n - m*m));
+  };
+
+  const burn = (x0,y0,x1,y1)=>{
+    for(let lv=1; lv<=P.levels; lv++){
+      const th = 255*(lv/P.levels);
+      const col = pal[clamp(((lv/P.levels)*(pal.length-1))|0, 0, pal.length-1)];
+      for(let y=y0+1;y<y1-1;y++){
+        for(let x=x0+1;x<x1-1;x++){
+          // Test the threshold crossing over a 2px reach. A 1px test only
+          // fires on hard boundaries, so smooth gradients burn almost nothing
+          // and the whole frame stays black.
+          const c = gray[y*w+x] > th;
+          const r = Math.min(2, Math.min(x-x0, y-y0, x1-1-x, y1-1-y));
+          if(r < 1) continue;
+          const n1 = gray[(y-r)*w+x] > th, n2 = gray[(y+r)*w+x] > th;
+          const n3 = gray[y*w+x-r] > th,   n4 = gray[y*w+x+r] > th;
+          if(c === n1 && c === n2 && c === n3 && c === n4) continue;  // not a boundary
+          const t = (y*w+x)<<2;
+          out[t]   = Math.max(out[t],   col[0]);
+          out[t+1] = Math.max(out[t+1], col[1]);
+          out[t+2] = Math.max(out[t+2], col[2]);
+        }
+      }
+    }
+  };
+
+  const split = (x0,y0,x1,y1,depth)=>{
+    const ent = stddev(x0,y0,x1,y1);
+    if((ent < P.entropy && depth > 2) || (x1-x0) < P.minShard || depth > 9){ burn(x0,y0,x1,y1); return; }
+    const mx=((x0+x1)/2)|0, my=((y0+y1)/2)|0;
+    split(x0,y0,mx,my,depth+1); split(mx,y0,x1,my,depth+1);
+    split(x0,my,mx,y1,depth+1); split(mx,my,x1,y1,depth+1);
+  };
+  split(0,0,w,h,0);
+  return new ImageData(out, w, h);
+}
+
+/* gray_matter engines — POLARITY / JITTER / EXTRUSION.
+   All three are offset-accumulate loops on a grayscale canvas. */
+function structGrayMatter(id, P, mode){
+  const {width:w, height:h} = id;
+  const n = w*h;
+  let canvas = new Float32Array(n);
+  const g = toGray(id);
+
+  if(mode === 'JITTER'){
+    for(let i=0;i<n;i++) canvas[i] = g[i];
+  } else {
+    // mid-tone squeeze so it doesn't collapse to pure black/white
+    const lo = mode === 'POLARITY' ? 40 : 50, range = mode === 'POLARITY' ? 160 : 150;
+    for(let i=0;i<n;i++) canvas[i] = (g[i]/255)*range + lo;
+  }
+  const base = Float32Array.from(canvas);
+
+  const offset = (a, sx, sy)=>{           // ImageChops.offset — wraps around
+    const o = new Float32Array(n);
+    for(let y=0;y<h;y++){
+      const ny = ((y - sy) % h + h) % h;
+      for(let x=0;x<w;x++){
+        const nx = ((x - sx) % w + w) % w;
+        o[y*w+x] = a[ny*w+nx];
+      }
+    }
+    return o;
+  };
+  const autoc = (a, cutoff)=>{
+    const hist = new Uint32Array(256);
+    for(let i=0;i<n;i++) hist[clamp(a[i],0,255)|0]++;
+    let lo=0, hi=255;
+    const cut = n*cutoff/100;
+    let acc=0; for(let i=0;i<256;i++){ acc+=hist[i]; if(acc>cut){lo=i;break;} }
+    acc=0; for(let i=255;i>=0;i--){ acc+=hist[i]; if(acc>cut){hi=i;break;} }
+    if(hi<=lo) return a;
+    const s = 255/(hi-lo);
+    for(let i=0;i<n;i++) a[i] = clamp((a[i]-lo)*s, 0, 255);
+    return a;
+  };
+
+  const vectors = [[1,-1],[1,1],[-1,1],[-1,-1]];
+  for(let it=0; it<P.iters; it++){
+    if(mode === 'POLARITY'){
+      const inv = new Float32Array(n);
+      for(let i=0;i<n;i++) inv[i] = 255 - canvas[i];
+      const sh = offset(inv, P.sx, P.sy);
+      for(let i=0;i<n;i++)
+        canvas[i] = P.blend === 'lighter' ? Math.max(canvas[i], sh[i]) : Math.abs(canvas[i]-sh[i]);
+      autoc(canvas, P.cut);
+    } else if(mode === 'JITTER'){
+      const [vx,vy] = vectors[it % 4];
+      const sh = offset(canvas, vx, vy);
+      for(let i=0;i<n;i++) canvas[i] = Math.max(canvas[i], sh[i]);
+      autoc(canvas, Math.max(P.cut, 5));
+    } else {                                   // EXTRUDE
+      const sh = offset(canvas, P.sx, P.sy);
+      for(let i=0;i<n;i++) canvas[i] = Math.max(sh[i], base[i]);
+    }
+  }
+
+  const out = new Uint8ClampedArray(n*4);
+  for(let i=0;i<n;i++){
+    const v = clamp(canvas[i],0,255), t=i<<2;
+    out[t]=v; out[t+1]=v; out[t+2]=v; out[t+3]=255;
+  }
+  return new ImageData(out, w, h);
+}
+
+/* SONATA — staff scribe. Brightness maps to pitch, block detail to note value. */
+function structSonata(id, P){
+  const {width:w, height:h} = id;
+  const gray = toGray(id), d = id.data;
+  const c = mkCanvas(w,h), x = c.getContext('2d', {willReadFrequently:true});
+  x.fillStyle = 'rgb(245,245,235)'; x.fillRect(0,0,w,h);
+
+  x.strokeStyle = 'rgb(80,80,90)'; x.lineWidth = 1;
+  for(let y=0; y<h; y+=P.staff){
+    for(let i=0;i<5;i++){
+      const ly = y + i*10 + 20;
+      if(ly > h) break;
+      x.beginPath(); x.moveTo(0, ly+0.5); x.lineTo(w, ly+0.5); x.stroke();
+    }
+  }
+
+  const MAXB = 64;
+  const glyph = s => s>=32 ? '\u{1D15D}' : (s>=16 ? '\u2669' : (s>=8 ? '\u266A' : '\u266B'));
+  x.textBaseline = 'top';
+
+  for(let y=0; y<h-MAXB; y+=P.minBlock){
+    for(let px=0; px<w-MAXB; px+=P.minBlock){
+      let s=0, s2=0, n=0;
+      for(let yy=y; yy<y+MAXB; yy+=4) for(let xx=px; xx<px+MAXB; xx+=4){
+        const v = gray[yy*w+xx]; s+=v; s2+=v*v; n++;
+      }
+      const m = s/n, std = Math.sqrt(Math.max(0, s2/n - m*m));
+      const size = std < P.thresh ? MAXB : P.minBlock;
+      const t = (y*w+px)<<2;
+      const bright = gray[y*w+px];
+      const pitch = ((bright % 40) / 5) | 0;
+      const ny = ((y/P.staff)|0)*P.staff + 20 + pitch*5;
+      x.fillStyle = `rgb(${d[t]},${d[t+1]},${d[t+2]})`;
+      x.font = `${Math.max(8, size/2)}px "IBM VGA", monospace`;
+      x.fillText(glyph(size), px, ny);
+    }
+  }
+  return x.getImageData(0,0,w,h);
+}
+
+
+/* ╔══════════════════════════════════════════════════════════════╗
+   ║  BATCH 2 ENGINES — ports of the second Python_IMG upload set. ║
+   ║  Same contract: take {data,w,h} RGBA, return the same.        ║
+   ║  Multi-image engines read from GHOSTS[] (see js1 additions).  ║
+   ╚══════════════════════════════════════════════════════════════╝ */
+
+/* Shared: rotate an ImageData by an arbitrary angle (deg) about centre,
+   black fill, same canvas size. Used by PHI VORTEX. */
+function rotateData(id, deg, scale){
+  const {width:w, height:h} = id;
+  const c = mkCanvas(w,h), x = c.getContext('2d');
+  x.translate(w/2, h/2);
+  x.rotate(deg*Math.PI/180);
+  if(scale && scale!==1) x.scale(scale, scale);
+  x.translate(-w/2, -h/2);
+  x.drawImage(dataToCanvas(id), 0, 0);
+  return x.getImageData(0,0,w,h);
+}
+/* Screen blend two RGBA buffers into a fresh one */
+function screenData(aId, bId){
+  const a = aId.data, b = bId.data, out = new Uint8ClampedArray(a.length);
+  for(let i=0;i<a.length;i+=4){
+    for(let c=0;c<3;c++) out[i+c] = 255 - ((255-a[i+c])*(255-b[i+c]))/255;
+    out[i+3] = 255;
+  }
+  return new ImageData(out, aId.width, aId.height);
+}
+
+/* ╔═══════════════════════════════════════════════════╗
+   ║  WARP :: PHI VORTEX  (Resurrection – phi_vortex)   ║
+   ╚═══════════════════════════════════════════════════╝ */
+/* Layer rotated+scaled copies of the source, screen them down. The
+   Python only had the vortex toggle live; the rest were disabled. */
+function warpPhiVortex(id, P){
+  const PHI = 1.6180339887;
+  let canvas = cloneData(id);
+  // Geometric scale falloff so every layer contributes — the Python's linear
+  // ramp went negative by layer ~7 and broke out, killing the spiral. Here each
+  // layer shrinks by a phi-driven factor and never collapses to nothing.
+  const falloff = Math.pow(0.94, P.tighten);   // per-layer shrink
+  for(let i=1;i<=P.recursions;i++){
+    const angle = (P.code % 360) * (i/PHI) * 0.1;
+    const scale = Math.pow(falloff, i);
+    if(scale < 0.05) break;
+    const layer = rotateData(id, angle, scale);
+    canvas = (P.blend === 'screen') ? screenData(canvas, layer)
+                                    : blendData(canvas, layer, 0.5);
+  }
+  return canvas;
+}
+function blendData(aId, bId, alpha){
+  const a = aId.data, b = bId.data, out = new Uint8ClampedArray(a.length);
+  for(let i=0;i<a.length;i+=4){
+    for(let c=0;c<3;c++) out[i+c] = a[i+c]*(1-alpha) + b[i+c]*alpha;
+    out[i+3]=255;
+  }
+  return new ImageData(out, aId.width, aId.height);
+}
+
+/* ╔═══════════════════════════════════════════════════╗
+   ║  QUAD :: BIT SHIFT  (Goldblue – hsu_bit_shift)     ║
+   ╚═══════════════════════════════════════════════════╝ */
+/* Quadtree to leaves, then per-pixel channel XOR. The Python's shift
+   factor was (t*12+depth)%8 with t=0.355 → base 4, +depth. r^shift, b^0xFF. */
+function quadBitShift(id, P){
+  const {width:w, height:h} = id;
+  const out = cloneData(id);
+  const d = out.data;
+  const leaf = P.minLeaf;
+  function recurse(x0,y0,x1,y1,depth){
+    const bw = x1-x0, bh = y1-y0;
+    if(bw < leaf || bh < leaf || depth > P.maxDepth){
+      const shift = ((P.t * 12.0) + depth | 0) % 8;
+      for(let y=y0;y<y1;y++) for(let x=x0;x<x1;x++){
+        const i = (y*w+x)*4;
+        d[i]   = d[i] ^ shift;
+        d[i+2] = d[i+2] ^ (P.flipB ? 0xFF : shift);
+      }
+      return;
+    }
+    const mx = (x0+x1)>>1, my = (y0+y1)>>1;
+    recurse(x0,y0,mx,my,depth+1); recurse(mx,y0,x1,my,depth+1);
+    recurse(x0,my,mx,y1,depth+1); recurse(mx,my,x1,y1,depth+1);
+  }
+  recurse(0,0,w,h,0);
   return out;
 }
 
-/* ══ ENGINE: MATRIX (Kintsugi VGA block slate) ══════════════ */
-function runMATRIX(){
-  const img = state.img, cols = V("cols")|0, px = V("fpx")|0;
-  const m = metrics(px);
-  const rows = Math.max(1, Math.round(cols * m.cw * img.naturalHeight / (img.naturalWidth * m.ch)));
-  const p = grayOf(scaleC(drawCapped(img, V("srcres")), cols, rows, true));
-
-  let ramp = [...S("rampMatrix")]; if (ramp.length < 2) ramp = [..." ░▒▓█"];
-  const L = ramp.length, div = Math.ceil(256/L);   /* p//52 for the 5-step ramp */
-  const anchors = [12, 60, 110, 180, 245];         /* soldier slate ladder */
-  const toneAt = i => {
-    const t = i/(L-1) * (anchors.length-1);
-    const a = Math.floor(t), b = Math.min(anchors.length-1, a+1);
-    return anchors[a] + (anchors[b]-anchors[a]) * (t-a);
-  };
-  const fg = hexRgb(S("fg"));
-
-  const cells = [];
-  for (let r=0; r<rows; r++){
-    const row = [];
-    for (let c=0; c<cols; c++){
-      const idx = Math.min(L-1, (p[r*cols+c] / div)|0);
-      if (ramp[idx] === " "){ row.push(null); continue; }
-      const t = toneAt(idx) / 245;
-      row.push({ ch: ramp[idx],
-        fill: "rgb(" + Math.round(fg[0]*t) + "," + Math.round(fg[1]*t) + "," + Math.round(fg[2]*t) + ")" });
-    }
-    cells.push(row);
+/* ╔═══════════════════════════════════════════════════╗
+   ║  COLOR :: STRATA SORT  (3Drip – cascading_strata)  ║
+   ╚═══════════════════════════════════════════════════╝ */
+/* Per-column: walk down, find ledges where the edge map spikes, sort each
+   segment darkest→lightest by luma, cast overhang shadow + ledge highlight. */
+function colorStrata(id, P){
+  const {width:w, height:h, data:src} = id;
+  // edge map = FIND_EDGES on grayscale (neighbour-diff magnitude)
+  const g = toGray(id);
+  const edge = new Float32Array(w*h);
+  for(let y=0;y<h;y++) for(let x=0;x<w;x++){
+    const i=y*w+x;
+    const gx = g[i] - g[y*w+Math.min(x+1,w-1)];
+    const gy = g[i] - g[Math.min(y+1,h-1)*w+x];
+    edge[i] = Math.abs(gx)+Math.abs(gy);
   }
-  log("[GRID] " + cols + "×" + rows + " · " + L + "-step slate");
-  return renderGrid(cells, cols, rows, px, S("bg"), 8);
+  const out = new Uint8ClampedArray(src.length);
+  const luma = (r,gg,b)=>0.299*r+0.587*gg+0.114*b;
+  for(let x=0;x<w;x++){
+    let y=0;
+    while(y<h){
+      let yEnd = y+1;
+      while(yEnd<h && edge[yEnd*w+x] < P.thr && (yEnd-y) < P.streak) yEnd++;
+      const seg=[];
+      for(let sy=y; sy<yEnd; sy++){ const i=(sy*w+x)*4; seg.push([src[i],src[i+1],src[i+2]]); }
+      seg.sort((a,b)=> luma(b[0],b[1],b[2]) - luma(a[0],a[1],a[2]));
+      for(let idx=0; idx<seg.length; idx++){
+        const sy = y+idx; let [r,gg,b]=seg[idx];
+        if(y>0 && idx < P.shadow){
+          const f = idx/P.shadow;
+          const shade = 0.2 + 0.8*Math.pow(f,0.5);
+          r*=shade; gg*=shade; b*=shade;
+        }
+        if(sy === yEnd-1 && yEnd < h){ r=Math.min(255,r+40); gg=Math.min(255,gg+40); b=Math.min(255,b+40); }
+        const o=(sy*w+x)*4; out[o]=r; out[o+1]=gg; out[o+2]=b; out[o+3]=255;
+      }
+      y = yEnd;
+    }
+  }
+  return new ImageData(out, w, h);
 }
 
-/* ══ ENGINE: TEXTMODE (smush / rigid) ═══════════════════════ */
-function runTEXT(){
-  const img = state.img;
-  const w = V("twidth")|0, ratio = V("tratio");
-  const rows = Math.max(1, Math.floor(w * (img.naturalHeight/img.naturalWidth) * ratio));
-  let p = grayOf(scaleC(drawCapped(img, 1600), w, rows, true));
-  autocontrast(p, 0);
-  let chars = [...S("rampText")]; if (chars.length < 2) chars = [..." .,·°o"];
-  const L = chars.length;
-  const border = "+" + state.bchar.repeat(w) + "+";
+/* ╔═══════════════════════════════════════════════════╗
+   ║  STRUCT :: ADAPTIVE EDGE  (Edgede – 3 CV modes)    ║
+   ╚═══════════════════════════════════════════════════╝ */
+/* Sobel magnitude shared by all three modes. */
+function sobelMag(id){
+  const {width:w, height:h} = id;
+  const g = toGray(id), mag = new Float32Array(w*h);
+  for(let y=1;y<h-1;y++) for(let x=1;x<w-1;x++){
+    const gx = -g[(y-1)*w+x-1]+g[(y-1)*w+x+1]
+               -2*g[y*w+x-1]+2*g[y*w+x+1]
+               -g[(y+1)*w+x-1]+g[(y+1)*w+x+1];
+    const gy = -g[(y-1)*w+x-1]-2*g[(y-1)*w+x]-g[(y-1)*w+x+1]
+               +g[(y+1)*w+x-1]+2*g[(y+1)*w+x]+g[(y+1)*w+x+1];
+    mag[y*w+x] = Math.sqrt(gx*gx+gy*gy);
+  }
+  return mag;
+}
+function structEdge(id, P){
+  const {width:w, height:h} = id;
+  const out = new Uint8ClampedArray(w*h*4);
+  const mag = sobelMag(id);
+
+  if(P.mode === 'LATTICE'){
+    // dual-axis: threshold Gx and Gy separately, OR them, paint white
+    const g = toGray(id);
+    const mx = new Float32Array(w*h), my = new Float32Array(w*h);
+    for(let y=1;y<h-1;y++) for(let x=1;x<w-1;x++){
+      const gx = -g[(y-1)*w+x-1]+g[(y-1)*w+x+1]-2*g[y*w+x-1]+2*g[y*w+x+1]-g[(y+1)*w+x-1]+g[(y+1)*w+x+1];
+      const gy = -g[(y-1)*w+x-1]-2*g[(y-1)*w+x]-g[(y-1)*w+x+1]+g[(y+1)*w+x-1]+2*g[(y+1)*w+x]+g[(y+1)*w+x+1];
+      mx[y*w+x]=Math.abs(gx); my[y*w+x]=Math.abs(gy);
+    }
+    const stat = arr => { let m=0; for(const v of arr) m+=v; m/=arr.length;
+      let sd=0; for(const v of arr) sd+=(v-m)*(v-m); return [median(arr), Math.sqrt(sd/arr.length)]; };
+    const [medX,sdX]=stat(mx), [medY,sdY]=stat(my);
+    const nfX = medX + P.sigma*sdX, nfY = medY + P.sigma*sdY;
+    for(let i=0;i<w*h;i++){
+      const on = (mx[i]>nfX)||(my[i]>nfY);
+      const v = on?255:0; out[i*4]=v; out[i*4+1]=v; out[i*4+2]=v; out[i*4+3]=255;
+    }
+    return new ImageData(out,w,h);
+  }
+
+  if(P.mode === 'WALKER'){
+    // link neighbouring high-magnitude points with white lines, two passes (H + rotated)
+    const canvas = mkCanvas(w,h), cx = canvas.getContext('2d');
+    cx.fillStyle='#000'; cx.fillRect(0,0,w,h);
+    cx.strokeStyle='#fff'; cx.lineWidth=1;
+    const walk = (m, tw, th, rot) => {
+      const med = median(m); let sd=0; const mean=m.reduce((a,b)=>a+b,0)/m.length;
+      for(const v of m) sd+=(v-mean)*(v-mean); sd=Math.sqrt(sd/m.length);
+      const floor = (med + 1.5*sd) * P.floorMul;
+      const pts=[];
+      for(let y=0;y<th;y++) for(let x=0;x<tw;x++) if(m[y*tw+x] > floor) pts.push([x,y]);
+      const step=P.step;
+      cx.save();
+      if(rot){ cx.translate(w/2,h/2); cx.rotate(-Math.PI/2); cx.translate(-h/2,-w/2); }
+      for(let i=0;i+step<pts.length;i+=step){
+        const [x1,y1]=pts[i], [x2,y2]=pts[i+step];
+        const dist=Math.hypot(x2-x1,y2-y1);
+        if(dist>4 && dist<35){ cx.beginPath(); cx.moveTo(x1,y1); cx.lineTo(x2,y2); cx.stroke(); }
+      }
+      cx.restore();
+    };
+    walk(mag, w, h, false);
+    // rotated pass: recompute sobel on 90°-rotated image
+    const rotId = rotateData(id, 90, 1);
+    const magR = sobelMag(rotId);
+    walk(magR, h, w, true);
+    return cx.getImageData(0,0,w,h);
+  }
+
+  // CANNY-ish: adaptive double-threshold on magnitude around its median
+  const med = median(mag);
+  const lo = Math.max(0, (1-P.sigma)*med), hi = (1+P.sigma)*med;
+  let mx=0; for(const v of mag) if(v>mx) mx=v;
+  for(let i=0;i<w*h;i++){
+    const m = mag[i];
+    const on = m>=hi ? 1 : (m>=lo ? 0.5 : 0);
+    const v = on===1?255:(on===0.5?140:0);
+    out[i*4]=v; out[i*4+1]=v; out[i*4+2]=v; out[i*4+3]=255;
+  }
+  return new ImageData(out,w,h);
+}
+function median(arr){
+  const a = Float32Array.from(arr).sort(); return a[a.length>>1];
+}
+
+/* ╔═══════════════════════════════════════════════════╗
+   ║  QUAD :: QUAD GLYPH  (CTscan – dense quadtree)     ║
+   ╚═══════════════════════════════════════════════════╝ */
+const GLYPH_RAMP = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjf|()1{}?_+~<>i!. ";
+function quadGlyph(id, P){
+  const {width:w, height:h} = id;
+  const g = toGray(id), src = id.data;
+  const c = mkCanvas(w,h), x = c.getContext('2d');
+  x.fillStyle='#050508'; x.fillRect(0,0,w,h);
+  x.textBaseline='top';
+  function blockStd(x0,y0,size){
+    let s=0,s2=0,n=0;
+    for(let y=y0;y<Math.min(y0+size,h);y++) for(let xx=x0;xx<Math.min(x0+size,w);xx++){
+      const v=g[y*w+xx]; s+=v; s2+=v*v; n++;
+    }
+    if(!n) return [0,0];
+    const m=s/n; return [Math.sqrt(Math.max(0,s2/n-m*m)), m];
+  }
+  function meanColor(x0,y0,size){
+    let r=0,gg=0,b=0,n=0;
+    for(let y=y0;y<Math.min(y0+size,h);y++) for(let xx=x0;xx<Math.min(x0+size,w);xx++){
+      const i=(y*w+xx)*4; r+=src[i]; gg+=src[i+1]; b+=src[i+2]; n++;
+    }
+    return n?[r/n|0,gg/n|0,b/n|0]:[0,0,0];
+  }
+  function block(x0,y0,size){
+    if(x0>=w||y0>=h) return;
+    const [sd,mean]=blockStd(x0,y0,size);
+    if(sd < P.thr || size <= P.minBlock){
+      const ci = ((mean/255)*(GLYPH_RAMP.length-1))|0;
+      const ch = GLYPH_RAMP[Math.max(0,Math.min(ci,GLYPH_RAMP.length-1))];
+      if(ch!==' '){
+        let col;
+        if(P.colorize){ const [r,gg,b]=meanColor(x0,y0,size); col=`rgb(${Math.max(40,r)},${Math.max(40,gg)},${Math.max(40,b)})`; }
+        else col='rgb(240,240,240)';
+        x.fillStyle=col; x.font=`${size}px "IBM VGA", monospace`;
+        x.fillText(ch, x0, y0);
+      }
+      return;
+    }
+    const half=size>>1;
+    block(x0,y0,half); block(x0+half,y0,half);
+    block(x0,y0+half,half); block(x0+half,y0+half,half);
+  }
+  for(let y=0;y<h;y+=P.maxBlock) for(let x0=0;x0<w;x0+=P.maxBlock) block(x0,y,P.maxBlock);
+  return x.getImageData(0,0,w,h);
+}
+
+/* ╔═══════════════════════════════════════════════════╗
+   ║  LIGHT :: KINTSUGI  (Blocccasak – gold injection)  ║
+   ╚═══════════════════════════════════════════════════╝ */
+/* Threshold bands → edge-trace each band → composite molten-gold up the
+   contours. Dropped the ASCII-preview half; kept only the gold render. */
+function lightKintsugi(id, P){
+  const {width:w, height:h} = id;
+  const g = blurGray(toGray(id), w, h, P.smooth);
+  const gold = [[20,20,20],[212,175,55],[255,240,150]];
+  const out = cloneData(id);
+  const d = out.data;
+  for(let i=1;i<=P.coils;i++){
+    const thr = 255 * Math.pow(i/P.coils, 1.2);
+    // band mask = pixels brighter than thr; edge of that mask
+    const mask = new Uint8Array(w*h);
+    for(let k=0;k<w*h;k++) mask[k] = g[k] > thr ? 1 : 0;
+    const ci = ((i/P.coils)*(gold.length-1))|0;
+    const [cr,cg,cb]=gold[ci];
+    for(let y=1;y<h-1;y++) for(let x=1;x<w-1;x++){
+      const k=y*w+x;
+      if(!mask[k]) continue;
+      // edge if any 4-neighbour is outside the mask
+      if(!mask[k-1]||!mask[k+1]||!mask[k-w]||!mask[k+w]){
+        for(let dy=-P.fang;dy<=P.fang;dy++) for(let dx=-P.fang;dx<=P.fang;dx++){
+          const xx=x+dx, yy=y+dy; if(xx<0||yy<0||xx>=w||yy>=h) continue;
+          const o=(yy*w+xx)*4; d[o]=cr; d[o+1]=cg; d[o+2]=cb;
+        }
+      }
+    }
+  }
+  return out;
+}
+
+/* ╔═══════════════════════════════════════════════════╗
+   ║  QUAD :: KINETIC SWARM  (Ultremcell – tremor stack)║
+   ╚═══════════════════════════════════════════════════╝ */
+function quadKineticSwarm(id, P){
+  const {width:w, height:h} = id;
+  const g = toGray(id), src = id.data;
+  // build quad map of mean colours
+  const blocks=[];
+  function qmap(x0,y0,bw,bh,depth){
+    let s=0,s2=0,n=0,r=0,gg=0,b=0;
+    for(let y=y0;y<y0+bh&&y<h;y++) for(let x=x0;x<x0+bw&&x<w;x++){
+      const v=g[y*w+x]; s+=v; s2+=v*v; n++;
+      const i=(y*w+x)*4; r+=src[i]; gg+=src[i+1]; b+=src[i+2];
+    }
+    if(!n) return;
+    const m=s/n, sd=Math.sqrt(Math.max(0,s2/n-m*m));
+    if(sd < P.cutoff || depth>=10 || bw<=4){
+      blocks.push([x0,y0,bw,bh,[r/n|0,gg/n|0,b/n|0]]); return;
+    }
+    const hw=bw>>1,hh=bh>>1;
+    qmap(x0,y0,hw,hh,depth+1); qmap(x0+hw,y0,hw,hh,depth+1);
+    qmap(x0,y0+hh,hw,hh,depth+1); qmap(x0+hw,y0+hh,hw,hh,depth+1);
+  }
+  qmap(0,0,w,h,0);
+
+  let canvas = new ImageData(w,h);
+  const cd = canvas.data;
+  for(let i=0;i<w*h;i++){ cd[i*4]=3; cd[i*4+1]=3; cd[i*4+2]=10; cd[i*4+3]=255; }
+
+  for(let p=0;p<P.stack;p++){
+    const layer = mkCanvas(w,h), lx = layer.getContext('2d');
+    for(const [bx,by,bw,bh,col] of blocks){
+      const jx = bx + (Math.random()*2-1)*P.tremor;
+      const jy = by + (Math.random()*2-1)*P.tremor;
+      const shift = (Math.random()*11-5)|0;
+      const r=clamp(col[0]+shift,0,255), gg=clamp(col[1]+shift,0,255), b=clamp(col[2]+shift,0,255);
+      lx.fillStyle=`rgba(${r},${gg},${b},${40/255})`;
+      lx.fillRect(jx,jy,bw,bh);
+    }
+    let ld = lx.getImageData(0,0,w,h);
+    if(P.viscosity>0) ld = blurRGB(ld, P.viscosity);
+    canvas = screenData(canvas, ld);
+    // attenuation
+    const a=P.atten; for(let i=0;i<cd.length;i+=4){ canvas.data[i]*=a; canvas.data[i+1]*=a; canvas.data[i+2]*=a; }
+  }
+  // final saturation punch
+  return saturateData(canvas, P.sat);
+}
+function saturateData(id, amt){
+  const d=id.data;
+  for(let i=0;i<d.length;i+=4){
+    const l=0.299*d[i]+0.587*d[i+1]+0.114*d[i+2];
+    d[i]=clamp(l+(d[i]-l)*amt,0,255);
+    d[i+1]=clamp(l+(d[i+1]-l)*amt,0,255);
+    d[i+2]=clamp(l+(d[i+2]-l)*amt,0,255);
+  }
+  return id;
+}
+
+/* ╔═══════════════════════════════════════════════════╗
+   ║  QUAD :: SINGULARITY PIT (Singularity_pit vibrate) ║
+   ╚═══════════════════════════════════════════════════╝ */
+/* Recursive quadtree; each cell offsets on a sine/phi wave, posterizes to
+   1-bit at deep recursion. Distinct from WARP/SINGULARITY (radial shell). */
+function quadSingularityPit(id, P){
+  const {width:w, height:h} = id;
+  const PHI=(1+Math.sqrt(5))/2;
+  const seed = P.seed % 255;
+  const t = P.phase;
+  const canvas = mkCanvas(w,h), cx = canvas.getContext('2d',{willReadFrequently:true});
+  cx.putImageData(id,0,0);
+  function vibrate(x0,y0,x1,y1,depth){
+    const bw=x1-x0, bh=y1-y0;
+    if(bw<2||bh<2||depth>P.depth) return;
+    const wave = Math.sin(t + depth*PHI + seed);
+    const dx = (wave*(depth*P.disp))|0;
+    const dy = (Math.cos(t*0.8)*(depth*P.disp))|0;
+    if(Math.abs(wave)>0.7 || Math.random()<0.1){
+      const chunk = cx.getImageData(x0,y0,bw,bh);
+      if(depth>9 && P.posterize){
+        const cd=chunk.data;
+        for(let i=0;i<cd.length;i+=4){ cd[i]=cd[i]>128?255:0; cd[i+1]=cd[i+1]>128?255:0; cd[i+2]=cd[i+2]>128?255:0; }
+      }
+      cx.putImageData(chunk, clamp(x0+dx,0,w-bw), clamp(y0+dy,0,h-bh));
+    }
+    const mx=(x0+x1)>>1, my=(y0+y1)>>1;
+    const quads=[[x0,y0,mx,my],[mx,y0,x1,my],[x0,my,mx,y1],[mx,my,x1,y1]];
+    for(let i=quads.length-1;i>0;i--){ const j=Math.random()*(i+1)|0; [quads[i],quads[j]]=[quads[j],quads[i]]; }
+    for(const q of quads) vibrate(q[0],q[1],q[2],q[3],depth+1);
+  }
+  vibrate(0,0,w,h,0);
+  return cx.getImageData(0,0,w,h);
+}
+
+/* ╔═══════════════════════════════════════════════════╗
+   ║  QUAD :: TRIAD SWAP  (Sharptriplrs – 3-image)      ║
+   ╚═══════════════════════════════════════════════════╝ */
+/* One static quadtree map from the host; cycle pixel DNA A→B→C→A across
+   three images at identical coords, plus occasional row-tears. 3 IMAGES. */
+function quadTriadSwap(id, P){
+  const {width:w, height:h} = id;
+  if(GHOSTS.length < 2){ throw new Error('TRIAD SWAP needs 2 extra images loaded (3 total)'); }
+  const pool = [ cloneData(id).data,
+                 imgToDataSized(GHOSTS[0], w, h).data,
+                 imgToDataSized(GHOSTS[1], w, h).data ];
+  // static quadtree from host luminance
+  const g = toGray(id);
+  const blocks=[];
+  function qt(x0,y0,bw,bh,depth){
+    if(depth>=P.maxDepth||bw<=8||bh<=8){ blocks.push([x0,y0,bw,bh]); return; }
+    let s=0,s2=0,n=0;
+    for(let y=y0;y<y0+bh&&y<h;y++) for(let x=x0;x<x0+bw&&x<w;x++){ const v=g[y*w+x]; s+=v; s2+=v*v; n++; }
+    const m=s/n, varr=s2/n-m*m;
+    if(varr < P.detail){ blocks.push([x0,y0,bw,bh]); return; }
+    const hw=bw>>1,hh=bh>>1;
+    qt(x0,y0,hw,hh,depth+1); qt(x0+hw,y0,hw,hh,depth+1);
+    qt(x0,y0+hh,hw,hh,depth+1); qt(x0+hw,y0+hh,hw,hh,depth+1);
+  }
+  qt(0,0,w,h,0);
+  for(let i=blocks.length-1;i>0;i--){ const j=Math.random()*(i+1)|0; [blocks[i],blocks[j]]=[blocks[j],blocks[i]]; }
+
+  const copyBlock=(dst,srcBuf,x0,y0,bw,bh)=>{
+    for(let y=y0;y<y0+bh&&y<h;y++) for(let x=x0;x<x0+bw&&x<w;x++){
+      const i=(y*w+x)*4; dst[i]=srcBuf[i]; dst[i+1]=srcBuf[i+1]; dst[i+2]=srcBuf[i+2]; dst[i+3]=255;
+    }
+  };
+  const passes = Math.min(blocks.length, P.passes);
+  for(let i=0;i<passes;i++){
+    const [x,y,bw,bh]=blocks[i];
+    const dna0 = extractBlock(pool[0],w,x,y,bw,bh);
+    const dna1 = extractBlock(pool[1],w,x,y,bw,bh);
+    const dna2 = extractBlock(pool[2],w,x,y,bw,bh);
+    writeBlock(pool[1],w,x,y,bw,bh,dna0);
+    writeBlock(pool[2],w,x,y,bw,bh,dna1);
+    writeBlock(pool[0],w,x,y,bw,bh,dna2);
+    if(P.tear && i%3===0){
+      for(let p=0;p<3;p++){
+        const row = (y + (Math.random()*bh|0));
+        if(row<h) rollRow(pool[p], w, h, row, (Math.random()*200-100)|0);
+      }
+    }
+  }
+  return new ImageData(new Uint8ClampedArray(pool[0]), w, h);
+}
+function extractBlock(buf,w,x0,y0,bw,bh){
+  const out=[];
+  for(let y=y0;y<y0+bh;y++) for(let x=x0;x<x0+bw;x++){ const i=(y*w+x)*4; out.push(buf[i],buf[i+1],buf[i+2]); }
+  return out;
+}
+function writeBlock(buf,w,x0,y0,bw,bh,data){
+  let p=0;
+  for(let y=y0;y<y0+bh;y++) for(let x=x0;x<x0+bw;x++){ const i=(y*w+x)*4; buf[i]=data[p++]; buf[i+1]=data[p++]; buf[i+2]=data[p++]; }
+}
+function rollRow(buf,w,h,row,shift){
+  if(row<0||row>=h) return;
+  const tmp=new Uint8ClampedArray(w*4);
+  for(let x=0;x<w;x++){ const i=(row*w+x)*4; tmp[x*4]=buf[i]; tmp[x*4+1]=buf[i+1]; tmp[x*4+2]=buf[i+2]; }
+  for(let x=0;x<w;x++){ let sx=(x-shift)%w; if(sx<0)sx+=w; const i=(row*w+x)*4; buf[i]=tmp[sx*4]; buf[i+1]=tmp[sx*4+1]; buf[i+2]=tmp[sx*4+2]; }
+}
+
+/* ╔═══════════════════════════════════════════════════╗
+   ║  GHOST :: GHOST BURN  (Snnnnake – burn_artifact)   ║
+   ╚═══════════════════════════════════════════════════╝ */
+/* Host + ghost. Iteratively mask host shadows, glow the ghost, composite
+   in, push threshold deeper each pass. 2 IMAGES. */
+function ghostBurn(id, P){
+  const {width:w, height:h} = id;
+  if(GHOSTS.length < 1) throw new Error('GHOST BURN needs 1 extra image (the ghost)');
+  const ghost = imgToDataSized(GHOSTS[0], w, h).data;
+  let cur = cloneData(id).data;
+  for(let i=0;i<P.iters;i++){
+    const thr = P.thr0 + i*P.thrStep;
+    const glow = 1.2 + i*P.glow;
+    const out = new Uint8ClampedArray(cur.length);
+    // shadow mask from current luma, blurred
+    const mask = new Float32Array(w*h);
+    for(let k=0;k<w*h;k++){
+      const l=(cur[k*4]*0.299+cur[k*4+1]*0.587+cur[k*4+2]*0.114);
+      mask[k] = l < thr ? 255 : 0;
+    }
+    const mb = blurGray(mask, w, h, 2);
+    for(let k=0;k<w*h;k++){
+      const a = clamp(mb[k]/255,0,1);
+      const gr=Math.min(255,ghost[k*4]*glow), gg=Math.min(255,ghost[k*4+1]*glow), gb=Math.min(255,ghost[k*4+2]*glow);
+      out[k*4]  = clamp(gr*a + cur[k*4]*(1-a), 0, 255) * 1.08;
+      out[k*4+1]= clamp(gg*a + cur[k*4+1]*(1-a), 0, 255);
+      out[k*4+2]= clamp(gb*a + cur[k*4+2]*(1-a), 0, 255);
+      out[k*4+3]=255;
+    }
+    cur = out;
+  }
+  return sharpen(new ImageData(cur,w,h), P.sharp);
+}
+
+/* ╔═══════════════════════════════════════════════════╗
+   ║  GHOST :: LEGION  (Fnaswap – host + N ghosts)      ║
+   ╚═══════════════════════════════════════════════════╝ */
+function ghostLegion(id, P){
+  const {width:w, height:h} = id;
+  if(GHOSTS.length < 1) throw new Error('LEGION needs at least 1 extra ghost image');
+  let cur = cloneData(id).data;
+  const n = Math.min(GHOSTS.length, P.depth);
+  for(let i=0;i<n;i++){
+    const ghost = imgToDataSized(GHOSTS[i], w, h).data;
+    const mask = new Float32Array(w*h);
+    for(let k=0;k<w*h;k++){
+      const l=(cur[k*4]*0.299+cur[k*4+1]*0.587+cur[k*4+2]*0.114);
+      mask[k] = l < P.thr ? 255 : 0;
+    }
+    const mb = blurGray(mask, w, h, 2);
+    const out = new Uint8ClampedArray(cur.length);
+    for(let k=0;k<w*h;k++){
+      const a=clamp(mb[k]/255,0,1);
+      const gr=Math.min(255,ghost[k*4]*P.glow), gg=Math.min(255,ghost[k*4+1]*P.glow), gb=Math.min(255,ghost[k*4+2]*P.glow);
+      out[k*4]=gr*a+cur[k*4]*(1-a); out[k*4+1]=gg*a+cur[k*4+1]*(1-a); out[k*4+2]=gb*a+cur[k*4+2]*(1-a); out[k*4+3]=255;
+    }
+    cur=out;
+  }
+  return sharpen(new ImageData(cur,w,h), P.sharp);
+}
+
+/* Unsharp-ish sharpen used by the ghost engines */
+function sharpen(id, amt){
+  if(amt<=0) return id;
+  const {width:w,height:h,data:d}=id;
+  const blur = blurRGB(id, 2).data;
+  const out = new Uint8ClampedArray(d.length);
+  for(let i=0;i<d.length;i+=4){
+    for(let c=0;c<3;c++) out[i+c]=clamp(d[i+c]+(d[i+c]-blur[i+c])*amt,0,255);
+    out[i+3]=255;
+  }
+  return new ImageData(out,w,h);
+}
+
+/* Size-locked image→ImageData for ghost/reference images */
+function imgToDataSized(img, w, h){
+  const c=mkCanvas(w,h), x=c.getContext('2d',{willReadFrequently:true});
+  x.drawImage(img,0,0,w,h);
+  return x.getImageData(0,0,w,h);
+}
+
+
+/* ╔═══════════════════════════════════════════════════╗
+   ║  GROUP 4 :: LIGHT — tonal, non-geometric          ║
+   ╚═══════════════════════════════════════════════════╝ */
+
+/* BLOOM — subtract threshold to isolate highlights, cascade blurs,
+   screen them together, overclock, screen onto the original. */
+function lightBloom(id, P){
+  const {width:w, height:h} = id;
+  const src = id.data;
+
+  const spirit = new ImageData(new Uint8ClampedArray(src.length), w, h);
+  const sd = spirit.data;
+  for(let i=0;i<src.length;i+=4){
+    sd[i]   = Math.max(0, src[i]  - P.thr);
+    sd[i+1] = Math.max(0, src[i+1]- P.thr);
+    sd[i+2] = Math.max(0, src[i+2]- P.thr);
+    sd[i+3] = 255;
+  }
+
+  const radii = [5,15,30,60].slice(0, P.layers).map(r => Math.max(1, Math.round(r*P.spread)));
+  const screen = (a,b)=>{
+    for(let i=0;i<a.length;i+=4)
+      for(let c=0;c<3;c++) a[i+c] = 255 - ((255-a[i+c])*(255-b[i+c]))/255;
+    return a;
+  };
+
+  let aura = blurRGB(spirit, radii[0]).data;
+  for(let i=1;i<radii.length;i++) aura = screen(aura, blurRGB(spirit, radii[i]).data);
+  for(let i=0;i<P.boost;i++) aura = screen(aura, Uint8ClampedArray.from(aura));
+
+  const out = new Uint8ClampedArray(src.length);
+  for(let i=0;i<src.length;i+=4){
+    for(let c=0;c<3;c++) out[i+c] = 255 - ((255-src[i+c])*(255-aura[i+c]))/255;
+    out[i+3] = 255;
+  }
+  return new ImageData(out, w, h);
+}
+
+/* ╔═══════════════════════════════════════════════════╗
+   ║  GROUP 5 :: OVERLAY — composite on top            ║
+   ╚═══════════════════════════════════════════════════╝ */
+
+/* TEXT BOX — draw at low res, upscale NEAREST, composite. That upscale
+   is what makes the pixels chunky; drawing big and shrinking would kill it. */
+function overlayTextbox(id, P){
+  const {width:w, height:h} = id;
+  const rw = P.canvasW, rh = Math.round(rw * (h/w));
+  const c = mkCanvas(rw, rh), x = c.getContext('2d');
+  x.clearRect(0,0,rw,rh);
+  x.font = `${P.fontSize}px "IBM VGA", monospace`;
+  x.textBaseline = 'top';
+
+  const boxX = P.mx, boxW = rw - P.mx*2, maxText = boxW - P.pad*2;
   const lines = [];
-  for (let r=0; r<rows; r++){
-    let line = "|";
-    for (let c=0; c<w; c++){
-      const idx = Math.min(L-1, (p[r*w+c] * (L-1) / 255)|0);
-      line += chars[idx];
+  for(const para of P.text.split('\\n')){
+    if(!para){ lines.push(''); continue; }
+    let cur = '';
+    for(const word of para.split(' ')){
+      const test = cur ? cur+' '+word : word;
+      if(x.measureText(test).width <= maxText) cur = test;
+      else { if(cur) lines.push(cur); cur = word; }
     }
-    lines.push(line + "|");
+    if(cur) lines.push(cur);
   }
-  const text = [border, ...lines, border].join("\n");
-  log("[TEXT] " + w + "×" + rows + " · ratio " + ratio.toFixed(2));
-  let canvas = null;
-  if ($("bakePng").checked){
-    const all = [border, ...lines, border];
-    const gc = all.map(ln => [...ln].map(ch => ch === " " ? null : { ch, fill:S("fg") }));
-    canvas = renderGrid(gc, w+2, all.length, V("fpx")|0, S("bg"), 8);
+
+  const lh = P.fontSize;
+  const textH = lines.length*(lh+P.lineSp) - P.lineSp;
+  const boxH = textH + P.pad*2;
+  let boxY;
+  if(P.anchor === 'top') boxY = P.mb;
+  else if(P.anchor === 'center') boxY = ((rh-boxH)/2)|0;
+  else boxY = rh - boxH - P.mb;
+
+  const [br,bg,bb] = hex2rgb(P.bgColor);
+  x.fillStyle = `rgba(${br},${bg},${bb},${P.alpha/255})`;
+  x.fillRect(boxX, boxY, boxW, boxH);
+  x.strokeStyle = P.borderColor;
+  x.lineWidth = 1;
+  x.strokeRect(boxX+0.5, boxY+0.5, boxW-1, boxH-1);
+
+  x.fillStyle = P.fgColor;
+  let cy = boxY + P.pad;
+  for(const line of lines){ x.fillText(line, boxX+P.pad, cy); cy += lh + P.lineSp; }
+
+  const out = mkCanvas(w,h), ox = out.getContext('2d', {willReadFrequently:true});
+  ox.putImageData(id, 0, 0);
+  ox.imageSmoothingEnabled = false;
+  ox.drawImage(c, 0, 0, w, h);
+  return ox.getImageData(0,0,w,h);
+}
+
+/* ╔═══════════════════════════════════════════════════╗
+   ║  DISPATCH                                          ║
+   ╚═══════════════════════════════════════════════════╝ */
+
+const val = id => parseFloat($(id).value);
+const int = id => parseInt($(id).value, 10);
+
+function runEngine(id){
+  const eng = currentEngine();
+  switch(TAB){
+    case 'WARP': {
+      const P = {
+        iters: int('iters'), lens: val('lens'), wobble: val('wobble'),
+        hum: int('hum'), drift: val('drift'), dim: val('dim'),
+        crunch: int('crunch'), spiral: val('spiral'),
+        gchaos: val('gchaos'), blur: int('lqblur'), sat: val('lqsat'), con: val('lqcon'),
+        shx: val('shx'), shy: val('shy'), edge: int('latEdge'), latStep: int('latStep'),
+        recursions: int('pvRec'), code: int('pvCode'), tighten: val('pvTight'), blend: $('pvBlend').value
+      };
+      if(eng === 'CHAOS')       return warpChaos(id, P);
+      if(eng === 'RECALL')      return warpChaos(id, {...P, drift: 0});
+      if(eng === 'SINGULARITY') return warpSingularity(id, P, false);
+      if(eng === 'UNRAVEL')     return warpSingularity(id, P, true);
+      if(eng === 'LIQUID')      return warpLiquid(id, P);
+      if(eng === 'LATTICE')     return warpLattice(id, P);
+      if(eng === 'VORTEX')      return warpPhiVortex(id, P);
+      break;
+    }
+    case 'COLOR': {
+      const P = {
+        dither: $('ditherMode').value, dAmt: val('dAmt'),
+        pxSize: int('pxSize'), scanGap: int('scanGap'),
+        scale: int('paScale'), bands: int('paBands'),
+        wash: val('paWash'), lift: int('paLift'), outline: $('paOutline').checked,
+        thr: int('stThr'), streak: int('stStreak'), shadow: int('stShadow')
+      };
+      if(eng === 'STRATA') return colorStrata(id, P);
+      if(eng === 'HARDWARE'){
+        const pal = PALETTES[$('hwPal').value];
+        log(`${$('hwPal').value} — ${pal.length} colours`);
+        return quantize(id, pal, P);
+      }
+      if(eng === 'EXTRACT'){
+        const refData = PALREF
+          ? imgToData(PALREF, 400)
+          : id;
+        const pal = extractPalette(refData, int('palN'));
+        log(`extracted ${pal.length} colours from ${PALREF ? 'reference' : 'source'}`);
+        return quantize(id, pal, P);
+      }
+      if(eng === 'SAMPLE'){
+        if(!SWATCH.length) throw new Error('no swatches — drag on the reference image to sample colours first');
+        const pal = SWATCH.map(hex2rgb);
+        const match = $('sfMatch').value;
+        const cyc = int('sfCycle') % pal.length;
+        if(match === 'LUMA' && P.dither === 'FS') log('LUMA RAMP takes ordered dither only — FLOYD-STEINBERG skipped', true);
+        log(`${pal.length} swatches · ${match === 'LUMA' ? 'luma ramp' : 'nearest rgb'} · cycle ${cyc}`);
+        return sampleFill(id, {...P, pal, match, cycle: int('sfCycle')});
+      }
+      if(eng === 'PASTEL') return colorPastel(id, P);
+      break;
+    }
+    case 'STRUCT': {
+      const P = {
+        samp: int('coSamp'), edge: int('coEdge'), maxNodes: int('coNodes'),
+        lw: int('coLW'), sat: val('coSat'), vert: int('coVert'),
+        lineColor: $('coLine').value, fill: $('coFill').checked,
+        levels: int('shLev'), entropy: int('shEnt'), minShard: int('shMin'), smooth: int('shSmooth'),
+        iters: int('gmIter'), cut: int('gmCut'), sx: int('gmSx'), sy: int('gmSy'), blend: $('gmBlend').value,
+        staff: int('soStaff'), minBlock: int('soMin'), thresh: int('soThr'),
+        mode: $('edMode').value, sigma: val('edSigma'), step: int('edStep'), floorMul: val('edFloor')
+      };
+      if(eng === 'COSMO')    return structCosmo(id, P);
+      if(eng === 'SHARD')    return structShard(id, P);
+      if(eng === 'SONATA')   return structSonata(id, P);
+      if(eng === 'EDGE')     return structEdge(id, P);
+      return structGrayMatter(id, P, eng);
+    }
+    case 'QUAD': {
+      if(eng === 'BITSHIFT') return quadBitShift(id, {
+        minLeaf: int('bsLeaf'), maxDepth: int('bsDepth'), t: val('bsT'), flipB: $('bsFlipB').checked
+      });
+      if(eng === 'SWARM') return quadKineticSwarm(id, {
+        stack: int('ksStack'), tremor: val('ksTremor'), cutoff: int('ksCut'),
+        viscosity: int('ksVisc'), sat: val('ksSat'), atten: val('ksAtten')
+      });
+      if(eng === 'GLYPH') return quadGlyph(id, {
+        maxBlock: int('qgMax'), minBlock: int('qgMin'), thr: int('qgThr'), colorize: $('qgColor').checked
+      });
+      if(eng === 'PIT') return quadSingularityPit(id, {
+        depth: int('spDepth'), disp: int('spDisp'), phase: val('spPhase'),
+        seed: int('spSeed'), posterize: $('spPost').checked
+      });
+      if(eng === 'TRIAD') return quadTriadSwap(id, {
+        maxDepth: int('tsDepth'), detail: int('tsDetail'), passes: int('tsPasses'), tear: $('tsTear').checked
+      });
+      break;
+    }
+    case 'LIGHT':
+      if(eng === 'KINTSUGI') return lightKintsugi(id, {
+        coils: int('kiCoils'), fang: int('kiFang'), smooth: int('kiSmooth')
+      });
+      return lightBloom(id, {
+        thr: int('blThr'), spread: val('blSpread'),
+        layers: int('blLayers'), boost: int('blBoost')
+      });
+    case 'GHOST': {
+      if(eng === 'BURN') return ghostBurn(id, {
+        iters: int('gbIters'), thr0: int('gbThr0'), thrStep: int('gbStep'),
+        glow: val('gbGlow'), sharp: val('gbSharp')
+      });
+      if(eng === 'LEGION') return ghostLegion(id, {
+        depth: int('lgDepth'), thr: int('lgThr'), glow: val('lgGlow'), sharp: val('lgSharp')
+      });
+      break;
+    }
+    case 'OVER':
+      return overlayTextbox(id, {
+        text: $('tbText').value, canvasW: int('tbCanvas'), fontSize: int('tbFont'),
+        mx: int('tbMx'), mb: int('tbMb'), pad: int('tbPad'), lineSp: int('tbLine'),
+        anchor: $('tbAnchor').value, bgColor: $('tbBg').value, alpha: int('tbAlpha'),
+        borderColor: $('tbBorder').value, fgColor: $('tbFg').value
+      });
   }
-  return { text, canvas };
+  return id;
 }
 
-/* ── output plumbing ───────────────────────────────────────── */
-function showCanvas(c){
-  const name = "GF_" + state.eng + "_" + Date.now() + ".png";
-  $("outimg").src = c.toDataURL("image/png");
-  $("outimg").style.display = "block";
-  c.toBlob(b => {
-    if (!b) return;
-    const dl = $("dl");
-    if (dl.dataset.url) URL.revokeObjectURL(dl.dataset.url);
-    const u = URL.createObjectURL(b);
-    dl.href = u; dl.download = name; dl.dataset.url = u;
-  }, "image/png");
-  $("dl").style.display = "inline-block";
-  $("outbtns").style.display = "flex";
-  log("[OUT] " + c.width + "×" + c.height + " px → " + name);
-}
-function showText(t){
-  $("outtxt").textContent = t;
-  $("outtxt").style.display = "block";
-  $("copyTxt").style.display = "inline-block";
-  $("outbtns").style.display = "flex";
-}
-function clearOut(){
-  $("outimg").style.display = "none";
-  $("outtxt").style.display = "none";
-  $("copyTxt").style.display = "none";
-  $("dl").style.display = "none";
-  $("outbtns").style.display = "none";
-}
-
-const ENGINES = {
-  SKELETON: () => showCanvas(runSKELETON()),
-  DUST:     () => showCanvas(runDUST()),
-  SOVEREIGN:() => showCanvas(runSOVEREIGN()),
-  MATRIX:   () => showCanvas(runMATRIX()),
-  ATLAS:    () => showCanvas(runATLAS()),
-  TEXT:     () => {
-    const { text, canvas } = runTEXT();
-    showText(text);
-    if (canvas) showCanvas(canvas);
-  }
-};
-
-/* ── engine defaults on tab switch ─────────────────────────── */
-const ENG_DEFAULTS = {
-  SKELETON: { fg:"#00ffff", bg:"#050505", cols:160, fpx:10, gateSkel:18, weight:1.5, prune:1 },
-  DUST:     { fg:"#ffffff", bg:"#050505", cols:120, fpx:24 },
-  SOVEREIGN:{ bg:"#050505" },
-  MATRIX:   { fg:"#f5f5f5", bg:"#0c0c0c", cols:80, fpx:16 },
-  ATLAS:    { fg:"#00e5ff", bg:"#050508", cols:240, fpx:12, gamma:0.70, autoc:2 },
-  TEXT:     { fg:"#e8e8e8", bg:"#0a0a0a", fpx:18 }
-};
-function setVal(id, v){
-  const el = $(id); if (!el) return;
-  el.value = v;
-  el.dispatchEvent(new Event("input"));
-}
-function applyDefaults(eng){
-  const d = ENG_DEFAULTS[eng] || {};
-  for (const k in d) setVal(k, d[k]);
-}
-function updateVis(){
-  document.querySelectorAll("[data-eng]").forEach(el => {
-    el.style.display = el.dataset.eng.split(" ").includes(state.eng) ? "" : "none";
-  });
-}
-
-/* ── wiring ────────────────────────────────────────────────── */
-document.querySelectorAll(".tab").forEach(t => {
-  t.addEventListener("click", () => {
-    state.eng = t.dataset.e;
-    document.querySelectorAll(".tab").forEach(x => x.setAttribute("aria-selected", x === t ? "true" : "false"));
-    applyDefaults(state.eng);
-    updateVis();
-    clearOut();
-    log("[ENGINE] " + state.eng + " armed");
-  });
-});
-
-document.querySelectorAll("input[type=range]").forEach(r => {
-  const o = $(r.dataset.out);
-  const dec = (r.step && r.step.includes(".")) ? r.step.split(".")[1].length : 0;
-  const f = () => { if (o) o.textContent = parseFloat(r.value).toFixed(dec); };
-  r.addEventListener("input", f);
-  f();
-});
-
-function loadImage(file){
-  if (!file) return;
+/* ── source loading ──────────────────────────────────────────── */
+function loadFile(file, isPalRef){
   const url = URL.createObjectURL(file);
-  const im = new Image();
-  im.onload = () => {
-    state.img = im;
-    state.name = file.name || "capture";
-    $("thumb").src = url;
-    $("thumb").style.display = "block";
-    $("runBtn").disabled = false;
-    log("[>>] " + state.name + " · " + im.naturalWidth + "×" + im.naturalHeight);
+  const img = new Image();
+  img.onload = ()=>{
+    if(isPalRef){
+      PALREF = img;
+      refreshSampler();
+      log(`palette reference loaded — ${img.width}×${img.height}`);
+    } else {
+      SRC = img; CHAIN = [];
+      $('thumb').src = url; $('thumb').style.display = 'block';
+      $('runBtn').disabled = false;
+      $('chain').innerHTML = 'CHAIN: <span class="step">—</span>';
+      clearLog();
+      refreshSampler();
+      log(`source loaded — ${img.width}×${img.height}`);
+    }
   };
-  im.onerror = () => log("[FAULT] image decode failed");
-  im.src = url;
+  img.onerror = ()=> log('that file would not decode as an image', true);
+  img.src = url;
 }
-$("pickLib").addEventListener("change", e => loadImage(e.target.files[0]));
-$("pickCam").addEventListener("change", e => loadImage(e.target.files[0]));
+$('pickLib').addEventListener('change', e => e.target.files[0] && loadFile(e.target.files[0], false));
+$('pickCam').addEventListener('change', e => e.target.files[0] && loadFile(e.target.files[0], false));
+$('palRef').addEventListener('change', e => e.target.files[0] && loadFile(e.target.files[0], true));
+$('palClear').addEventListener('click', ()=>{ PALREF = null; refreshSampler(); log('palette reference cleared — using source'); });
 
-$("runBtn").addEventListener("click", () => {
-  if (!state.img){ log("[HALT] no image loaded"); return; }
-  const b = $("runBtn");
-  b.textContent = "RUNNING…"; b.disabled = true;
-  clearOut();
-  setTimeout(() => {
-    try { ENGINES[state.eng](); }
-    catch(e){ log("[FAULT] " + e.message); }
-    finally { b.textContent = "RUN ENGINE"; b.disabled = false; }
+/* multi-image ghost pool loaders */
+$('pickGhost').addEventListener('change', e => {
+  const files = Array.from(e.target.files);
+  files.forEach(f => {
+    if(GHOSTS.length >= 3){ log('ghost pool full — 3 max', true); return; }
+    const url = URL.createObjectURL(f);
+    const img = new Image();
+    img.onload = ()=>{ img.__url = url; GHOSTS.push(img); renderGhosts(); log(`ghost added — ${GHOSTS.length} loaded (${img.width}×${img.height})`); };
+    img.onerror = ()=> log('a ghost file would not decode', true);
+    img.src = url;
+  });
+  e.target.value = '';
+});
+$('ghostClear').addEventListener('click', ()=>{ GHOSTS = []; renderGhosts(); log('all extra images cleared'); });
+
+/* ── run ─────────────────────────────────────────────────────── */
+$('runBtn').addEventListener('click', ()=>{
+  if(!SRC || BUSY) return;
+  BUSY = true;
+  const btn = $('runBtn');
+  btn.disabled = true; btn.textContent = 'RUNNING…';
+
+  setTimeout(()=>{
+    const t0 = performance.now();
+    try{
+      clearLog();
+      const eng = currentEngine();
+      log(`${TAB} :: ${eng}`);
+      let id = imgToData(SRC, int('srcres'));
+      log(`working at ${id.width}×${id.height}`);
+
+      id = runEngine(id);
+
+      const canvas = dataToCanvas(id);
+      const url = canvas.toDataURL('image/png');
+      $('outimg').src = url; $('outimg').style.display = 'block';
+      $('dl').href = url;
+      $('dl').download = `PF_${eng}_${Date.now()}.png`;
+      $('outbtns').style.display = 'flex';
+      $('feedback').disabled = false;
+      window.__LAST = url;
+
+      log(`done in ${((performance.now()-t0)/1000).toFixed(2)}s`);
+    } catch(err){
+      log('engine stopped: ' + err.message, true);
+      console.error(err);
+    } finally {
+      BUSY = false;
+      btn.disabled = false; btn.textContent = 'RUN ENGINE';
+    }
   }, 30);
 });
 
-$("copyTxt").addEventListener("click", async () => {
-  const t = $("outtxt").textContent;
-  try { await navigator.clipboard.writeText(t); log("[COPY] text on clipboard ✓"); }
-  catch(e){
-    const ta = document.createElement("textarea");
-    ta.value = t; document.body.appendChild(ta);
-    ta.select(); document.execCommand("copy"); ta.remove();
-    log("[COPY] fallback copy done");
-  }
-});
+/* ── chain: output becomes the next input ────────────────────── */
+function feedBack(){
+  if(!window.__LAST) return;
+  const img = new Image();
+  img.onload = ()=>{
+    SRC = img;
+    CHAIN.push(currentEngine());
+    $('thumb').src = window.__LAST;
+    $('chain').innerHTML = 'CHAIN: ' + CHAIN.map(s=>`<span class="step">${s}</span>`).join(' → ');
+    log('output fed back in — next engine stacks on this');
+  };
+  img.src = window.__LAST;
+}
+$('chainBtn').addEventListener('click', feedBack);
+$('feedback').addEventListener('click', feedBack);
 
-/* presets */
-$("preS9").addEventListener("click", () => {
-  setVal("cols", 260); setVal("gateSkel", 10); setVal("fpx", 8);
-  setVal("weight", 1); setVal("prune", 2);
-  setVal("fg", "#00ffff"); setVal("bg", "#050505");
-  log("[PRESET] S9 VENOM · 260 cols · thin + pruned");
-});
-$("preTerm").addEventListener("click", () => {
-  setVal("edgeThresh", 45); setVal("gamma", 0.20); setVal("autoc", 2);
-  setVal("fg", "#ffffff"); setVal("bg", "#050505");
-  $("colorMode").value = "MONO";
-  log("[PRESET] TERMINAL dust");
-});
-$("preBlue").addEventListener("click", () => {
-  setVal("edgeThresh", 15); setVal("gamma", 0.10); setVal("autoc", 8);
-  setVal("fg", "#0032ff"); setVal("bg", "#ffffff");
-  $("colorMode").value = "MONO";
-  log("[PRESET] BLUEPRINT · ink on paper");
-});
-$("preSmush").addEventListener("click", () => {
-  setVal("tratio", 0.30); $("rampText").value = " .,·°o"; state.bchar = "-";
-  log("[PRESET] SMUSH · ratio 0.30");
-});
-$("preRigid").addEventListener("click", () => {
-  setVal("tratio", 0.28); $("rampText").value = ",.·°o"; state.bchar = "=";
-  log("[PRESET] RIGID · no-void ramp");
-});
+/* test / automation bridge — lets harnesses inject the ghost pool */
+window.__setGhosts = arr => { GHOSTS = arr; };
+window.__setSwatches = arr => { SWATCH = arr.slice(0, SF_MAX); renderSwatches(); };
 
-hookFontInput("fontVga", "VGA");
-hookFontInput("fontKana", "KANA");
-
-/* boot */
-applyDefaults("SKELETON");
-updateVis();
-bootFonts().then(() => log("[ENGINE] GLYPH_FORGE online · SKELETON armed"));
+renderSwatches();
+sync();
+log('load an image to start');
 </script>
-</body>
-</html>
