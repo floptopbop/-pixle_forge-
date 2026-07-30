@@ -95,6 +95,15 @@ a.btn{text-decoration:none; display:inline-block;}
 .ghostChip img{width:100%; height:100%; object-fit:cover; display:block;}
 .ghostRm{position:absolute; top:2px; right:2px; width:18px; height:18px; line-height:1;
   padding:0; border:none; background:rgba(0,0,0,.7); color:#fff; cursor:pointer; font-size:11px;}
+#sfPane{position:relative; border:1px solid var(--line); background:#111; overflow:hidden;}
+#sfCanvas{display:none; width:100%; height:auto; touch-action:none; cursor:crosshair;}
+#sfEmpty{padding:24px 12px; font-size:11px; color:var(--dim); text-align:center; line-height:1.5;}
+#sfSwatches{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; min-height:32px; align-items:center;}
+.sfNone{font-size:11px; color:var(--dim);}
+.sfChip{position:relative; width:30px; height:30px; border:1px solid var(--line);}
+.sfChip .x{position:absolute; top:-7px; right:-7px; width:17px; height:17px; line-height:15px;
+  text-align:center; font-size:10px; background:var(--bg); color:var(--txt); border:1px solid var(--line); cursor:pointer;}
+#sfLive{width:40px; height:40px; border:1px solid var(--venom); background:#000; flex:0 0 auto;}
 html, body { font-family: "IBM VGA", monospace; }
 button, input, select, textarea { font-family: inherit; }
 </style>
@@ -104,7 +113,7 @@ button, input, select, textarea { font-family: inherit; }
 
 <header>
   <h1>PIXEL_FORGE<span class="cur">▮</span></h1>
-  <div class="sub">SOVEREIGN IMAGE SUITE · 7 GROUPS · 30 ENGINES · SINGLE FILE</div>
+  <div class="sub">SOVEREIGN IMAGE SUITE · 7 GROUPS · 31 ENGINES · SINGLE FILE</div>
 </header>
 
 <div id="tabs" role="tablist">
@@ -270,6 +279,7 @@ button, input, select, textarea { font-family: inherit; }
     <select id="colEng">
       <option value="HARDWARE">HARDWARE PALETTE — console sets</option>
       <option value="EXTRACT">PURE SWAP — palette from image</option>
+      <option value="SAMPLE">SAMPLE FILL — hand-picked swatches</option>
       <option value="PASTEL">CHROMA RAZOR — band + outline</option>
       <option value="STRATA">STRATA SORT — cascading pixel drips</option>
     </select>
@@ -303,7 +313,7 @@ button, input, select, textarea { font-family: inherit; }
       <option value="MONO_GREEN">MONO GREEN (2)</option>
     </select>
   </div>
-  <div class="ctl" data-eng="COLOR" data-sub="HARDWARE EXTRACT">
+  <div class="ctl" data-eng="COLOR" data-sub="HARDWARE EXTRACT SAMPLE">
     <label>DITHER</label>
     <select id="ditherMode">
       <option value="NONE">NONE — hard quantize</option>
@@ -313,11 +323,11 @@ button, input, select, textarea { font-family: inherit; }
       <option value="SCANLINE">SCANLINE — CRT interlace</option>
     </select>
   </div>
-  <div class="ctl" data-eng="COLOR" data-sub="HARDWARE EXTRACT">
+  <div class="ctl" data-eng="COLOR" data-sub="HARDWARE EXTRACT SAMPLE">
     <label>DITHER AMOUNT <output id="o_dAmt">1.00</output></label>
     <input type="range" id="dAmt" data-out="o_dAmt" min="0" max="2" step="0.05" value="1">
   </div>
-  <div class="pair" data-eng="COLOR" data-sub="HARDWARE EXTRACT">
+  <div class="pair" data-eng="COLOR" data-sub="HARDWARE EXTRACT SAMPLE">
     <div class="ctl">
       <label>PIXEL SIZE <output id="o_pxSize">1</output></label>
       <input type="range" id="pxSize" data-out="o_pxSize" min="1" max="24" step="1" value="1">
@@ -331,12 +341,40 @@ button, input, select, textarea { font-family: inherit; }
     <label>PALETTE SIZE <output id="o_palN">16</output></label>
     <input type="range" id="palN" data-out="o_palN" min="2" max="64" step="1" value="16">
   </div>
-  <div class="btnrow" data-eng="COLOR" data-sub="EXTRACT" style="margin-top:10px">
+  <div class="btnrow" data-eng="COLOR" data-sub="EXTRACT SAMPLE" style="margin-top:10px">
     <label class="btn small" for="palRef">LOAD PALETTE REF</label>
     <input type="file" id="palRef" accept="image/*">
     <button class="btn small" id="palClear">USE SOURCE ITSELF</button>
   </div>
   <div class="note" data-eng="COLOR" data-sub="EXTRACT">No reference loaded = palette gets pulled from the working image. Load a reference to graft one image's colour DNA onto another.</div>
+  <div class="ctl" data-eng="COLOR" data-sub="SAMPLE">
+    <label>REFERENCE — DRAG, RELEASE TO KEEP <output id="o_sfHex">—</output></label>
+    <div id="sfPane">
+      <div id="sfEmpty">LOAD A SOURCE IMAGE — OR A PALETTE REF ABOVE — TO SAMPLE FROM</div>
+      <canvas id="sfCanvas"></canvas>
+    </div>
+    <div id="sfSwatches"><span class="sfNone">no swatches yet</span></div>
+    <div class="btnrow" style="margin-top:12px">
+      <div id="sfLive"></div>
+      <input type="color" id="sfPick" value="#00e5ff">
+      <button class="btn small" id="sfAdd">ADD PICKED</button>
+      <button class="btn small" id="sfClear">CLEAR SWATCHES</button>
+    </div>
+  </div>
+  <div class="pair" data-eng="COLOR" data-sub="SAMPLE">
+    <div class="ctl">
+      <label>MATCH</label>
+      <select id="sfMatch">
+        <option value="RGB">NEAREST RGB — pure swap</option>
+        <option value="LUMA">LUMA RAMP — brightness bands</option>
+      </select>
+    </div>
+    <div class="ctl">
+      <label>PALETTE CYCLE <output id="o_sfCycle">0</output></label>
+      <input type="range" id="sfCycle" data-out="o_sfCycle" min="0" max="31" step="1" value="0">
+    </div>
+  </div>
+  <div class="note" data-eng="COLOR" data-sub="SAMPLE">Every swatch you keep gets used — no averaging, no median cut. NEAREST RGB swaps each pixel for its closest swatch. LUMA RAMP sorts the swatches darkest→brightest and maps them onto brightness bands instead, so hand-picked colours read as a graded ramp. PALETTE CYCLE rotates which swatch each match lands on (wraps at your swatch count) — same match map, different skin. Sampling reads from the palette ref if one is loaded, otherwise from the source.</div>
   <div class="pair" data-eng="COLOR" data-sub="PASTEL">
     <div class="ctl">
       <label>CLUMP SCALE <output id="o_paScale">3</output></label>
@@ -844,6 +882,7 @@ function sync(){
     const subOK = !el.dataset.sub || el.dataset.sub.split(' ').includes(sub);
     el.style.display = (tabOK && subOK) ? '' : 'none';
   });
+  if(TAB === 'COLOR' && sub === 'SAMPLE') refreshSampler();
 }
 document.querySelectorAll('.tab').forEach(t=>{
   t.addEventListener('click', ()=>{
@@ -958,6 +997,123 @@ function renderGhosts(){
   const cnt = $('ghostCount');
   if(cnt) cnt.textContent = GHOSTS.length;
 }
+
+/* ── hand-sampled swatch palette (SAMPLE FILL) ───────────────── */
+const SF_MAX = 32, SF_CAP = 900;
+let SWATCH = [], SFBUF = null, SFDATA = null, SFREF = null, SFPT = null, SFLAST = null, SFDRAG = false;
+
+const rgb2hex = (r,g,b) => '#' + [r,g,b].map(v => clamp(v|0,0,255).toString(16).padStart(2,'0')).join('');
+const lumOf = c => 0.299*c[0] + 0.587*c[1] + 0.114*c[2];
+
+function renderSwatches(){
+  const row = $('sfSwatches');
+  if(!row) return;
+  row.innerHTML = '';
+  if(!SWATCH.length){
+    const s = document.createElement('span');
+    s.className = 'sfNone';
+    s.textContent = 'no swatches yet — drag on the reference above';
+    row.appendChild(s);
+    return;
+  }
+  SWATCH.forEach((hex, i)=>{
+    const chip = document.createElement('div');
+    chip.className = 'sfChip'; chip.style.background = hex; chip.title = hex;
+    const x = document.createElement('div');
+    x.className = 'x'; x.textContent = '✕';
+    x.onclick = e => { e.stopPropagation(); SWATCH.splice(i,1); renderSwatches(); log(`swatch dropped — ${SWATCH.length} left`); };
+    chip.appendChild(x);
+    row.appendChild(chip);
+  });
+}
+function addSwatch(hex){
+  hex = hex.toLowerCase();
+  if(SWATCH.includes(hex)) return false;
+  if(SWATCH.length >= SF_MAX){ log(`swatch palette full — ${SF_MAX} max`, true); return false; }
+  SWATCH.push(hex); renderSwatches();
+  return true;
+}
+function drawSampler(){
+  const cvs = $('sfCanvas');
+  if(!cvs || !SFBUF) return;
+  const x = cvs.getContext('2d');
+  x.clearRect(0,0,cvs.width,cvs.height);
+  x.drawImage(SFBUF, 0, 0);
+  if(!SFPT) return;
+  const r = Math.max(7, Math.round(Math.max(cvs.width,cvs.height)/55));
+  x.lineWidth = Math.max(1, r/5);
+  x.strokeStyle = '#00e5ff';
+  x.beginPath(); x.arc(SFPT.x, SFPT.y, r, 0, Math.PI*2); x.stroke();
+  x.beginPath();
+  x.moveTo(SFPT.x-r*2, SFPT.y); x.lineTo(SFPT.x-r*0.6, SFPT.y);
+  x.moveTo(SFPT.x+r*0.6, SFPT.y); x.lineTo(SFPT.x+r*2, SFPT.y);
+  x.moveTo(SFPT.x, SFPT.y-r*2); x.lineTo(SFPT.x, SFPT.y-r*0.6);
+  x.moveTo(SFPT.x, SFPT.y+r*0.6); x.lineTo(SFPT.x, SFPT.y+r*2);
+  x.stroke();
+}
+function refreshSampler(){
+  const cvs = $('sfCanvas'), empty = $('sfEmpty');
+  if(!cvs || !empty) return;
+  const ref = PALREF || SRC;
+  if(!ref){
+    cvs.style.display = 'none'; empty.style.display = 'block';
+    SFBUF = null; SFDATA = null; SFREF = null; SFPT = null;
+    return;
+  }
+  if(SFREF !== ref){
+    let w = ref.width, h = ref.height;
+    const m = Math.max(w,h);
+    if(m > SF_CAP){ const s = SF_CAP/m; w = Math.max(1, Math.round(w*s)); h = Math.max(1, Math.round(h*s)); }
+    SFBUF = mkCanvas(w,h);
+    const bx = SFBUF.getContext('2d', {willReadFrequently:true});
+    bx.drawImage(ref, 0, 0, w, h);
+    SFDATA = bx.getImageData(0,0,w,h);
+    SFREF = ref; SFPT = null;
+    cvs.width = w; cvs.height = h;
+  }
+  cvs.style.display = 'block'; empty.style.display = 'none';
+  drawSampler();
+}
+function sfPos(e){
+  const cvs = $('sfCanvas'), rect = cvs.getBoundingClientRect();
+  if(!rect.width || !rect.height) return null;
+  const t = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]) || e;
+  const x = Math.floor((t.clientX - rect.left) * (cvs.width/rect.width));
+  const y = Math.floor((t.clientY - rect.top) * (cvs.height/rect.height));
+  if(x < 0 || y < 0 || x >= cvs.width || y >= cvs.height) return null;
+  return {x,y};
+}
+function sfPeek(e){
+  if(!SFDATA) return;
+  if(e.cancelable) e.preventDefault();
+  const p = sfPos(e);
+  if(!p) return;
+  const d = SFDATA.data, i = (p.y*SFDATA.width + p.x)*4;
+  SFLAST = rgb2hex(d[i], d[i+1], d[i+2]);
+  SFPT = p; drawSampler();
+  $('sfLive').style.background = SFLAST;
+  $('o_sfHex').textContent = SFLAST.toUpperCase();
+}
+function sfCommit(){
+  if(!SFLAST) return;
+  if(addSwatch(SFLAST)) log(`swatch ${SFLAST.toUpperCase()} sampled — ${SWATCH.length} in palette`);
+}
+(function(){
+  const cvs = $('sfCanvas');
+  if(!cvs) return;
+  cvs.addEventListener('touchstart', e=>{ SFDRAG = true; sfPeek(e); }, {passive:false});
+  cvs.addEventListener('touchmove',  e=>{ if(SFDRAG) sfPeek(e); }, {passive:false});
+  cvs.addEventListener('touchend',   e=>{ if(SFDRAG){ sfPeek(e); sfCommit(); } SFDRAG = false; }, {passive:false});
+  cvs.addEventListener('touchcancel', ()=>{ SFDRAG = false; });
+  cvs.addEventListener('mousedown', e=>{ SFDRAG = true; sfPeek(e); });
+  cvs.addEventListener('mousemove', e=>{ if(SFDRAG) sfPeek(e); });
+  window.addEventListener('mouseup', ()=>{ if(SFDRAG){ sfCommit(); SFDRAG = false; } });
+  $('sfAdd').addEventListener('click', ()=>{
+    const hex = $('sfPick').value.toLowerCase();
+    if(addSwatch(hex)) log(`swatch ${hex.toUpperCase()} added — ${SWATCH.length} in palette`);
+  });
+  $('sfClear').addEventListener('click', ()=>{ SWATCH = []; SFLAST = null; renderSwatches(); log('swatch palette cleared'); });
+})();
 
 
 /* ╔═══════════════════════════════════════════════════╗
@@ -1203,15 +1359,16 @@ const BAYER8 = (()=>{
 
 /* Nearest palette entry by squared euclidean distance — the vectorized
    argmin from Cswap.py, done per-pixel. */
-function nearest(pal, r, g, b){
+function nearestIdx(pal, r, g, b){
   let best=0, bd=Infinity;
   for(let i=0;i<pal.length;i++){
     const dr=r-pal[i][0], dg=g-pal[i][1], db=b-pal[i][2];
     const d = dr*dr + dg*dg + db*db;
     if(d < bd){ bd = d; best = i; }
   }
-  return pal[best];
+  return best;
 }
+function nearest(pal, r, g, b){ return pal[nearestIdx(pal, r, g, b)]; }
 
 /* Median-cut palette extraction — stands in for PIL's quantize() */
 function extractPalette(id, n){
@@ -1266,6 +1423,7 @@ function pixelate(id, size){
 
 function quantize(id, pal, P){
   const {width:w, height:h, data:d} = id;
+  const OUT = (P.palOut && P.palOut.length === pal.length) ? P.palOut : pal;
   if(P.pxSize > 1) pixelate(id, P.pxSize);
 
   if(P.dither === 'FS'){
@@ -1277,10 +1435,11 @@ function quantize(id, pal, P){
       for(let x=0;x<w;x++){
         const i = y*w+x;
         const old = [buf[i*3], buf[i*3+1], buf[i*3+2]];
-        const nc = nearest(pal, old[0], old[1], old[2]);
+        const qi = nearestIdx(pal, old[0], old[1], old[2]);
+        const mc = pal[qi], oc = OUT[qi];
         for(let c=0;c<3;c++){
-          const err = old[c] - nc[c];
-          d[i*4+c] = nc[c];
+          const err = old[c] - mc[c];
+          d[i*4+c] = oc[c];
           if(x+1<w)          push(i+1,   c, err, 7/16);
           if(y+1<h){
             if(x>0)          push(i+w-1, c, err, 3/16);
@@ -1297,7 +1456,7 @@ function quantize(id, pal, P){
     for(let y=0;y<h;y++) for(let x=0;x<w;x++){
       const i=(y*w+x)<<2;
       const th = (M[y%N][x%N]/denom - 0.5) * spread;
-      const nc = nearest(pal, clamp(d[i]+th,0,255), clamp(d[i+1]+th,0,255), clamp(d[i+2]+th,0,255));
+      const nc = OUT[nearestIdx(pal, clamp(d[i]+th,0,255), clamp(d[i+1]+th,0,255), clamp(d[i+2]+th,0,255))];
       d[i]=nc[0]; d[i+1]=nc[1]; d[i+2]=nc[2];
     }
   } else if(P.dither === 'SCANLINE'){
@@ -1306,14 +1465,14 @@ function quantize(id, pal, P){
       const bias = (y % 2 === 0) ? amp : -amp;
       for(let x=0;x<w;x++){
         const i=(y*w+x)<<2;
-        const nc = nearest(pal, clamp(d[i]+bias,0,255), clamp(d[i+1]+bias,0,255), clamp(d[i+2]+bias,0,255));
+        const nc = OUT[nearestIdx(pal, clamp(d[i]+bias,0,255), clamp(d[i+1]+bias,0,255), clamp(d[i+2]+bias,0,255))];
         d[i]=nc[0]; d[i+1]=nc[1]; d[i+2]=nc[2];
       }
     }
   } else {
     for(let i=0;i<w*h;i++){
       const t=i<<2;
-      const nc = nearest(pal, d[t], d[t+1], d[t+2]);
+      const nc = OUT[nearestIdx(pal, d[t], d[t+1], d[t+2])];
       d[t]=nc[0]; d[t+1]=nc[1]; d[t+2]=nc[2];
     }
   }
@@ -1326,6 +1485,41 @@ function quantize(id, pal, P){
         const t=(y*w+x)<<2;
         d[t]*=0.45; d[t+1]*=0.45; d[t+2]*=0.45;
       }
+    }
+  }
+  return id;
+}
+
+/* SAMPLE FILL — quantize to a hand-sampled swatch set. Match map is built
+   once, then the output palette can be rotated under it. */
+function sampleFill(id, P){
+  const pal = P.pal, n = pal.length;
+  const k = ((P.cycle % n) + n) % n;
+  const out = k ? pal.slice(k).concat(pal.slice(0,k)) : pal;
+
+  if(P.match !== 'LUMA') return quantize(id, pal, {...P, palOut: out});
+
+  if(P.pxSize > 1) pixelate(id, P.pxSize);
+  const order = pal.map((c,i)=>i).sort((a,b)=> lumOf(pal[a]) - lumOf(pal[b]));
+  const {width:w, height:h, data:d} = id;
+  const M = P.dither === 'BAYER4' ? BAYER4 : (P.dither === 'BAYER8' ? BAYER8 : null);
+  const N = M ? M.length : 0, denom = N*N;
+  const spread = (255/n) * P.dAmt * 1.6;
+  for(let y=0;y<h;y++){
+    for(let x=0;x<w;x++){
+      const t = (y*w+x)<<2;
+      let L = 0.299*d[t] + 0.587*d[t+1] + 0.114*d[t+2];
+      if(M) L += (M[y%N][x%N]/denom - 0.5) * spread;
+      else if(P.dither === 'SCANLINE') L += (y%2===0 ? 40 : -40) * P.dAmt;
+      const band = clamp(Math.floor(clamp(L,0,255)/256*n), 0, n-1);
+      const c = out[order[band]];
+      d[t]=c[0]; d[t+1]=c[1]; d[t+2]=c[2];
+    }
+  }
+  if(P.scanGap > 0){
+    for(let y=0;y<h;y++){
+      if(y % (P.scanGap+1) !== 0) continue;
+      for(let x=0;x<w;x++){ const t=(y*w+x)<<2; d[t]*=0.45; d[t+1]*=0.45; d[t+2]*=0.45; }
     }
   }
   return id;
@@ -2366,6 +2560,15 @@ function runEngine(id){
         log(`extracted ${pal.length} colours from ${PALREF ? 'reference' : 'source'}`);
         return quantize(id, pal, P);
       }
+      if(eng === 'SAMPLE'){
+        if(!SWATCH.length) throw new Error('no swatches — drag on the reference image to sample colours first');
+        const pal = SWATCH.map(hex2rgb);
+        const match = $('sfMatch').value;
+        const cyc = int('sfCycle') % pal.length;
+        if(match === 'LUMA' && P.dither === 'FS') log('LUMA RAMP takes ordered dither only — FLOYD-STEINBERG skipped', true);
+        log(`${pal.length} swatches · ${match === 'LUMA' ? 'luma ramp' : 'nearest rgb'} · cycle ${cyc}`);
+        return sampleFill(id, {...P, pal, match, cycle: int('sfCycle')});
+      }
       if(eng === 'PASTEL') return colorPastel(id, P);
       break;
     }
@@ -2441,6 +2644,7 @@ function loadFile(file, isPalRef){
   img.onload = ()=>{
     if(isPalRef){
       PALREF = img;
+      refreshSampler();
       log(`palette reference loaded — ${img.width}×${img.height}`);
     } else {
       SRC = img; CHAIN = [];
@@ -2448,6 +2652,7 @@ function loadFile(file, isPalRef){
       $('runBtn').disabled = false;
       $('chain').innerHTML = 'CHAIN: <span class="step">—</span>';
       clearLog();
+      refreshSampler();
       log(`source loaded — ${img.width}×${img.height}`);
     }
   };
@@ -2457,7 +2662,7 @@ function loadFile(file, isPalRef){
 $('pickLib').addEventListener('change', e => e.target.files[0] && loadFile(e.target.files[0], false));
 $('pickCam').addEventListener('change', e => e.target.files[0] && loadFile(e.target.files[0], false));
 $('palRef').addEventListener('change', e => e.target.files[0] && loadFile(e.target.files[0], true));
-$('palClear').addEventListener('click', ()=>{ PALREF = null; log('palette reference cleared — using source'); });
+$('palClear').addEventListener('click', ()=>{ PALREF = null; refreshSampler(); log('palette reference cleared — using source'); });
 
 /* multi-image ghost pool loaders */
 $('pickGhost').addEventListener('change', e => {
@@ -2530,7 +2735,9 @@ $('feedback').addEventListener('click', feedBack);
 
 /* test / automation bridge — lets harnesses inject the ghost pool */
 window.__setGhosts = arr => { GHOSTS = arr; };
+window.__setSwatches = arr => { SWATCH = arr.slice(0, SF_MAX); renderSwatches(); };
 
+renderSwatches();
 sync();
 log('load an image to start');
 </script>
