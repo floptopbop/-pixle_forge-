@@ -3367,6 +3367,120 @@ function glyphGoblin(id, P){
 }
 
 /* ╔═══════════════════════════════════════════════════╗
+   ║  COLOR :: ALLEY INK  (edge + palette + Bayer print) ║
+   ╚═══════════════════════════════════════════════════╝ */
+function colorAlleyInk(id, P){
+  const {width:w, height:h} = id;
+  const d = id.data;
+  const pal = ALLEY_PALETTES[P.palName] || ALLEY_PALETTES.UME;
+
+  /* find darkest palette entry for edges */
+  let bkIdx=0, bkLum=999;
+  for(let i=0;i<pal.length;i++){
+    const l=pal[i][0]*0.299+pal[i][1]*0.587+pal[i][2]*0.114;
+    if(l<bkLum){bkLum=l; bkIdx=i;}
+  }
+  const bk=pal[bkIdx];
+
+  /* pixelate first if requested */
+  if(P.pxSize > 1) pixelate(id, P.pxSize);
+
+  /* Sobel edge map */
+  const g = toGray(id);
+  const edge = new Float32Array(w*h);
+  for(let y=1;y<h-1;y++) for(let x=1;x<w-1;x++){
+    const i=y*w+x;
+    const gx = -g[i-w-1]+g[i-w+1] -2*g[i-1]+2*g[i+1] -g[i+w-1]+g[i+w+1];
+    const gy = -g[i-w-1]-2*g[i-w]-g[i-w+1] +g[i+w-1]+2*g[i+w]+g[i+w+1];
+    edge[i] = Math.min(1, Math.hypot(gx,gy)/1442);
+  }
+
+  /* perceptual nearest using redmean weighting */
+  function palDist(r,g,b,p){
+    const dr=r-p[0], dg=g-p[1], db=b-p[2], rm=(r+p[0])/2;
+    return (2+rm/256)*dr*dr + 4*dg*dg + (2+(255-rm)/256)*db*db;
+  }
+  function twoNearest(r,g,b){
+    let d0=Infinity,d1=Infinity,i0=0,i1=0;
+    for(let i=0;i<pal.length;i++){
+      const dd=palDist(r,g,b,pal[i]);
+      if(dd<d0){d1=d0;i1=i0;d0=dd;i0=i;}
+      else if(dd<d1){d1=dd;i1=i;}
+    }
+    const tot=d0+d1;
+    return tot<1e-6 ? [i0,i1,0] : [i0,i1,d0/tot];
+  }
+
+  const edgeStr = P.edgeStr;
+  const dAmt = P.dAmt;
+  const dither = P.dither;
+
+  if(dither === 'FS'){
+    /* Floyd-Steinberg path */
+    const buf = new Float32Array(w*h*3);
+    for(let i=0;i<w*h;i++){buf[i*3]=d[i*4]; buf[i*3+1]=d[i*4+1]; buf[i*3+2]=d[i*4+2];}
+    for(let y=0;y<h;y++) for(let x=0;x<w;x++){
+      const k=y*w+x, t=k*4;
+      if(edge[k] > (1-edgeStr)){
+        const op=Math.min(1,(edge[k]-(1-edgeStr))/edgeStr);
+        if(op>0.5){d[t]=bk[0];d[t+1]=bk[1];d[t+2]=bk[2];
+          buf[k*3]=bk[0]; buf[k*3+1]=bk[1]; buf[k*3+2]=bk[2]; continue;}
+      }
+      const old=[buf[k*3],buf[k*3+1],buf[k*3+2]];
+      const qi=nearestIdx(pal,old[0],old[1],old[2]);
+      const nc=pal[qi];
+      d[t]=nc[0]; d[t+1]=nc[1]; d[t+2]=nc[2];
+      for(let c=0;c<3;c++){
+        const err=(old[c]-nc[c])*dAmt;
+        if(x+1<w) buf[(k+1)*3+c]+=err*7/16;
+        if(y+1<h){
+          if(x>0) buf[(k+w-1)*3+c]+=err*3/16;
+          buf[(k+w)*3+c]+=err*5/16;
+          if(x+1<w) buf[(k+w+1)*3+c]+=err*1/16;
+        }
+      }
+    }
+  } else {
+    /* Bayer / NONE path */
+    const M = dither==='BAYER8' ? BAYER8 : BAYER4;
+    const N = M.length;
+    for(let y=0;y<h;y++) for(let x=0;x<w;x++){
+      const k=y*w+x, t=k*4;
+      if(edge[k] > (1-edgeStr)){
+        const op=Math.min(1,(edge[k]-(1-edgeStr))/edgeStr);
+        if(op>0.5){d[t]=bk[0];d[t+1]=bk[1];d[t+2]=bk[2]; continue;}
+      }
+      if(dither==='NONE'){
+        const nc=nearest(pal,d[t],d[t+1],d[t+2]);
+        d[t]=nc[0]; d[t+1]=nc[1]; d[t+2]=nc[2];
+      } else {
+        const [i0,i1,frac]=twoNearest(d[t],d[t+1],d[t+2]);
+        const th=(M[y%N][x%N]+0.5)/(N*N);
+        const nc = (frac*dAmt > th) ? pal[i1] : pal[i0];
+        d[t]=nc[0]; d[t+1]=nc[1]; d[t+2]=nc[2];
+      }
+    }
+  }
+
+  /* border */
+  if(P.border){
+    for(let x=0;x<w;x++) for(let b=0;b<2;b++){
+      const t1=(b*w+x)*4, t2=((h-1-b)*w+x)*4;
+      d[t1]=bk[0];d[t1+1]=bk[1];d[t1+2]=bk[2];
+      d[t2]=bk[0];d[t2+1]=bk[1];d[t2+2]=bk[2];
+    }
+    for(let y=0;y<h;y++) for(let b=0;b<2;b++){
+      const t1=(y*w+b)*4, t2=(y*w+(w-1-b))*4;
+      d[t1]=bk[0];d[t1+1]=bk[1];d[t1+2]=bk[2];
+      d[t2]=bk[0];d[t2+1]=bk[1];d[t2+2]=bk[2];
+    }
+  }
+
+  log('[ALLEY INK] ' + P.palName + ' · ' + pal.length + ' colours · edge ' + edgeStr.toFixed(2));
+  return id;
+}
+
+/* ╔═══════════════════════════════════════════════════╗
    ║  GLYPH :: BLOCK SLATE  (GLYPH_FORGE MATRIX port)  ║
    ╚═══════════════════════════════════════════════════╝ */
 function glyphBlockSlate(id, P){
@@ -3467,6 +3581,11 @@ function runEngine(id){
         return sampleFill(id, {...P, pal, match, cycle: int('sfCycle')});
       }
       if(eng === 'PASTEL') return colorPastel(id, P);
+      if(eng === 'ALLEY') return colorAlleyInk(id, {
+        palName: $('aiPal').value, edgeStr: val('aiEdge'),
+        dither: $('aiDither').value, dAmt: val('aiDAmt'),
+        pxSize: int('aiPx'), border: $('aiBorder').checked
+      });
       break;
     }
     case 'STRUCT': {
