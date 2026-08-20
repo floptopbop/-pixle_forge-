@@ -113,7 +113,7 @@ button, input, select, textarea { font-family: inherit; }
 
 <header>
   <h1>PIXEL_FORGE<span class="cur">▮</span></h1>
-  <div class="sub">SOVEREIGN IMAGE SUITE · 9 GROUPS · 37 ENGINES · SINGLE FILE</div>
+  <div class="sub">SOVEREIGN IMAGE SUITE · 9 GROUPS · 38 ENGINES · SINGLE FILE</div>
 </header>
 
 <div id="tabs" role="tablist">
@@ -284,6 +284,7 @@ button, input, select, textarea { font-family: inherit; }
       <option value="SAMPLE">SAMPLE FILL — hand-picked swatches</option>
       <option value="PASTEL">CHROMA RAZOR — band + outline</option>
       <option value="STRATA">STRATA SORT — cascading pixel drips</option>
+      <option value="ALLEY">ALLEY INK — edge + dither print</option>
     </select>
   </div>
   <div class="pair" data-eng="COLOR" data-sub="STRATA">
@@ -399,6 +400,43 @@ button, input, select, textarea { font-family: inherit; }
   </div>
   <label class="check" data-eng="COLOR" data-sub="PASTEL"><input type="checkbox" id="paOutline" checked> BLACK EDGE OUTLINE</label>
   <div class="note" data-eng="COLOR" data-sub="PASTEL">WASH squeezes the tonal range, LIFT slides it up. The original script ran WASH 0.10 / LIFT 220 — everything crushed into a near-white band with the outlines doing all the work. Dial those in if you want that exact look back.</div>
+  <!-- ALLEY INK -->
+  <div class="ctl" data-eng="COLOR" data-sub="ALLEY">
+    <label>PALETTE</label>
+    <select id="aiPal">
+      <option value="UME">UME — cream / vermillion / blue (6)</option>
+      <option value="SUMI">SUMI — ink wash (5)</option>
+      <option value="EARTH">EARTH — ochre / moss / rust (6)</option>
+      <option value="VAPOR">VAPOR — neon pink / cyan (6)</option>
+      <option value="MONO_WASHI">MONO WASHI — cream + ink (2)</option>
+    </select>
+  </div>
+  <div class="ctl" data-eng="COLOR" data-sub="ALLEY">
+    <label>EDGE STRENGTH <output id="o_aiEdge">0.35</output></label>
+    <input type="range" id="aiEdge" data-out="o_aiEdge" min="0" max="1" step="0.05" value="0.35">
+  </div>
+  <div class="ctl" data-eng="COLOR" data-sub="ALLEY">
+    <label>DITHER</label>
+    <select id="aiDither">
+      <option value="BAYER4">BAYER 4×4</option>
+      <option value="BAYER8">BAYER 8×8</option>
+      <option value="FS">FLOYD-STEINBERG</option>
+      <option value="NONE">NONE — hard quantize</option>
+    </select>
+  </div>
+  <div class="pair" data-eng="COLOR" data-sub="ALLEY">
+    <div class="ctl">
+      <label>DITHER AMOUNT <output id="o_aiDAmt">1.00</output></label>
+      <input type="range" id="aiDAmt" data-out="o_aiDAmt" min="0" max="2" step="0.05" value="1">
+    </div>
+    <div class="ctl">
+      <label>PIXEL SIZE <output id="o_aiPx">1</output></label>
+      <input type="range" id="aiPx" data-out="o_aiPx" min="1" max="24" step="1" value="1">
+    </div>
+  </div>
+  <label class="check" data-eng="COLOR" data-sub="ALLEY"><input type="checkbox" id="aiBorder" checked> 2px BORDER FRAME</label>
+  <div class="note" data-eng="COLOR" data-sub="ALLEY">Sobel edge detection burns outlines to the palette's darkest colour, then Bayer-dithers the rest into a limited print palette. UME is the Arts of ウメ street-scene set. Crank PIXEL SIZE for chunkier blocks.</div>
+
 
   <!-- ══ STRUCTURE ══ -->
   <div class="ctl" data-eng="STRUCT">
@@ -1027,6 +1065,7 @@ button, input, select, textarea { font-family: inherit; }
       <option value="SOVEREIGN">SOVEREIGN — katakana gradient vector</option>
       <option value="ATLAS">ATLAS — cached glyph blit</option>
       <option value="GOBLIN">GOBLIN SURGE — spatial shred + chromatic bleed</option>
+      <option value="BLOCK">BLOCK SLATE — VGA block mosaic</option>
     </select>
   </div>
 
@@ -1111,8 +1150,23 @@ button, input, select, textarea { font-family: inherit; }
     <label class="check"><input type="checkbox" id="gobEdge" checked> EDGE ENHANCE</label>
   </div>
 
+  <!-- BLOCK SLATE -->
+  <div class="ctl" data-eng="GLYPH" data-sub="BLOCK">
+    <label>COLUMNS <output id="o_blkCols">80</output></label>
+    <input type="range" id="blkCols" data-out="o_blkCols" min="20" max="200" step="1" value="80">
+  </div>
+  <div class="ctl" data-eng="GLYPH" data-sub="BLOCK">
+    <label>CELL PX <output id="o_blkPx">12</output></label>
+    <input type="range" id="blkPx" data-out="o_blkPx" min="4" max="32" step="1" value="12">
+  </div>
+  <div class="ctl" data-eng="GLYPH" data-sub="BLOCK">
+    <label>BLOCK RAMP (void→full)</label>
+    <input type="text" id="blkRamp" value=" ░▒▓█" autocomplete="off">
+  </div>
+  <label class="check" data-eng="GLYPH" data-sub="BLOCK"><input type="checkbox" id="blkColor" checked> COLORIZE FROM SOURCE</label>
+
   <!-- GLYPH shared: fg / bg -->
-  <div class="pair" data-eng="GLYPH" data-sub="SOVEREIGN ATLAS">
+  <div class="pair" data-eng="GLYPH" data-sub="SOVEREIGN ATLAS BLOCK">
     <div class="ctl">
       <label>FOREGROUND</label>
       <input type="color" id="glFg" value="#00ffff">
@@ -1125,6 +1179,7 @@ button, input, select, textarea { font-family: inherit; }
   <div class="note" data-eng="GLYPH" data-sub="SOVEREIGN">SOVEREIGN maps image gradients to directional katakana — each glyph follows the edge angle at that cell. Color-quantized to BANDS levels. Uses system Japanese font (Hiragino / Yu Gothic on iOS/Mac).</div>
   <div class="note" data-eng="GLYPH" data-sub="ATLAS">ATLAS rasterises each glyph in the ramp ONCE into an offscreen strip, then blits by luminance — fast even at 400 cols. GAMMA controls the tone curve; higher values push more cells toward the dark (dense) end of the ramp.</div>
   <div class="note" data-eng="GLYPH" data-sub="GOBLIN">Port of Gglitch.py — TEARS random rectangular chunks get swapped (with optional flip), then the R and B channels are offset independently for chromatic bleed. All scatter is sine-hash deterministic.</div>
+  <div class="note" data-eng="GLYPH" data-sub="BLOCK">Port of the GLYPH_FORGE MATRIX engine. Maps brightness to VGA block characters at a fixed grid — no quadtree, just a clean tonal slate. FOREGROUND tints monochrome output when COLORIZE is off.</div>
 
 </section>
 
@@ -1666,6 +1721,13 @@ const PALETTES = {
   MONO_AMBER: [[20,10,0],[255,176,0]],
   MONO_GREEN: [[8,16,8],[51,255,51]]
 };
+const ALLEY_PALETTES = {
+  UME:        [[214,201,175],[35,31,28],[219,180,145],[198,63,35],[42,143,189],[232,225,210]],
+  SUMI:       [[235,225,210],[28,25,22],[140,130,118],[75,68,60],[185,175,160]],
+  EARTH:      [[234,218,184],[42,36,28],[168,120,68],[86,110,62],[148,82,52],[190,178,158]],
+  VAPOR:      [[255,113,206],[1,205,254],[5,24,38],[185,103,255],[255,251,150],[57,62,70]],
+  MONO_WASHI: [[214,201,175],[35,31,28]]
+};
 
 const BAYER4 = [[0,8,2,10],[12,4,14,6],[3,11,1,9],[15,7,13,5]];
 const BAYER8 = (()=>{
@@ -1678,7 +1740,8 @@ const BAYER8 = (()=>{
   return m;
 })();
 
-/* Nearest palette entry by squared euclidean distance */
+/* Nearest palette entry by squared euclidean distance — the vectorized
+   argmin from Cswap.py, done per-pixel. */
 function nearestIdx(pal, r, g, b){
   let best=0, bd=Infinity;
   for(let i=0;i<pal.length;i++){
@@ -1747,6 +1810,7 @@ function quantize(id, pal, P){
   if(P.pxSize > 1) pixelate(id, P.pxSize);
 
   if(P.dither === 'FS'){
+    // Floyd-Steinberg. Work in float so error can go negative.
     const buf = new Float32Array(w*h*3);
     for(let i=0;i<w*h;i++){ buf[i*3]=d[i*4]; buf[i*3+1]=d[i*4+1]; buf[i*3+2]=d[i*4+2]; }
     const push = (i,ch,e,f)=>{ if(i>=0 && i<w*h) buf[i*3+ch] += e*f*P.dAmt; };
@@ -1796,6 +1860,7 @@ function quantize(id, pal, P){
     }
   }
 
+  // CRT gap lines — darken every Nth row
   if(P.scanGap > 0){
     for(let y=0;y<h;y++){
       if(y % (P.scanGap+1) !== 0) continue;
@@ -1808,7 +1873,8 @@ function quantize(id, pal, P){
   return id;
 }
 
-/* SAMPLE FILL — quantize to a hand-sampled swatch set. */
+/* SAMPLE FILL — quantize to a hand-sampled swatch set. Match map is built
+   once, then the output palette can be rotated under it. */
 function sampleFill(id, P){
   const pal = P.pal, n = pal.length;
   const k = ((P.cycle % n) + n) % n;
@@ -1852,6 +1918,7 @@ function colorPastel(id, P){
   x.drawImage(dataToCanvas(id), 0, 0, sw, sh);
   const small = x.getImageData(0,0,sw,sh);
 
+  // median filter 3x3 approximating MedianFilter(size=9)
   const sd = small.data, med = new Uint8ClampedArray(sd.length);
   const win = new Uint8Array(9);
   for(let y=0;y<sh;y++) for(let px=0;px<sw;px++){
@@ -1865,11 +1932,13 @@ function colorPastel(id, P){
     med[((y*sw+px)<<2)+3] = 255;
   }
 
+  // staircase quantize + wash toward the lift value
   const step = 200/(P.bands-1);
   for(let i=0;i<med.length;i+=4)
     for(let ch=0;ch<3;ch++)
       med[i+ch] = clamp(Math.round(med[i+ch]/step)*step * P.wash + P.lift, 0, 255);
 
+  // NEAREST upscale back to full size
   const c2 = mkCanvas(sw, sh);
   c2.getContext('2d').putImageData(new ImageData(med, sw, sh), 0, 0);
   const c3 = mkCanvas(w, h), x3 = c3.getContext('2d', {willReadFrequently:true});
@@ -3297,6 +3366,56 @@ function glyphGoblin(id, P){
   return new ImageData(d, w, h);
 }
 
+/* ╔═══════════════════════════════════════════════════╗
+   ║  GLYPH :: BLOCK SLATE  (GLYPH_FORGE MATRIX port)  ║
+   ╚═══════════════════════════════════════════════════╝ */
+function glyphBlockSlate(id, P){
+  const {width:w, height:h} = id;
+  const g = toGray(id), src = id.data;
+  const cols = P.cols, px = P.px;
+  const rows = Math.max(1, Math.round(cols * (h/w) * 0.5));
+  const cellW = w / cols, cellH = h / rows;
+  let ramp = [...P.ramp]; if(ramp.length < 2) ramp = [' ','░','▒','▓','█'];
+  const L = ramp.length;
+
+  const c = mkCanvas(w,h), x = c.getContext('2d');
+  x.fillStyle = P.bg; x.fillRect(0,0,w,h);
+  x.textBaseline = 'top';
+
+  const fgR = parseInt(P.fg.slice(1,3),16), fgG = parseInt(P.fg.slice(3,5),16), fgB = parseInt(P.fg.slice(5,7),16);
+
+  for(let r=0; r<rows; r++){
+    for(let cc=0; cc<cols; cc++){
+      const x0 = Math.floor(cc*cellW), y0 = Math.floor(r*cellH);
+      const x1 = Math.floor((cc+1)*cellW), y1 = Math.floor((r+1)*cellH);
+      let sum=0, sr=0, sg=0, sb=0, n=0;
+      for(let y=y0; y<y1 && y<h; y++) for(let xx=x0; xx<x1 && xx<w; xx++){
+        sum += g[y*w+xx];
+        const i = (y*w+xx)*4;
+        sr += src[i]; sg += src[i+1]; sb += src[i+2]; n++;
+      }
+      if(!n) continue;
+      const mean = sum/n;
+      const idx = Math.min(L-1, (mean/256*L)|0);
+      const ch = ramp[idx];
+      if(ch === ' ') continue;
+      const t = (0.15 + 0.85 * idx/(L-1));
+      let fill;
+      if(P.colorize){
+        const cr = Math.max(40, sr/n|0), cg = Math.max(40, sg/n|0), cb = Math.max(40, sb/n|0);
+        fill = `rgb(${Math.round(cr*t)},${Math.round(cg*t)},${Math.round(cb*t)})`;
+      } else {
+        fill = `rgb(${Math.round(fgR*t)},${Math.round(fgG*t)},${Math.round(fgB*t)})`;
+      }
+      x.fillStyle = fill;
+      x.font = `${px}px "IBM VGA", monospace`;
+      x.fillText(ch, x0, y0);
+    }
+  }
+  log('[BLOCK] ' + cols + '×' + rows + ' · ' + L + '-step ramp');
+  return x.getImageData(0,0,w,h);
+}
+
 function runEngine(id){
   const eng = currentEngine();
   switch(TAB){
@@ -3450,6 +3569,10 @@ function runEngine(id){
         tears: int('gobTears'), shift: int('gobShift'),
         chunkW: val('gobCW'), chunkH: int('gobCH'),
         flip: val('gobFlip'), edge: $('gobEdge').checked
+      });
+      if(eng === 'BLOCK') return glyphBlockSlate(id, {
+        cols: int('blkCols'), px: int('blkPx'), ramp: $('blkRamp').value,
+        colorize: $('blkColor').checked, fg: $('glFg').value, bg: $('glBg').value
       });
       break;
     }
