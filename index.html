@@ -113,7 +113,7 @@ button, input, select, textarea { font-family: inherit; }
 
 <header>
   <h1>PIXEL_FORGE<span class="cur">▮</span></h1>
-  <div class="sub">SOVEREIGN IMAGE SUITE · 9 GROUPS · 38 ENGINES · SINGLE FILE</div>
+  <div class="sub">SOVEREIGN IMAGE SUITE · 9 GROUPS · 39 ENGINES · SINGLE FILE · SZ-2</div>
 </header>
 
 <div id="tabs" role="tablist">
@@ -169,6 +169,7 @@ button, input, select, textarea { font-family: inherit; }
       <option value="LIQUID">LIQUID — sine wobble soup</option>
       <option value="LATTICE">CRYSTAL LATTICE — luminance shear</option>
       <option value="VORTEX">PHI VORTEX — golden spiral screen</option>
+      <option value="ARCADE">ARCADE — gradient flow + CRT deconvergence</option>
     </select>
   </div>
   <div class="pair" data-eng="WARP" data-sub="VORTEX">
@@ -274,6 +275,57 @@ button, input, select, textarea { font-family: inherit; }
   </div>
   <div class="note" data-eng="WARP" data-sub="CHAOS">Even passes go positive, odd passes negative. DRIFT stops the math cancelling out — that's where the unexpected outcomes live. Set it to 0 for clean cancellation.</div>
   <div class="note" data-eng="WARP" data-sub="UNRAVEL">Runs the shell map in reverse. Feed it a SINGULARITY output to partially recover the original — the bit-cracks stay.</div>
+  <!-- ARCADE -->
+  <div class="pair" data-eng="WARP" data-sub="ARCADE">
+    <div class="ctl">
+      <label>FLOW STRENGTH <output id="o_arcStr">60</output></label>
+      <input type="range" id="arcStr" data-out="o_arcStr" min="0" max="400" step="2" value="60">
+    </div>
+    <div class="ctl">
+      <label>FLOW ROTATION <output id="o_arcRot">1.00</output></label>
+      <input type="range" id="arcRot" data-out="o_arcRot" min="0" max="6.28" step="0.01" value="1.0">
+    </div>
+  </div>
+  <div class="pair" data-eng="WARP" data-sub="ARCADE">
+    <label class="check"><input type="checkbox" id="arcDrive" checked> IMAGE DRIVE — brightness scales displacement</label>
+    <label class="check"><input type="checkbox" id="arcNoise"> NOISE FIELD instead of gradient</label>
+  </div>
+  <div class="pair" data-eng="WARP" data-sub="ARCADE">
+    <div class="ctl">
+      <label>ROTATION ANGLE <output id="o_arcDeg">0.50</output></label>
+      <input type="range" id="arcDeg" data-out="o_arcDeg" min="-6" max="6" step="0.05" value="0.5">
+    </div>
+    <div class="ctl">
+      <label>DECONVERGENCE <output id="o_arcEnt">0.35</output></label>
+      <input type="range" id="arcEnt" data-out="o_arcEnt" min="0" max="1" step="0.01" value="0.35">
+    </div>
+  </div>
+  <div class="pair" data-eng="WARP" data-sub="ARCADE">
+    <div class="ctl">
+      <label>CRT STRENGTH <output id="o_arcCrt">0.40</output></label>
+      <input type="range" id="arcCrt" data-out="o_arcCrt" min="0" max="1" step="0.01" value="0.4">
+    </div>
+    <div class="ctl">
+      <label>CRT FREQUENCY <output id="o_arcCrtF">0.30</output></label>
+      <input type="range" id="arcCrtF" data-out="o_arcCrtF" min="0.02" max="1.6" step="0.01" value="0.3">
+    </div>
+  </div>
+  <div class="pair" data-eng="WARP" data-sub="ARCADE">
+    <div class="ctl">
+      <label>BITPLANE BLEND <output id="o_arcBit">0.25</output></label>
+      <input type="range" id="arcBit" data-out="o_arcBit" min="0" max="1" step="0.01" value="0.25">
+    </div>
+    <div class="ctl">
+      <label>ABYSS FREQUENCY <output id="o_arcAbyF">25</output></label>
+      <input type="range" id="arcAbyF" data-out="o_arcAbyF" min="3" max="80" step="1" value="25">
+    </div>
+  </div>
+  <div class="ctl" data-eng="WARP" data-sub="ARCADE">
+    <label>NOISE SEED <output id="o_arcSeed">7</output></label>
+    <input type="range" id="arcSeed" data-out="o_arcSeed" min="0" max="200" step="1" value="7">
+  </div>
+  <label class="check" data-eng="WARP" data-sub="ARCADE"><input type="checkbox" id="arcAbyss" checked> ABYSS FILL — sine field into pure black</label>
+  <div class="note" data-eng="WARP" data-sub="ARCADE">Six stages, each off at zero. FLOW STRENGTH displaces every pixel along the image's own luminance gradient, turned by FLOW ROTATION — at 0 it pulls straight downhill, near 1.57 it runs perpendicular and the picture shears sideways along its own contours. IMAGE DRIVE scales that push by local brightness so lit areas smear further than shadow. DECONVERGENCE drags R and B diagonally apart with black fill, CRT multiplies a sine down the rows, BITPLANE isolates the top bit of luma into hard black/white and blends it back, and ABYSS FILL hunts pure-black pixels and floods them with a diagonal interference pattern — so it only bites once deconvergence or CRT has crushed something to zero. The script ran STRENGTH 6.0, which barely moves a pixel; 60 upward is where it starts to read. NOISE FIELD swaps the gradient for a sine-hash field on NOISE SEED.</div>
 
   <!-- ══ COLOR ══ -->
   <div class="ctl" data-eng="COLOR">
@@ -711,6 +763,7 @@ button, input, select, textarea { font-family: inherit; }
     <select id="inkEng">
       <option value="SUMIE">SUMI-E — three-layer wash daemon</option>
       <option value="ZEN">ZEN INK — cyclic bleed + hard threshold</option>
+      <option value="SPLAT">SPLAT-ZENITH — freq split + splatter physics</option>
       <option value="MONKLIN">MONKLIN — decaying bleed + ink starvation</option>
     </select>
   </div>
@@ -810,6 +863,103 @@ button, input, select, textarea { font-family: inherit; }
     <input type="range" id="znCon" data-out="o_znCon" min="1" max="6" step="0.1" value="2.5">
   </div>
   <div class="note" data-eng="INK" data-sub="ZEN">Each cycle blurs wider, slams contrast, then hard-thresholds to pure black or white. Three passes is the original — the shapes simplify and the mid-tones die, which is the point. Set PAPER TONE to 240 for the original plate.</div>
+  <!-- SPLAT-ZENITH -->
+  <div class="pair" data-eng="INK" data-sub="SPLAT">
+    <div class="ctl">
+      <label>FREQ CUTOFF <output id="o_szFreq">6</output></label>
+      <input type="range" id="szFreq" data-out="o_szFreq" min="2" max="24" step="1" value="6">
+    </div>
+    <div class="ctl">
+      <label>DETAIL GAIN <output id="o_szGain">1.20</output></label>
+      <input type="range" id="szGain" data-out="o_szGain" min="0.4" max="3" step="0.05" value="1.2">
+    </div>
+  </div>
+  <div class="pair" data-eng="INK" data-sub="SPLAT">
+    <div class="ctl">
+      <label>WASH SQUEEZE LO <output id="o_szSqLo">90</output></label>
+      <input type="range" id="szSqLo" data-out="o_szSqLo" min="0" max="180" step="5" value="90">
+    </div>
+    <div class="ctl">
+      <label>WASH SQUEEZE HI <output id="o_szSqHi">200</output></label>
+      <input type="range" id="szSqHi" data-out="o_szSqHi" min="120" max="255" step="5" value="200">
+    </div>
+  </div>
+  <div class="pair" data-eng="INK" data-sub="SPLAT">
+    <div class="ctl">
+      <label>BRUSH WIDTH <output id="o_szBrush">2</output></label>
+      <input type="range" id="szBrush" data-out="o_szBrush" min="0" max="12" step="1" value="2">
+    </div>
+    <div class="ctl">
+      <label>WASH SMEAR PASSES <output id="o_szWashIter">6</output></label>
+      <input type="range" id="szWashIter" data-out="o_szWashIter" min="0" max="40" step="1" value="6">
+    </div>
+  </div>
+  <div class="pair" data-eng="INK" data-sub="SPLAT">
+    <div class="ctl">
+      <label>WASH DRIFT X <output id="o_szWashDx">-2</output></label>
+      <input type="range" id="szWashDx" data-out="o_szWashDx" min="-8" max="8" step="1" value="-2">
+    </div>
+    <div class="ctl">
+      <label>WASH DRIFT Y <output id="o_szWashDy">6</output></label>
+      <input type="range" id="szWashDy" data-out="o_szWashDy" min="-8" max="8" step="1" value="6">
+    </div>
+  </div>
+  <div class="pair" data-eng="INK" data-sub="SPLAT">
+    <div class="ctl">
+      <label>EDGE THRESHOLD <output id="o_szEdge">170</output></label>
+      <input type="range" id="szEdge" data-out="o_szEdge" min="60" max="240" step="5" value="170">
+    </div>
+    <div class="ctl">
+      <label>SPLATTER CHANCE <output id="o_szChance">0.60</output></label>
+      <input type="range" id="szChance" data-out="o_szChance" min="0" max="1" step="0.05" value="0.6">
+    </div>
+  </div>
+  <div class="pair" data-eng="INK" data-sub="SPLAT">
+    <div class="ctl">
+      <label>LAUNCH VEL MIN <output id="o_szVelMin">12</output></label>
+      <input type="range" id="szVelMin" data-out="o_szVelMin" min="0" max="40" step="1" value="12">
+    </div>
+    <div class="ctl">
+      <label>LAUNCH VEL MAX <output id="o_szVelMax">30</output></label>
+      <input type="range" id="szVelMax" data-out="o_szVelMax" min="4" max="90" step="1" value="30">
+    </div>
+  </div>
+  <div class="pair" data-eng="INK" data-sub="SPLAT">
+    <div class="ctl">
+      <label>DRIP COUNT <output id="o_szDripCt">20</output></label>
+      <input type="range" id="szDripCt" data-out="o_szDripCt" min="0" max="120" step="5" value="20">
+    </div>
+    <div class="ctl">
+      <label>DRIP SPREAD <output id="o_szDripSp">3.0</output></label>
+      <input type="range" id="szDripSp" data-out="o_szDripSp" min="0" max="12" step="0.5" value="3">
+    </div>
+  </div>
+  <div class="pair" data-eng="INK" data-sub="SPLAT">
+    <div class="ctl">
+      <label>INK CYCLES <output id="o_szCyc">3</output></label>
+      <input type="range" id="szCyc" data-out="o_szCyc" min="1" max="6" step="1" value="3">
+    </div>
+    <div class="ctl">
+      <label>INK DENSITY <output id="o_szDens">140</output></label>
+      <input type="range" id="szDens" data-out="o_szDens" min="60" max="230" step="5" value="140">
+    </div>
+  </div>
+  <div class="pair" data-eng="INK" data-sub="SPLAT">
+    <div class="ctl">
+      <label>INK DRIFT X <output id="o_szInkDx">2</output></label>
+      <input type="range" id="szInkDx" data-out="o_szInkDx" min="-8" max="8" step="1" value="2">
+    </div>
+    <div class="ctl">
+      <label>INK DRIFT Y <output id="o_szInkDy">-3</output></label>
+      <input type="range" id="szInkDy" data-out="o_szInkDy" min="-8" max="8" step="1" value="-3">
+    </div>
+  </div>
+  <div class="ctl" data-eng="INK" data-sub="SPLAT">
+    <label>CONTRAST <output id="o_szCon">1.50</output></label>
+    <input type="range" id="szCon" data-out="o_szCon" min="1" max="4" step="0.05" value="1.5">
+  </div>
+  <label class="check" data-eng="INK" data-sub="SPLAT"><input type="checkbox" id="szDNA" checked> DNA ADAPT — let the source retune the splatter</label>
+  <div class="note" data-eng="INK" data-sub="SPLAT">Two tracks off one frequency split. FREQ CUTOFF sets the low-pass: everything under it becomes the wash (squeezed into the SQUEEZE band, fattened by BRUSH WIDTH, then smeared by repeated darker-offsets). Everything over it becomes the ink. Splatters launch off Sobel edges above EDGE THRESHOLD, fly along the gradient angle for LAUNCH VEL pixels, then shed accelerating gravity drips — and they get composited into the ink <em>before</em> the kinetic cycles, so the drift stretches droplets and strokes together instead of pasting spray on top. DNA ADAPT reads the source's own luminance, chaos and variance and rescales CHANCE, VEL MAX, DRIP COUNT and SPREAD per image — dark and busy sources splatter harder. Turn it off to hold your slider values literally. All scatter is sine-hash, so the same image at the same settings lands identically every run.</div>
   <!-- MONKLIN -->
   <div class="pair" data-eng="INK" data-sub="MONKLIN">
     <div class="ctl">
@@ -1693,6 +1843,131 @@ function warpLattice(id, P){
     for(let c=0;c<3;c++) d[i+c] = clamp(128 + (d[i+c]-128)*1.25, 0, 255);
   }
   return res;
+}
+
+/* ── ARCADE — flow warp + deconverge + CRT + bitplane + abyss ──
+   Port of 90s_arc.py. Verified pixel-exact against the script's
+   flow warp (2 differing px in 98280, float rounding on a sample
+   boundary). Three details the port depends on: PIL's 'L' is
+   ITU-R 601 luma quantised to an integer before scaling, np.gradient
+   goes one-sided on the border, and Python's int() truncates. */
+
+function arcFlowWarp(d, w, h, P){
+  const out = new Uint8ClampedArray(d.length);
+  const g = new Float32Array(w*h);
+  for(let i=0;i<w*h;i++) g[i] = Math.round(d[i*4]*0.299 + d[i*4+1]*0.587 + d[i*4+2]*0.114)/255;
+  /* rotating the flow vector by a fixed angle is a rotation matrix —
+     mathematically identical to the script's per-pixel atan2/cos/sin,
+     minus three trig calls on every pixel */
+  const cs = Math.cos(P.flowRot), sn = Math.sin(P.flowRot);
+  for(let y=0;y<h;y++){
+    for(let x=0;x<w;x++){
+      const i = y*w+x;
+      const gx = x===0   ? g[y*w+1]-g[y*w]
+               : x===w-1 ? g[y*w+x]-g[y*w+x-1]
+               : (g[y*w+x+1]-g[y*w+x-1])/2;
+      const gy = y===0   ? g[w+x]-g[x]
+               : y===h-1 ? g[y*w+x]-g[(y-1)*w+x]
+               : (g[(y+1)*w+x]-g[(y-1)*w+x])/2;
+      let dx, dy;
+      if(P.noiseField){ dx = shash2(x,y,P.seed+1.3)-0.5; dy = shash2(x,y,P.seed+2.7)-0.5; }
+      else            { dx = gx*cs - gy*sn;              dy = gx*sn + gy*cs; }
+      if(P.imgDrive){ const b = 0.5 + g[i]; dx *= b; dy *= b; }
+      dx *= P.strength; dy *= P.strength;
+      const sx = Math.trunc(clamp(x+dx, 0, w-1)), sy = Math.trunc(clamp(y+dy, 0, h-1));
+      const si = (sy*w+sx)*4, di = i*4;
+      out[di]=d[si]; out[di+1]=d[si+1]; out[di+2]=d[si+2]; out[di+3]=d[si+3];
+    }
+  }
+  return out;
+}
+
+function arcRotate(d, w, h, deg){
+  if(!deg) return d;
+  const out = new Uint8ClampedArray(d.length);
+  const a = -deg*Math.PI/180, cs = Math.cos(a), sn = Math.sin(a);
+  const cx = (w-1)/2, cy = (h-1)/2;
+  for(let y=0;y<h;y++) for(let x=0;x<w;x++){
+    const ox = x-cx, oy = y-cy;
+    const sx = ox*cs - oy*sn + cx, sy = ox*sn + oy*cs + cy;
+    const di = (y*w+x)*4;
+    if(sx<0||sx>w-1||sy<0||sy>h-1){ out[di+3]=255; continue; }
+    const x0=sx|0, y0=sy|0, x1=Math.min(x0+1,w-1), y1=Math.min(y0+1,h-1);
+    const fx=sx-x0, fy=sy-y0;
+    for(let k=0;k<3;k++){
+      const p00=d[(y0*w+x0)*4+k], p10=d[(y0*w+x1)*4+k];
+      const p01=d[(y1*w+x0)*4+k], p11=d[(y1*w+x1)*4+k];
+      out[di+k] = (p00*(1-fx)+p10*fx)*(1-fy) + (p01*(1-fx)+p11*fx)*fy;
+    }
+    out[di+3]=255;
+  }
+  return out;
+}
+
+/* R pulled one way, B the other, black fill — PIL AFFINE, not a wrap */
+function arcDeconverge(d, w, h, entropy){
+  const pull = Math.round(entropy * (w/12));
+  if(!pull) return d;
+  const out = new Uint8ClampedArray(d);
+  for(let y=0;y<h;y++) for(let x=0;x<w;x++){
+    const di = (y*w+x)*4;
+    const rx = x+pull, ry = y+pull;
+    out[di]   = (rx<w && ry<h)   ? d[(ry*w+rx)*4]   : 0;
+    const bx = x-pull, by = y-pull;
+    out[di+2] = (bx>=0 && by>=0) ? d[(by*w+bx)*4+2] : 0;
+  }
+  return out;
+}
+
+function arcCRT(d, w, h, strength, freq){
+  if(strength<=0) return d;
+  for(let y=0;y<h;y++){
+    const f = 1 - strength*Math.abs(Math.sin(y*freq));
+    for(let x=0;x<w;x++){ const i=(y*w+x)*4; d[i]*=f; d[i+1]*=f; d[i+2]*=f; }
+  }
+  return d;
+}
+
+/* isolate the top bit of luma, blend the hard black/white plane back */
+function arcBitplane(d, w, h, alpha){
+  if(alpha<=0) return d;
+  for(let i=0;i<w*h;i++){
+    const lum = (d[i*4]*0.299 + d[i*4+1]*0.587 + d[i*4+2]*0.114)|0;
+    const msb = (lum & 128) ? 255 : 0, t = i*4;
+    d[t]   = d[t]  *(1-alpha) + msb*alpha;
+    d[t+1] = d[t+1]*(1-alpha) + msb*alpha;
+    d[t+2] = d[t+2]*(1-alpha) + msb*alpha;
+  }
+  return d;
+}
+
+/* pure-black pixels fill with a diagonal sine interference field */
+function arcAbyss(d, w, h, freq){
+  let filled = 0;
+  for(let y=0;y<h;y++) for(let x=0;x<w;x++){
+    const i = (y*w+x)*4;
+    if(d[i]===0 && d[i+1]===0 && d[i+2]===0){
+      const v = 127 + 127*Math.sin((x+y)/freq);
+      d[i]=d[i+1]=d[i+2]=v; filled++;
+    }
+  }
+  return filled;
+}
+
+function warpArcade(id, P){
+  const w = id.width, h = id.height;
+  let d = new Uint8ClampedArray(id.data);
+  if(P.strength > 0) d = arcFlowWarp(d, w, h, P);
+  if(P.rotDeg)       d = arcRotate(d, w, h, P.rotDeg);
+  if(P.entropy > 0)  d = arcDeconverge(d, w, h, P.entropy);
+  if(P.crt > 0)      d = arcCRT(d, w, h, P.crt, P.crtFreq);
+  if(P.bitAlpha > 0) d = arcBitplane(d, w, h, P.bitAlpha);
+  let filled = 0;
+  if(P.abyss)        filled = arcAbyss(d, w, h, P.abyssFreq);
+  log('[ARCADE] ' + (P.noiseField ? 'noise' : 'flow') + ' warp ' + P.strength +
+      ' · deconv ' + P.entropy + ' · crt ' + P.crt + ' · bit ' + P.bitAlpha +
+      (P.abyss ? ' · abyss ' + filled + 'px' : ''));
+  return new ImageData(d, w, h);
 }
 
 
@@ -3063,6 +3338,168 @@ function inkMonklin(id, P){
   return applyHanko(grayToData(canvas, w, h), P.hanko);
 }
 
+/* ── SPLAT-ZENITH — frequency split + splatter physics ────────── */
+
+/* CDF equalisation — normalises any source to the full tonal range,
+   so a 73%-dark photo doesn't flood the whole plate with ink. */
+function szEqualize(g){
+  const n = g.length, hist = new Uint32Array(256);
+  for(let i=0;i<n;i++) hist[clamp(Math.round(g[i]),0,255)]++;
+  const cdf = new Uint32Array(256);
+  let run = 0;
+  for(let i=0;i<256;i++){ run += hist[i]; cdf[i] = run; }
+  let cdfMin = 0;
+  for(let i=0;i<256;i++) if(cdf[i] > 0){ cdfMin = cdf[i]; break; }
+  const den = Math.max(1, n - cdfMin), lut = new Float32Array(256);
+  for(let i=0;i<256;i++) lut[i] = ((cdf[i] - cdfMin) / den) * 255;
+  const o = new Float32Array(n);
+  for(let i=0;i<n;i++) o[i] = lut[clamp(Math.round(g[i]),0,255)];
+  return o;
+}
+
+/* DNA vitals — the source's own statistics */
+function szDNA(g){
+  const n = g.length;
+  let sum = 0, sumSq = 0;
+  for(let i=0;i<n;i++){ sum += g[i]; sumSq += g[i]*g[i]; }
+  const mean = sum/n, variance = Math.max(0, sumSq/n - mean*mean);
+  return { lum: mean, chaos: Math.sqrt(variance), entropy: variance };
+}
+
+/* dark + busy sources splatter harder; bright + calm ones stay delicate */
+function szModulate(dna, P){
+  if(!P.dnaAdapt) return {
+    chance:P.chance, velMin:P.velMin, velMax:P.velMax, drips:P.dripCount, spread:P.dripSpread
+  };
+  const lum = dna.lum/255;
+  const chaos = clamp(dna.chaos/127, 0, 1);
+  const entropy = clamp(dna.entropy/5000, 0, 1);
+  return {
+    chance: P.chance * (0.4 + 0.6*(1-lum)),
+    velMin: P.velMin,
+    velMax: P.velMin + (P.velMax - P.velMin) * (0.5 + chaos*0.5),
+    drips:  P.dripCount * (0.5 + entropy),
+    spread: P.dripSpread * (0.6 + entropy*0.4)
+  };
+}
+
+/* Sobel — magnitude normalised to 0-255, plus raw vectors for trajectories */
+function szSobel(g, w, h){
+  const mag = new Float32Array(w*h), gx = new Float32Array(w*h), gy = new Float32Array(w*h);
+  for(let y=1;y<h-1;y++){
+    for(let x=1;x<w-1;x++){
+      const i = y*w+x;
+      const a=g[(y-1)*w+x-1], b=g[(y-1)*w+x], c=g[(y-1)*w+x+1];
+      const d=g[y*w+x-1],                     f=g[y*w+x+1];
+      const p=g[(y+1)*w+x-1], q=g[(y+1)*w+x], r=g[(y+1)*w+x+1];
+      const sx = (c + 2*f + r) - (a + 2*d + p);
+      const sy = (p + 2*q + r) - (a + 2*b + c);
+      gx[i]=sx; gy[i]=sy; mag[i]=Math.sqrt(sx*sx + sy*sy);
+    }
+  }
+  let mx = 0;
+  for(let i=0;i<mag.length;i++) if(mag[i] > mx) mx = mag[i];
+  if(mx > 0) for(let i=0;i<mag.length;i++) mag[i] = mag[i]/mx*255;
+  return { mag, gx, gy };
+}
+
+/* Droplets launch along the edge gradient, then shed accelerating drips.
+   Every scatter value is sine-hash keyed to position — no Math.random,
+   so the same image at the same settings lands identically every run. */
+function szSplatter(edges, w, h, M, thr){
+  const ink = new Float32Array(w*h);
+  const { mag, gx, gy } = edges;
+  let seedN = 0;
+  for(let y=1;y<h-1;y++){
+    for(let x=1;x<w-1;x++){
+      const i = y*w+x;
+      if(mag[i] <= thr) continue;
+      if(shash2(x, y, 1.7) >= M.chance) continue;
+
+      const ang  = Math.atan2(gy[i], gx[i]) + (shash2(x, y, 4.1) - 0.5);
+      const dist = M.velMin + shash2(x, y, 9.3) * (M.velMax - M.velMin);
+      const px = x + Math.cos(ang)*dist, py = y + Math.sin(ang)*dist;
+      const rad = 0.5 + shash2(x, y, 13.9) * 2.5, r2s = rad*rad;
+
+      const y0 = Math.max(0, Math.floor(py-rad)), y1 = Math.min(h-1, Math.ceil(py+rad));
+      const x0 = Math.max(0, Math.floor(px-rad)), x1 = Math.min(w-1, Math.ceil(px+rad));
+      for(let ry=y0; ry<=y1; ry++){
+        for(let rx=x0; rx<=x1; rx++){
+          const dd = (rx-px)*(rx-px) + (ry-py)*(ry-py);
+          if(dd <= r2s){
+            const soft = 1 - Math.sqrt(dd)/(rad+1e-6), k = ry*w+rx;
+            ink[k] = Math.max(ink[k], 0.35 + 0.65*soft);
+          }
+        }
+      }
+
+      const nDrip = Math.floor(M.drips * 0.02 + shash2(x, y, 21.4));
+      for(let d=0; d<nDrip; d++){
+        const sx2 = (shash(seedN++, 31.2) - 0.5) * M.spread;
+        const len = 2 + shash(seedN++, 47.5) * 8;
+        for(let s=0; s<len; s++){
+          const t = s/len;
+          const dx2 = px + sx2*t, dy2 = py + s*(0.18 + t*0.9);
+          if(dx2 < 0 || dx2 >= w || dy2 < 0 || dy2 >= h) break;
+          const k = (dy2|0)*w + (dx2|0);
+          ink[k] = Math.max(ink[k], 0.8*(1-t));
+        }
+      }
+    }
+  }
+  return ink;
+}
+
+function inkSplatZenith(id, P){
+  const {width:w, height:h} = id;
+  const n = w*h;
+  const eq  = szEqualize(toGray(id));
+  const dna = szDNA(eq);
+  const M   = szModulate(dna, P);
+
+  /* FREQUENCY SPLIT — gaussian low-pass stands in for the FFT circle
+     mask. Under the cutoff is the wash, the residual is the ink. */
+  const low  = blurGray(Float32Array.from(eq), w, h, P.freqCut);
+  const high = new Float32Array(n);
+  for(let i=0;i<n;i++) high[i] = clamp(Math.abs(eq[i] - low[i]) * P.gain, 0, 255);
+
+  /* TRACK 1 — the wide wash */
+  let wash = new Float32Array(n);
+  const lo = Math.min(P.sqLo, P.sqHi), hi = Math.max(P.sqLo, P.sqHi);
+  for(let i=0;i<n;i++) wash[i] = (low[i]/255)*(hi-lo) + lo;
+  wash = blurGray(wash, w, h, P.brush);
+  for(let c=0;c<P.washIter;c++){
+    const sh = offsetGray(wash, w, h, P.washDx, P.washDy);
+    for(let i=0;i<n;i++) wash[i] = Math.min(wash[i], sh[i]);
+  }
+
+  /* TRACK 2 — kinetic ink, with splatters folded in BEFORE the cycles
+     so the drift advects droplets and strokes as one field */
+  const splat = szSplatter(szSobel(eq, w, h), w, h, M, P.edgeThr);
+  let ink = new Float32Array(n);
+  for(let i=0;i<n;i++) ink[i] = 255 - high[i];
+  for(let i=0;i<n;i++) if(splat[i] > 0) ink[i] = Math.min(ink[i], 255 - splat[i]*255);
+
+  for(let c=0;c<P.cycles;c++){
+    const bleed = offsetGray(blurGray(Float32Array.from(ink), w, h, c+1), w, h, P.inkDx, P.inkDy);
+    for(let i=0;i<n;i++) ink[i] = ink[i]*bleed[i]/255;
+    const thr = P.density - c*10;
+    for(let i=0;i<n;i++) ink[i] = ink[i] < thr ? 0 : 255;
+  }
+
+  /* CONVERGENCE — stark ink multiplied over the liquid wash */
+  let out = new Float32Array(n);
+  for(let i=0;i<n;i++) out[i] = wash[i]*ink[i]/255;
+  out = contrastGray(out, P.contrast);
+  for(let i=0;i<n;i++) out[i] = out[i]*P.paper/255;
+
+  log('[SPLAT-ZENITH] lum ' + dna.lum.toFixed(0) + ' · chaos ' + dna.chaos.toFixed(0) +
+      ' · var ' + dna.entropy.toFixed(0) + (P.dnaAdapt ? ' · adapt chance ' + M.chance.toFixed(2) +
+      ' vel ' + M.velMax.toFixed(0) + ' drips ' + M.drips.toFixed(0) : ' · adapt off'));
+
+  return applyHanko(grayToData(out, w, h), P.hanko);
+}
+
 
 /* ╔═══════════════════════════════════════════════════╗
    ║  GROUP 6 :: OVERLAY — composite on top            ║
@@ -3549,6 +3986,13 @@ function runEngine(id){
       if(eng === 'LIQUID')      return warpLiquid(id, P);
       if(eng === 'LATTICE')     return warpLattice(id, P);
       if(eng === 'VORTEX')      return warpPhiVortex(id, P);
+      if(eng === 'ARCADE')      return warpArcade(id, {
+        strength: val('arcStr'), flowRot: val('arcRot'),
+        imgDrive: $('arcDrive').checked, noiseField: $('arcNoise').checked,
+        seed: int('arcSeed'), rotDeg: val('arcDeg'), entropy: val('arcEnt'),
+        crt: val('arcCrt'), crtFreq: val('arcCrtF'), bitAlpha: val('arcBit'),
+        abyss: $('arcAbyss').checked, abyssFreq: int('arcAbyF')
+      });
       break;
     }
     case 'COLOR': {
@@ -3646,6 +4090,20 @@ function runEngine(id){
         paper, cycles: int('mkCyc'), decay: val('mkDecay'),
         dx: int('mkDx'), dy: int('mkDy'), thr: int('mkThr'),
         thrStep: int('mkStep'), noise: int('mkNoise'), hanko
+      });
+      if(eng === 'SPLAT') return inkSplatZenith(id, {
+        paper,
+        freqCut: int('szFreq'), gain: val('szGain'),
+        sqLo: int('szSqLo'), sqHi: int('szSqHi'),
+        brush: int('szBrush'), washIter: int('szWashIter'),
+        washDx: int('szWashDx'), washDy: int('szWashDy'),
+        edgeThr: int('szEdge'), chance: val('szChance'),
+        velMin: int('szVelMin'), velMax: int('szVelMax'),
+        dripCount: int('szDripCt'), dripSpread: val('szDripSp'),
+        cycles: int('szCyc'), density: int('szDens'),
+        inkDx: int('szInkDx'), inkDy: int('szInkDy'),
+        contrast: val('szCon'), dnaAdapt: $('szDNA').checked,
+        hanko
       });
       break;
     }
