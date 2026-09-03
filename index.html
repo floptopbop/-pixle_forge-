@@ -113,7 +113,7 @@ button, input, select, textarea { font-family: inherit; }
 
 <header>
   <h1>PIXEL_FORGE<span class="cur">▮</span></h1>
-  <div class="sub">SOVEREIGN IMAGE SUITE · 9 GROUPS · 39 ENGINES · SINGLE FILE · SZ-2</div>
+  <div class="sub">SOVEREIGN IMAGE SUITE · 9 GROUPS · 40 ENGINES · SINGLE FILE · SZ-2</div>
 </header>
 
 <div id="tabs" role="tablist">
@@ -494,7 +494,7 @@ button, input, select, textarea { font-family: inherit; }
   <div class="ctl" data-eng="STRUCT">
     <label>ENGINE</label>
     <select id="stEng">
-      <option value="COSMO">COSMO — delaunay constellation</option>
+      <option value="PORYGON">PORYGON — adaptive quadtree low-poly</option>
       <option value="SHARD">TOPO SHARD — quadtree contour burn</option>
       <option value="POLARITY">POLARITY — metallic ridge recursion</option>
       <option value="JITTER">JITTER — cyclic diagonal accumulation</option>
@@ -537,41 +537,79 @@ button, input, select, textarea { font-family: inherit; }
   </div>
   <label class="check" data-eng="STRUCT" data-sub="EDGE"><input type="checkbox" id="edInvert"> INK ON PAPER — invert to black lines</label>
   <div class="note" data-eng="STRUCT" data-sub="EDGE">Three edge engines folded into one. CANNY = filled contour map. WHITE LATTICE = grid of both-axis edges. LINE DRIFT = the dual-pass walker that traces horizontal then rotates 90° and traces again, so it catches lines both ways. SIGMA drives Canny width and lattice noise gate; STEP / FLOOR / REACH only affect LINE DRIFT. REACH is the distance window a link is allowed to span — outside it the walker skips, which is what keeps the scribble from turning into a hairball.</div>
-  <div class="pair" data-eng="STRUCT" data-sub="COSMO">
+  <!-- PORYGON ADAPTIVE V5 -->
+  <div class="pair" data-eng="STRUCT" data-sub="PORYGON">
     <div class="ctl">
-      <label>SAMPLE RATE <output id="o_coSamp">69</output></label>
-      <input type="range" id="coSamp" data-out="o_coSamp" min="8" max="160" step="1" value="69">
+      <label>MAX NODES <output id="o_pgNodes">500</output></label>
+      <input type="range" id="pgNodes" data-out="o_pgNodes" min="20" max="2000" step="10" value="500">
     </div>
     <div class="ctl">
-      <label>EDGE THRESH <output id="o_coEdge">5</output></label>
-      <input type="range" id="coEdge" data-out="o_coEdge" min="1" max="120" step="1" value="5">
-    </div>
-  </div>
-  <div class="pair" data-eng="STRUCT" data-sub="COSMO">
-    <div class="ctl">
-      <label>MAX NODES <output id="o_coNodes">400</output></label>
-      <input type="range" id="coNodes" data-out="o_coNodes" min="20" max="900" step="10" value="400">
-    </div>
-    <div class="ctl">
-      <label>LINE WIDTH <output id="o_coLW">2</output></label>
-      <input type="range" id="coLW" data-out="o_coLW" min="0" max="10" step="1" value="2">
+      <label>MAX DEPTH <output id="o_pgDepth">7</output></label>
+      <input type="range" id="pgDepth" data-out="o_pgDepth" min="1" max="12" step="1" value="7">
     </div>
   </div>
-  <div class="ctl" data-eng="STRUCT" data-sub="COSMO">
-    <label>SATURATION <output id="o_coSat">1.05</output></label>
-    <input type="range" id="coSat" data-out="o_coSat" min="0" max="3" step="0.05" value="1.05">
-  </div>
-  <div class="pair" data-eng="STRUCT" data-sub="COSMO">
+  <div class="pair" data-eng="STRUCT" data-sub="PORYGON">
     <div class="ctl">
-      <label>LINE COLOR</label>
-      <input type="color" id="coLine" value="#1e1e2d">
+      <label>MIN CELL <output id="o_pgMinCell">0.018</output></label>
+      <input type="range" id="pgMinCell" data-out="o_pgMinCell" min="0.001" max="0.12" step="0.001" value="0.018">
     </div>
     <div class="ctl">
-      <label>NODE DOTS <output id="o_coVert">3</output></label>
-      <input type="range" id="coVert" data-out="o_coVert" min="0" max="12" step="1" value="3">
+      <label>EDGE BIAS <output id="o_pgEdge">2</output></label>
+      <input type="range" id="pgEdge" data-out="o_pgEdge" min="0" max="10" step="1" value="2">
     </div>
   </div>
-  <label class="check" data-eng="STRUCT" data-sub="COSMO"><input type="checkbox" id="coFill" checked> FILL POLYGONS</label>
+  <div class="pair" data-eng="STRUCT" data-sub="PORYGON">
+    <div class="ctl">
+      <label>SHADE <output id="o_pgShade">0.10</output></label>
+      <input type="range" id="pgShade" data-out="o_pgShade" min="0" max="1" step="0.01" value="0.10">
+    </div>
+    <div class="ctl">
+      <label>LIGHT ANGLE <output id="o_pgLight">35</output>°</label>
+      <input type="range" id="pgLight" data-out="o_pgLight" min="0" max="360" step="1" value="35">
+    </div>
+  </div>
+  <label class="check" data-eng="STRUCT" data-sub="PORYGON"><input type="checkbox" id="pgAdvTog"> SHOW ADVANCED</label>
+  <div class="pair pgAdv" data-eng="STRUCT" data-sub="PORYGON" style="display:none">
+    <div class="ctl">
+      <label>ADAPTIVITY <output id="o_pgAdapt">0.82</output></label>
+      <input type="range" id="pgAdapt" data-out="o_pgAdapt" min="0" max="1" step="0.01" value="0.82">
+    </div>
+    <div class="ctl">
+      <label>DETAIL BIAS <output id="o_pgBias">0.68</output></label>
+      <input type="range" id="pgBias" data-out="o_pgBias" min="0" max="1" step="0.01" value="0.68">
+    </div>
+  </div>
+  <div class="pair pgAdv" data-eng="STRUCT" data-sub="PORYGON" style="display:none">
+    <div class="ctl">
+      <label>FOCUS <output id="o_pgFocus">1.55</output></label>
+      <input type="range" id="pgFocus" data-out="o_pgFocus" min="0.1" max="6" step="0.05" value="1.55">
+    </div>
+    <div class="ctl">
+      <label>SAMPLE RAD <output id="o_pgSamp">2</output></label>
+      <input type="range" id="pgSamp" data-out="o_pgSamp" min="0" max="8" step="1" value="2">
+    </div>
+  </div>
+  <div class="pair pgAdv" data-eng="STRUCT" data-sub="PORYGON" style="display:none">
+    <div class="ctl">
+      <label>EDGE WT <output id="o_pgEW">1.00</output></label>
+      <input type="range" id="pgEW" data-out="o_pgEW" min="0" max="6" step="0.01" value="1.00">
+    </div>
+    <div class="ctl">
+      <label>COLOR WT <output id="o_pgCW">0.58</output></label>
+      <input type="range" id="pgCW" data-out="o_pgCW" min="0" max="6" step="0.01" value="0.58">
+    </div>
+  </div>
+  <div class="pair pgAdv" data-eng="STRUCT" data-sub="PORYGON" style="display:none">
+    <div class="ctl">
+      <label>TONE WT <output id="o_pgTW">0.72</output></label>
+      <input type="range" id="pgTW" data-out="o_pgTW" min="0" max="6" step="0.01" value="0.72">
+    </div>
+    <div class="ctl">
+      <label>GRADIENT WT <output id="o_pgGW">0.52</output></label>
+      <input type="range" id="pgGW" data-out="o_pgGW" min="0" max="6" step="0.01" value="0.52">
+    </div>
+  </div>
+  <div class="note" data-eng="STRUCT" data-sub="PORYGON">Adaptive quadtree analyses edge, tone, colour and gradient variance at multiple scales, splits where complexity warrants, distributes importance-weighted vertices biased toward edges. Delaunay triangulation, centroid colour sampling, flat pseudo-normal shading. Zero random. NODES and DEPTH control mesh density — crank both for detail, drop both for chunky low-poly. MIN CELL sets the smallest triangle. EDGE BIAS pulls vertices onto detected boundaries.</div>
   <div class="pair" data-eng="STRUCT" data-sub="SHARD">
     <div class="ctl">
       <label>LEVELS <output id="o_shLev">12</output></label>
@@ -633,7 +671,7 @@ button, input, select, textarea { font-family: inherit; }
     <label>DETAIL THRESH <output id="o_soThr">15</output></label>
     <input type="range" id="soThr" data-out="o_soThr" min="1" max="180" step="1" value="15">
   </div>
-  <div class="note" data-eng="STRUCT" data-sub="COSMO">Delaunay runs on CPU — above ~500 nodes it gets slow on a phone. Drop SAMPLE RATE for a denser mesh, raise MAX NODES only if you're willing to wait.</div>
+
 
   <!-- ══ QUAD ══ -->
   <div class="ctl" data-eng="QUAD">
@@ -1043,6 +1081,7 @@ button, input, select, textarea { font-family: inherit; }
     <label>ENGINE</label>
     <select id="ltEng">
       <option value="BLOOM">BLOOM — cascading screen aura</option>
+      <option value="HALFTONE">HALFTONE — rotated dot screen print</option>
       <option value="KINTSUGI">KINTSUGI — molten gold fractures</option>
     </select>
   </div>
@@ -1082,6 +1121,43 @@ button, input, select, textarea { font-family: inherit; }
     </div>
   </div>
   <div class="note" data-eng="LIGHT" data-sub="BLOOM">OVERCLOCK screens the aura onto itself N times. 0 is a soft glow, 2+ is the neon punch.</div>
+
+  <!-- HALFTONE -->
+  <div class="ctl" data-eng="LIGHT" data-sub="HALFTONE">
+    <label>MODE</label>
+    <select id="htMode">
+      <option value="MONO">MONO — single ink on paper</option>
+      <option value="CMYK">CMYK — four-screen process color</option>
+      <option value="DUO">DUO — two-ink duotone</option>
+    </select>
+  </div>
+  <div class="pair" data-eng="LIGHT" data-sub="HALFTONE">
+    <div class="ctl">
+      <label>DOT PITCH <output id="o_htPitch">8</output>px</label>
+      <input type="range" id="htPitch" data-out="o_htPitch" min="3" max="30" step="1" value="8">
+    </div>
+    <div class="ctl">
+      <label>DOT SCALE <output id="o_htScale">1.00</output></label>
+      <input type="range" id="htScale" data-out="o_htScale" min="0.3" max="1.5" step="0.05" value="1">
+    </div>
+  </div>
+  <div class="ctl" data-eng="LIGHT" data-sub="HALFTONE">
+    <label>SCREEN ANGLE <output id="o_htAngle">45</output>°</label>
+    <input type="range" id="htAngle" data-out="o_htAngle" min="0" max="90" step="1" value="45">
+  </div>
+  <label class="check" data-eng="LIGHT" data-sub="HALFTONE"><input type="checkbox" id="htOver" checked> OVERPRINT — multiply composite (CMYK/DUO)</label>
+  <label class="check" data-eng="LIGHT" data-sub="HALFTONE"><input type="checkbox" id="htPaper" checked> WARM PAPER — off-white stock (MONO)</label>
+  <div class="pair" data-eng="LIGHT" data-sub="HALFTONE">
+    <div class="ctl">
+      <label>INK 1</label>
+      <input type="color" id="htInk" value="#1a1a2e" style="width:100%;height:28px;border:1px solid #555;background:none">
+    </div>
+    <div class="ctl">
+      <label>INK 2 (DUO)</label>
+      <input type="color" id="htInk2" value="#d4622a" style="width:100%;height:28px;border:1px solid #555;background:none">
+    </div>
+  </div>
+  <div class="note" data-eng="LIGHT" data-sub="HALFTONE">Classic print halftone. MONO = single-ink newspaper. CMYK = four rotated dot screens at offset press angles (C15° M75° Y0° K45° from base). DUO = two-color risograph. DOT PITCH sets the grid spacing, SCALE controls maximum dot radius. OVERPRINT uses multiply blending so inks mix like real printing. INK colors only affect MONO and DUO modes.</div>
 
   <!-- ══ GHOST ══ -->
   <div class="ctl" data-eng="GHOST">
@@ -1418,6 +1494,13 @@ document.querySelectorAll('.tab').forEach(t=>{
   });
 });
 Object.values(SUBSEL).forEach(id => $(id).addEventListener('change', sync));
+
+/* ── PORYGON advanced toggle ──────────────────────────────── */
+$('pgAdvTog').addEventListener('change', function(){
+  document.querySelectorAll('.pgAdv').forEach(el => {
+    el.style.display = this.checked ? '' : 'none';
+  });
+});
 
 /* ── canvas helpers ──────────────────────────────────────────── */
 function mkCanvas(w,h){ const c=document.createElement('canvas'); c.width=w; c.height=h; return c; }
@@ -2276,95 +2359,261 @@ function delaunay(pts, w, h){
   return tris.filter(t => !t.some(p => sup.has(p[0]+','+p[1])));
 }
 
-function structCosmo(id, P){
-  const {width:w, height:h} = id;
-  const gray = toGray(id);
+/* ═══ PORYGON ADAPTIVE V5 ═══════════════════════════════════
+   Multi-scale analysis → adaptive quadtree → importance-weighted
+   Delaunay → centroid colour → flat pseudo-normal shading.
+   Ported from Lowpoly.py (2848-line zero-dep Carnets engine).
+   ════════════════════════════════════════════════════════════ */
 
-  // Scale the stride against a 900px reference so the dial means the same
-  // thing regardless of working resolution.
-  const step = Math.max(2, Math.round(P.samp * Math.max(w,h) / 900));
-  const nodes = [[0,0],[w-1,0],[0,h-1],[w-1,h-1],[(w/2)|0,0],[(w/2)|0,h-1],[0,(h/2)|0],[w-1,(h/2)|0]];
-  for(let y=1;y<h-1;y+=step){
-    for(let x=1;x<w-1;x+=step){
-      // Sobel magnitude — the 4-neighbour laplacian reads ~0 across smooth
-      // gradients and starves the mesh of nodes.
-      const gx = (gray[(y-1)*w+x+1] + 2*gray[y*w+x+1] + gray[(y+1)*w+x+1])
-               - (gray[(y-1)*w+x-1] + 2*gray[y*w+x-1] + gray[(y+1)*w+x-1]);
-      const gy = (gray[(y+1)*w+x-1] + 2*gray[(y+1)*w+x] + gray[(y+1)*w+x+1])
-               - (gray[(y-1)*w+x-1] + 2*gray[(y-1)*w+x] + gray[(y-1)*w+x+1]);
-      if(Math.sqrt(gx*gx + gy*gy) > P.edge) nodes.push([x,y]);
+function structPorygon(id, P){
+  const {width:w, height:h, data:d} = id;
+
+  // ── multi-scale analysis ──────────────────────────────────
+  const aScale = Math.max(1, Math.round(Math.max(w,h) / 360));
+  const aw = Math.max(4, Math.ceil(w / aScale));
+  const ah = Math.max(4, Math.ceil(h / aScale));
+  const n = aw * ah;
+
+  const lum = new Float32Array(n);
+  const aR = new Float32Array(n), aG = new Float32Array(n), aB = new Float32Array(n);
+
+  for(let ay = 0; ay < ah; ay++){
+    const sy = Math.min(h-1, ay * aScale);
+    for(let ax = 0; ax < aw; ax++){
+      const sx = Math.min(w-1, ax * aScale);
+      const i4 = (sy * w + sx) * 4;
+      const idx = ay * aw + ax;
+      const rr = d[i4]/255, gg = d[i4+1]/255, bb = d[i4+2]/255;
+      lum[idx] = .299*rr + .587*gg + .114*bb;
+      aR[idx] = rr; aG[idx] = gg; aB[idx] = bb;
     }
   }
-  // If the image is too flat to yield nodes, fall back to an R2-jittered grid.
-  if(nodes.length < 24){
-    const gs = Math.max(2, Math.round(Math.sqrt(w*h/220)));
-    let k = 0;
-    for(let y=gs; y<h-gs; y+=gs)
-      for(let x=gs; x<w-gs; x+=gs){
-        const [jx,jy] = r2(k++);
-        nodes.push([x + ((jx*gs/2)|0), y + ((jy*gs/2)|0)]);
-      }
-    log('image too flat for edge nodes — using R2 grid', true);
+
+  // Sobel
+  const mag = new Float32Array(n);
+  const ang = new Float32Array(n);
+  for(let y = 1; y < ah-1; y++){
+    for(let x = 1; x < aw-1; x++){
+      const i = y*aw+x;
+      const sx = -lum[i-aw-1]+lum[i-aw+1] - 2*lum[i-1]+2*lum[i+1] - lum[i+aw-1]+lum[i+aw+1];
+      const sy = -lum[i-aw-1]-2*lum[i-aw]-lum[i-aw+1] + lum[i+aw-1]+2*lum[i+aw]+lum[i+aw+1];
+      mag[i] = Math.hypot(sx, sy);
+      ang[i] = ((Math.atan2(sy,sx)*180/Math.PI)+180) % 180;
+    }
   }
-  let pts = nodes;
-  if(pts.length > P.maxNodes){
-    pts = [...pts];
-    for(let i=pts.length-1;i>0;i--){ const j=(shash(i, 5.1)*(i+1))|0; [pts[i],pts[j]]=[pts[j],pts[i]]; }
-    pts = pts.slice(0, P.maxNodes);
+
+  // Robust edge normalization
+  const sorted = Array.from(mag).sort((a,b) => a-b);
+  const median = sorted[sorted.length>>1];
+  const p90 = sorted[Math.min(sorted.length-1, (sorted.length*.9)|0)];
+  const robustScale = Math.max(1e-6, p90 - median);
+  const edgeStr = new Float32Array(n);
+  for(let i = 0; i < n; i++) edgeStr[i] = clamp((mag[i]-median)/robustScale, 0, 1);
+
+  // Coverage (H+V edge spread)
+  const hc = new Float32Array(n), vc = new Float32Array(n), cov = new Float32Array(n);
+  for(let y = 0; y < ah; y++) for(let x = 0; x < aw; x++){
+    let bh = 0, bv = 0;
+    for(let dd = -2; dd <= 2; dd++){
+      if(x+dd >= 0 && x+dd < aw) bh = Math.max(bh, edgeStr[y*aw+x+dd]);
+      if(y+dd >= 0 && y+dd < ah) bv = Math.max(bv, edgeStr[(y+dd)*aw+x]);
+    }
+    const idx = y*aw+x;
+    hc[idx] = bh; vc[idx] = bv;
+    cov[idx] = clamp(.5*bh + .5*bv, 0, 1);
   }
-  log(`excavated ${pts.length} structural nodes`);
 
-  const tris = delaunay(pts, w, h);
-  log(`${tris.length} triangles`);
+  // Coherence
+  const coher = new Float32Array(n);
+  for(let y = 1; y < ah-1; y++) for(let x = 1; x < aw-1; x++){
+    let sx2=0, sy2=0, tot=0;
+    for(let oy=-1; oy<=1; oy++) for(let ox=-1; ox<=1; ox++){
+      const j = (y+oy)*aw+(x+ox), wt = edgeStr[j];
+      if(wt <= 0) continue;
+      const a2 = ang[j]*2*Math.PI/180;
+      sx2 += Math.cos(a2)*wt; sy2 += Math.sin(a2)*wt; tot += wt;
+    }
+    coher[y*aw+x] = tot > 1e-9 ? clamp(Math.hypot(sx2,sy2)/tot, 0, 1) : 0;
+  }
 
-  const ss = (w*h < 900*900) ? 2 : 1;          // supersample when it's affordable
-  const c = mkCanvas(w*ss, h*ss), x = c.getContext('2d');
-  x.fillStyle = '#fff'; x.fillRect(0,0,w*ss,h*ss);
-  const d = id.data;
+  const analysis = {aw,ah,lum,aR,aG,aB,edgeStr,ang,cov,coher,scale:aScale};
+  log(`[PORYGON] analysis ${aw}×${ah}`);
 
-  if(P.fill){
-    for(const t of tris){
-      const cxp = clamp(((t[0][0]+t[1][0]+t[2][0])/3)|0, 0, w-1);
-      const cyp = clamp(((t[0][1]+t[1][1]+t[2][1])/3)|0, 0, h-1);
-      let r=0,g=0,b=0,n=0;
-      for(let yy=Math.max(0,cyp-1); yy<Math.min(h,cyp+2); yy++)
-        for(let xx=Math.max(0,cxp-1); xx<Math.min(w,cxp+2); xx++){
-          const i=(yy*w+xx)<<2; r+=d[i]; g+=d[i+1]; b+=d[i+2]; n++;
+  // ── region stats for a cell ───────────────────────────────
+  function regionStats(cell){
+    const ax0 = clamp(Math.floor(cell.x0/w*aw)|0, 0, aw-1);
+    const ay0 = clamp(Math.floor(cell.y0/h*ah)|0, 0, ah-1);
+    const ax1 = clamp(Math.ceil(cell.x1/w*aw)|0, ax0+1, aw);
+    const ay1 = clamp(Math.ceil(cell.y1/h*ah)|0, ay0+1, ah);
+    let cnt=0, sl=0,sl2=0, sr=0,sr2=0, sg=0,sg2=0, sb=0,sb2=0, se=0,sc=0,sco=0;
+    let dx=0,dy2=0,dt=0;
+    for(let y=ay0;y<ay1;y++) for(let x=ax0;x<ax1;x++){
+      const i=y*aw+x, l=lum[i], r=aR[i], g=aG[i], b=aB[i], e=edgeStr[i];
+      sl+=l; sl2+=l*l; sr+=r; sr2+=r*r; sg+=g; sg2+=g*g; sb+=b; sb2+=b*b;
+      se+=e; sc+=cov[i]; sco+=coher[i];
+      const a2=ang[i]*2*Math.PI/180; dx+=Math.cos(a2)*e; dy2+=Math.sin(a2)*e; dt+=e;
+      cnt++;
+    }
+    if(!cnt) return {edge:0,tone:0,color:0,coverage:0,coherence:0,disagreement:0,mean_lum:0};
+    const ml=sl/cnt;
+    const tv=Math.max(0, sl2/cnt - ml*ml);
+    const cv=(Math.max(0,sr2/cnt-(sr/cnt)**2)+Math.max(0,sg2/cnt-(sg/cnt)**2)+Math.max(0,sb2/cnt-(sb/cnt)**2))/3;
+    const dc = dt>1e-9 ? clamp(Math.hypot(dx,dy2)/dt,0,1) : 0;
+    return {
+      edge: se/cnt,
+      tone: clamp(Math.sqrt(tv)*3.8, 0, 1),
+      color: clamp(Math.sqrt(cv)*4.5, 0, 1),
+      coverage: sc/cnt, coherence: sco/cnt,
+      disagreement: 1-dc, mean_lum: ml
+    };
+  }
+
+  // ── complexity score ──────────────────────────────────────
+  const EW=P.edgeWeight, CW=P.colorWeight, TW=P.toneWeight, GW=P.gradWeight;
+  function complexity(st){
+    const structural = st.edge*EW + st.coverage*.55;
+    const appearance = st.tone*TW + st.color*CW;
+    const direction  = st.disagreement*GW;
+    return clamp((structural*P.detailBias + appearance*(1-P.detailBias) + direction*.62)/2.35, 0, 1);
+  }
+
+  // ── adaptive quadtree ─────────────────────────────────────
+  const minCell = Math.max(5, Math.max(w,h)*P.minCell);
+  const root = {x0:0,y0:0,x1:w,y1:h,depth:0,score:0,stats:null,children:[]};
+  const stack = [root], leaves = [];
+  while(stack.length){
+    const c = stack.pop();
+    c.stats = regionStats(c);
+    c.score = complexity(c.stats);
+    const cw = c.x1-c.x0, ch = c.y1-c.y0;
+    const canSplit = c.depth < P.maxDepth && (cw > minCell*2 || ch > minCell*2);
+    const threshold = .62 - .50*P.adaptivity + .02*c.depth;
+    const forceDetail = c.stats.edge > .34 && c.stats.disagreement > .16;
+    if(canSplit && (c.score > threshold || forceDetail)){
+      const mx = (c.x0+c.x1)*.5, my = (c.y0+c.y1)*.5;
+      c.children = [
+        {x0:c.x0,y0:c.y0,x1:mx,y1:my,depth:c.depth+1,score:0,stats:null,children:[]},
+        {x0:mx,y0:c.y0,x1:c.x1,y1:my,depth:c.depth+1,score:0,stats:null,children:[]},
+        {x0:c.x0,y0:my,x1:mx,y1:c.y1,depth:c.depth+1,score:0,stats:null,children:[]},
+        {x0:mx,y0:my,x1:c.x1,y1:c.y1,depth:c.depth+1,score:0,stats:null,children:[]}
+      ];
+      stack.push(...c.children);
+    } else {
+      leaves.push(c);
+    }
+  }
+  log(`[PORYGON] ${leaves.length} quadtree leaves`);
+
+  // ── importance-weighted vertex allocation ─────────────────
+  const pts = [], seen = new Set();
+  function addUniq(px,py){
+    px = clamp(Math.round(px)|0, 0, w-1);
+    py = clamp(Math.round(py)|0, 0, h-1);
+    const k = px + ',' + py;
+    if(!seen.has(k)){ seen.add(k); pts.push([px,py]); return true; }
+    return false;
+  }
+  // Boundary anchors
+  for(const [ax,ay] of [[0,0],[w-1,0],[0,h-1],[w-1,h-1],
+    [(w/2)|0,0],[(w/2)|0,h-1],[0,(h/2)|0],[w-1,(h/2)|0]]) addUniq(ax,ay);
+
+  const ranked = leaves.slice().sort((a,b) => b.score - a.score || b.depth - a.depth);
+  const remaining = Math.max(0, P.maxNodes - pts.length);
+  // Weights
+  const wts = ranked.map(c => {
+    let wt = .18 + (c.score**1.15)*(1+P.focus) + c.depth*.025;
+    wt *= (1 + P.edgeBias * c.stats.edge * .35);
+    return Math.max(.01, wt);
+  });
+  const wTotal = wts.reduce((a,b)=>a+b, 0) || 1;
+  const quotas = wts.map(wt => (remaining * wt / wTotal)|0);
+  let leftover = remaining - quotas.reduce((a,b)=>a+b,0);
+  const frac = wts.map((wt,i) => [remaining*wt/wTotal - quotas[i], i]).sort((a,b) => b[0]-a[0]);
+  for(const [,i] of frac){ if(leftover<=0) break; quotas[i]++; leftover--; }
+
+  let gi = 0;
+  for(let ci = 0; ci < ranked.length && pts.length < P.maxNodes; ci++){
+    const cell = ranked[ci], quota = quotas[ci];
+    for(let li = 0; li < quota && pts.length < P.maxNodes; li++){
+      // Edge-biased placement
+      const useEdge = cell.stats.edge > .18 && (li === 0 || (li%3===0 && P.edgeBias >= 1));
+      if(useEdge){
+        let bestS = -1, bestX = 0, bestY = 0;
+        for(let k = 0; k < 18; k++){
+          const [ra,rb] = r2(gi*31 + k*17);
+          const ex = cell.x0 + ra*(cell.x1-cell.x0), ey = cell.y0 + rb*(cell.y1-cell.y0);
+          const aax = clamp((ex/w*aw)|0, 0, aw-1), aay = clamp((ey/h*ah)|0, 0, ah-1);
+          const e = edgeStr[aay*aw+aax];
+          const cx2 = (cell.x0+cell.x1)*.5, cy2 = (cell.y0+cell.y1)*.5;
+          const md = Math.max(1, Math.hypot(cell.x1-cell.x0, cell.y1-cell.y0)*.5);
+          const cen = 1 - clamp(Math.hypot(ex-cx2,ey-cy2)/md, 0, 1);
+          const sc2 = e * (.75 + .25*cen);
+          if(sc2 > bestS){ bestS=sc2; bestX=ex; bestY=ey; }
         }
-      r=clamp((r/n)*P.sat,0,255)|0; g=clamp((g/n)*P.sat,0,255)|0; b=clamp((b/n)*P.sat,0,255)|0;
-      x.fillStyle = `rgb(${r},${g},${b})`;
-      x.beginPath();
-      x.moveTo(t[0][0]*ss, t[0][1]*ss);
-      x.lineTo(t[1][0]*ss, t[1][1]*ss);
-      x.lineTo(t[2][0]*ss, t[2][1]*ss);
-      x.closePath(); x.fill();
+        if(bestS > .05){ addUniq(bestX, bestY); gi++; continue; }
+      }
+      // Interior R2 jitter
+      let [jx,jy] = r2(pts.length*17 + li*43 + cell.depth*97);
+      const margin = .10;
+      jx = margin + jx*(1-2*margin); jy = margin + jy*(1-2*margin);
+      addUniq(cell.x0 + jx*(cell.x1-cell.x0), cell.y0 + jy*(cell.y1-cell.y0));
+      gi++;
     }
   }
-  if(P.lw > 0){
-    const [lr,lg,lb] = hex2rgb(P.lineColor);
-    x.strokeStyle = `rgba(${lr},${lg},${lb},${110/255})`;
-    x.lineWidth = P.lw * ss;
-    const seen = new Set();
-    for(const t of tris){
-      for(const [i,j] of [[0,1],[1,2],[2,0]]){
-        const a=t[i], b2=t[j];
-        const k = [a,b2].sort().join('|');
-        if(seen.has(k)) continue;
-        seen.add(k);
-        x.beginPath(); x.moveTo(a[0]*ss,a[1]*ss); x.lineTo(b2[0]*ss,b2[1]*ss); x.stroke();
+  log(`[PORYGON] ${pts.length} nodes`);
+
+  // ── Delaunay ──────────────────────────────────────────────
+  const tris = delaunay(pts, w, h);
+  log(`[PORYGON] ${tris.length} faces`);
+
+  // ── render: flat-shaded filled polygons ───────────────────
+  const ss = (w*h < 800*800) ? 2 : 1;
+  const cv = mkCanvas(w*ss, h*ss), ctx = cv.getContext('2d');
+  ctx.fillStyle = '#000'; ctx.fillRect(0, 0, w*ss, h*ss);
+
+  const la = P.lightAngle * Math.PI / 180;
+  const lxd = Math.cos(la), lyd = -Math.sin(la);
+  const shade = P.shade;
+  const sampRad = P.sampRad;
+
+  for(const t of tris){
+    const cx0 = clamp(((t[0][0]+t[1][0]+t[2][0])/3)|0, 0, w-1);
+    const cy0 = clamp(((t[0][1]+t[1][1]+t[2][1])/3)|0, 0, h-1);
+    let sr2=0,sg2=0,sb2=0,sn=0;
+    for(let yy=Math.max(0,cy0-sampRad);yy<=Math.min(h-1,cy0+sampRad);yy++){
+      for(let xx=Math.max(0,cx0-sampRad);xx<=Math.min(w-1,cx0+sampRad);xx++){
+        const i4=(yy*w+xx)*4;
+        sr2+=d[i4]; sg2+=d[i4+1]; sb2+=d[i4+2]; sn++;
       }
     }
-  }
-  if(P.vert > 0){
-    x.fillStyle = 'rgba(20,20,30,0.55)';
-    for(const p of pts){
-      x.beginPath(); x.arc(p[0]*ss, p[1]*ss, P.vert*ss, 0, Math.PI*2); x.fill();
+    sr2/=sn; sg2/=sn; sb2/=sn;
+
+    let li = 1;
+    if(shade > 0){
+      const eax=t[1][0]-t[0][0], eay=t[1][1]-t[0][1];
+      const ebx=t[2][0]-t[0][0], eby=t[2][1]-t[0][1];
+      const cross = eax*eby - eay*ebx;
+      const eLen = Math.sqrt(eax*eax+eay*eay) || 1;
+      const nx=-eay/eLen, ny=eax/eLen;
+      const ndotl = Math.abs(nx*lxd + ny*lyd);
+      li = (1-shade) + shade*(.35 + .65*ndotl);
+      if(Math.abs(cross) < 200) li *= 1.05;
     }
+
+    const fr=clamp((sr2*li)|0,0,255), fg=clamp((sg2*li)|0,0,255), fb=clamp((sb2*li)|0,0,255);
+    ctx.fillStyle = ctx.strokeStyle = `rgb(${fr},${fg},${fb})`;
+    ctx.lineWidth = .6*ss;
+    ctx.beginPath();
+    ctx.moveTo(t[0][0]*ss, t[0][1]*ss);
+    ctx.lineTo(t[1][0]*ss, t[1][1]*ss);
+    ctx.lineTo(t[2][0]*ss, t[2][1]*ss);
+    ctx.closePath(); ctx.fill(); ctx.stroke();
   }
 
-  const out = mkCanvas(w,h), ox = out.getContext('2d', {willReadFrequently:true});
-  ox.drawImage(c, 0, 0, w, h);
-  return ox.getImageData(0,0,w,h);
+  const out = mkCanvas(w,h), ox = out.getContext('2d',{willReadFrequently:true});
+  ox.drawImage(cv, 0, 0, w, h);
+  log(`[PORYGON] ${tris.length} flat-shaded faces · light ${P.lightAngle}°`);
+  return ox.getImageData(0, 0, w, h);
 }
 
 /* TOPO SHARD — recursive entropy quadtree, contour burn per shard */
@@ -3123,6 +3372,108 @@ function lightBloom(id, P){
   return new ImageData(out, w, h);
 }
 
+
+/* ── ENGINE 50: HALFTONE ─────────────────────────────────────────
+   Classic rotated-screen halftone. Each channel (or luminance in
+   mono mode) gets its own dot grid at a different angle. Dot size is
+   driven by local brightness. All scatter is deterministic.
+*/
+function lightHalftone(id, P){
+  const {width:w, height:h, data:d} = id;
+  const c = mkCanvas(w, h), x = c.getContext('2d');
+
+  const dotPitch = Math.max(3, P.pitch);
+  const maxR = dotPitch * 0.48 * P.dotScale;
+  const mode = P.mode;
+  const overprint = P.overprint;
+
+  // Background
+  if(mode === 'CMYK'){
+    x.fillStyle = '#fff';
+  }else if(mode === 'DUO'){
+    x.fillStyle = '#fff';
+  }else{
+    x.fillStyle = P.paper ? '#f4f0e8' : '#fff';
+  }
+  x.fillRect(0, 0, w, h);
+
+  // ── dot screen renderer ──
+  function drawScreen(getValue, angle, fillColor){
+    const rad = angle * Math.PI / 180;
+    const cos = Math.cos(rad), sin = Math.sin(rad);
+    const diag = Math.sqrt(w*w + h*h);
+    const cx0 = w/2, cy0 = h/2;
+    const steps = Math.ceil(diag / dotPitch) + 2;
+
+    x.fillStyle = fillColor;
+    if(overprint && mode !== 'MONO') x.globalCompositeOperation = 'multiply';
+
+    for(let gy = -steps; gy <= steps; gy++){
+      for(let gx = -steps; gx <= steps; gx++){
+        const rx = gx * dotPitch;
+        const ry = gy * dotPitch;
+        const ix = cx0 + rx * cos - ry * sin;
+        const iy = cy0 + rx * sin + ry * cos;
+
+        if(ix < -dotPitch || ix >= w+dotPitch || iy < -dotPitch || iy >= h+dotPitch) continue;
+
+        const sx = clamp(Math.round(ix), 0, w-1);
+        const sy = clamp(Math.round(iy), 0, h-1);
+        const val = getValue(sx, sy);
+
+        const r = maxR * val;
+        if(r < 0.3) continue;
+
+        x.beginPath();
+        x.arc(ix, iy, r, 0, Math.PI*2);
+        x.fill();
+      }
+    }
+    x.globalCompositeOperation = 'source-over';
+  }
+
+  function lum(sx, sy){
+    const i = (sy*w + sx) * 4;
+    return 1 - (d[i]*0.299 + d[i+1]*0.587 + d[i+2]*0.114) / 255;
+  }
+
+  if(mode === 'MONO'){
+    drawScreen(lum, P.angle, P.ink || '#000');
+  }
+  else if(mode === 'CMYK'){
+    const cGet = (sx,sy) => { const i=(sy*w+sx)*4; const k=1-Math.max(d[i],d[i+1],d[i+2])/255;
+      return k>=1 ? 0 : (1 - d[i]/255 - k) / (1-k); };
+    const mGet = (sx,sy) => { const i=(sy*w+sx)*4; const k=1-Math.max(d[i],d[i+1],d[i+2])/255;
+      return k>=1 ? 0 : (1 - d[i+1]/255 - k) / (1-k); };
+    const yGet = (sx,sy) => { const i=(sy*w+sx)*4; const k=1-Math.max(d[i],d[i+1],d[i+2])/255;
+      return k>=1 ? 0 : (1 - d[i+2]/255 - k) / (1-k); };
+    const kGet = (sx,sy) => { const i=(sy*w+sx)*4;
+      return 1 - Math.max(d[i],d[i+1],d[i+2])/255; };
+
+    drawScreen(yGet, P.angle,      'rgba(0,0,0,0.85)');
+    drawScreen(cGet, P.angle + 15, 'rgba(0,170,230,0.85)');
+    drawScreen(mGet, P.angle + 75, 'rgba(210,0,90,0.85)');
+    drawScreen(kGet, P.angle + 45, 'rgba(0,0,0,0.9)');
+  }
+  else if(mode === 'DUO'){
+    const [ir,ig,ib] = hex2rgb(P.ink || '#1a1a2e');
+    const [hr,hg,hb] = hex2rgb(P.ink2 || '#d4622a');
+
+    drawScreen(
+      (sx,sy) => { const l=lum(sx,sy); return l > 0.3 ? (l-0.3)/0.7 : 0; },
+      P.angle,
+      `rgb(${ir},${ig},${ib})`
+    );
+    drawScreen(
+      (sx,sy) => { const l=lum(sx,sy); return l < 0.7 ? l/0.7 * 0.6 : 0.3; },
+      P.angle + 30,
+      `rgb(${hr},${hg},${hb})`
+    );
+  }
+
+  log(`[HALFTONE] ${mode} · pitch ${dotPitch}px · angle ${P.angle}°`);
+  return x.getImageData(0, 0, w, h);
+}
 
 /* ╔═══════════════════════════════════════════════════╗
    ║  GROUP 5 :: INK — sumi-e / zen / monklin daemons  ║
@@ -4034,9 +4385,6 @@ function runEngine(id){
     }
     case 'STRUCT': {
       const P = {
-        samp: int('coSamp'), edge: int('coEdge'), maxNodes: int('coNodes'),
-        lw: int('coLW'), sat: val('coSat'), vert: int('coVert'),
-        lineColor: $('coLine').value, fill: $('coFill').checked,
         levels: int('shLev'), entropy: int('shEnt'), minShard: int('shMin'), smooth: int('shSmooth'),
         iters: int('gmIter'), cut: int('gmCut'), sx: int('gmSx'), sy: int('gmSy'), blend: $('gmBlend').value,
         staff: int('soStaff'), minBlock: int('soMin'), thresh: int('soThr'),
@@ -4044,7 +4392,15 @@ function runEngine(id){
         floorMul: val('edFloor'), reachMin: int('edMin'), reachMax: int('edMax'),
         invert: $('edInvert').checked
       };
-      if(eng === 'COSMO')    return structCosmo(id, P);
+      if(eng === 'PORYGON')  return structPorygon(id, {
+        maxNodes: int('pgNodes'), adaptivity: val('pgAdapt'),
+        detailBias: val('pgBias'), focus: val('pgFocus'),
+        edgeBias: int('pgEdge'), maxDepth: int('pgDepth'),
+        shade: val('pgShade'), lightAngle: int('pgLight'),
+        sampRad: int('pgSamp'), minCell: val('pgMinCell'),
+        edgeWeight: val('pgEW'), colorWeight: val('pgCW'),
+        toneWeight: val('pgTW'), gradWeight: val('pgGW')
+      });
       if(eng === 'SHARD')    return structShard(id, P);
       if(eng === 'SONATA')   return structSonata(id, P);
       if(eng === 'EDGE')     return structEdge(id, P);
@@ -4108,6 +4464,12 @@ function runEngine(id){
       break;
     }
     case 'LIGHT':
+      if(eng === 'HALFTONE') return lightHalftone(id, {
+        pitch: int('htPitch'), dotScale: val('htScale'), angle: int('htAngle'),
+        mode: $('htMode').value, overprint: $('htOver').checked,
+        paper: $('htPaper').checked,
+        ink: $('htInk').value, ink2: $('htInk2').value
+      });
       if(eng === 'KINTSUGI') return lightKintsugi(id, {
         coils: int('kiCoils'), fang: int('kiFang'), smooth: int('kiSmooth')
       });
