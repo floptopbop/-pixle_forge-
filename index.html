@@ -337,6 +337,10 @@ button, input, select, textarea { font-family: inherit; }
       <option value="PASTEL">CHROMA RAZOR — band + outline</option>
       <option value="STRATA">STRATA SORT — cascading pixel drips</option>
       <option value="ALLEY">ALLEY INK — edge + dither print</option>
+      <option value="AXIS">AXIS SPLIT — displace any two colour axes</option>
+    </select>
+  </div>
+
     </select>
   </div>
   <div class="pair" data-eng="COLOR" data-sub="STRATA">
@@ -488,6 +492,91 @@ button, input, select, textarea { font-family: inherit; }
   </div>
   <label class="check" data-eng="COLOR" data-sub="ALLEY"><input type="checkbox" id="aiBorder" checked> 2px BORDER FRAME</label>
   <div class="note" data-eng="COLOR" data-sub="ALLEY">Sobel edge detection burns outlines to the palette's darkest colour, then Bayer-dithers the rest into a limited print palette. UME is the Arts of ウメ street-scene set. Crank PIXEL SIZE for chunkier blocks.</div>
+  <!-- AXIS SPLIT -->
+  <div class="pair" data-eng="COLOR" data-sub="AXIS">
+    <div class="ctl">
+      <label>AXIS A</label>
+      <input type="color" id="axA" value="#ff73b3">
+    </div>
+    <div class="ctl">
+      <label>AXIS B</label>
+      <input type="color" id="axB" value="#ff8c1a">
+    </div>
+  </div>
+  <div class="ctl" data-eng="COLOR" data-sub="AXIS">
+    <label>BASIS MODE</label>
+    <select id="axMode">
+      <option value="TRUE">TRUE — literal axes, amplified</option>
+      <option value="ORTHO">ORTHO — Gram-Schmidt, tame</option>
+    </select>
+  </div>
+  <div class="pair" data-eng="COLOR" data-sub="AXIS">
+    <div class="ctl">
+      <label>A SHIFT X <output id="o_axAx">9</output></label>
+      <input type="range" id="axAx" data-out="o_axAx" min="-240" max="240" step="1" value="9">
+    </div>
+    <div class="ctl">
+      <label>A SHIFT Y <output id="o_axAy">-2</output></label>
+      <input type="range" id="axAy" data-out="o_axAy" min="-240" max="240" step="1" value="-2">
+    </div>
+  </div>
+  <div class="pair" data-eng="COLOR" data-sub="AXIS">
+    <div class="ctl">
+      <label>B SHIFT X <output id="o_axBx">-9</output></label>
+      <input type="range" id="axBx" data-out="o_axBx" min="-240" max="240" step="1" value="-9">
+    </div>
+    <div class="ctl">
+      <label>B SHIFT Y <output id="o_axBy">2</output></label>
+      <input type="range" id="axBy" data-out="o_axBy" min="-240" max="240" step="1" value="2">
+    </div>
+  </div>
+  <div class="pair" data-eng="COLOR" data-sub="AXIS">
+    <div class="ctl">
+      <label>REST SHIFT X <output id="o_axCx">0</output></label>
+      <input type="range" id="axCx" data-out="o_axCx" min="-60" max="60" step="1" value="0">
+    </div>
+    <div class="ctl">
+      <label>REST SHIFT Y <output id="o_axCy">0</output></label>
+      <input type="range" id="axCy" data-out="o_axCy" min="-240" max="240" step="1" value="0">
+    </div>
+  </div>
+  <div class="pair" data-eng="COLOR" data-sub="AXIS">
+    <div class="ctl">
+      <label>A GAIN <output id="o_axGA">1.00</output></label>
+      <input type="range" id="axGA" data-out="o_axGA" min="0" max="3" step="0.05" value="1">
+    </div>
+    <div class="ctl">
+      <label>B GAIN <output id="o_axGB">1.00</output></label>
+      <input type="range" id="axGB" data-out="o_axGB" min="0" max="3" step="0.05" value="1">
+    </div>
+  </div>
+  <div class="pair" data-eng="COLOR" data-sub="AXIS">
+    <div class="ctl">
+      <label>REST GAIN <output id="o_axGC">1.00</output></label>
+      <input type="range" id="axGC" data-out="o_axGC" min="0" max="3" step="0.05" value="1">
+    </div>
+    <div class="ctl">
+      <label>WAVE AMPLITUDE <output id="o_axWave">0</output></label>
+      <input type="range" id="axWave" data-out="o_axWave" min="0" max="60" step="0.5" value="0">
+    </div>
+  </div>
+  <div class="pair" data-eng="COLOR" data-sub="AXIS">
+    <div class="ctl">
+      <label>WAVE PERIOD <output id="o_axPeriod">0</output></label>
+      <input type="range" id="axPeriod" data-out="o_axPeriod" min="4" max="400" step="2" value="0">
+    </div>
+    <div class="ctl">
+      <label>ROW JAG <output id="o_axJag">0.60</output></label>
+      <input type="range" id="axJag" data-out="o_axJag" min="0" max="20" step="0.1" value="0.6">
+    </div>
+  </div>
+  <div class="ctl" data-eng="COLOR" data-sub="AXIS">
+    <label>JAG SEED <output id="o_axSeed">7</output></label>
+    <input type="range" id="axSeed" data-out="o_axSeed" min="0" max="200" step="1" value="7">
+  </div>
+  <label class="check" data-eng="COLOR" data-sub="AXIS"><input type="checkbox" id="axWrap" checked> WRAP EDGES — off clamps instead</label>
+  <div class="note" data-eng="COLOR" data-sub="AXIS">Picks two colours as axes in RGB space, splits every pixel into "how much A / how much B / whatever's left", displaces those three planes independently, then rebuilds. RGB jitter and yellow-blue jitter are the same operation with the axes already chosen — this lets you choose them. TRUE keeps the axes literally the colours you picked; because two nearby hues are a skewed basis, the inverse amplifies their difference and you get fringe colours that were never in the source. ORTHO runs Gram-Schmidt first so axis B becomes "B with A's component removed" — well behaved, closer to a normal aberration. The log prints the angle between your two axes and the resulting amplification: 90° is a clean opponent split at ×1.0, tight pairs like pink/orange sit near 28° and ×2.1. WAVE runs opposite on A and B so they scissor apart down the frame; JAG is sine-hash per row, so the same seed tears identically every run.</div>
+
 
 
   <!-- ══ STRUCTURE ══ -->
@@ -1026,7 +1115,7 @@ button, input, select, textarea { font-family: inherit; }
     </div>
     <div class="ctl">
       <label>THRESH CLIMB <output id="o_mkStep">4</output></label>
-      <input type="range" id="mkStep" data-out="o_mkStep" min="0" max="24" step="1" value="4">
+      <input type="range" id="mkStep" data-out="o_mkStep" min="0" max="36" step="1" value="4">
     </div>
   </div>
   <div class="ctl" data-eng="INK" data-sub="MONKLIN">
@@ -1299,21 +1388,21 @@ button, input, select, textarea { font-family: inherit; }
   <div class="pair" data-eng="GLYPH" data-sub="SOVEREIGN">
     <div class="ctl">
       <label>GRID WIDTH <output id="o_sovW">45</output></label>
-      <input type="range" id="sovW" data-out="o_sovW" min="20" max="200" step="1" value="45">
+      <input type="range" id="sovW" data-out="o_sovW" min="4" max="200" step="1" value="45">
     </div>
     <div class="ctl">
       <label>COLOR BANDS <output id="o_sovBands">24</output></label>
-      <input type="range" id="sovBands" data-out="o_sovBands" min="2" max="64" step="1" value="24">
+      <input type="range" id="sovBands" data-out="o_sovBands" min="2" max="108" step="1" value="24">
     </div>
   </div>
   <div class="pair" data-eng="GLYPH" data-sub="SOVEREIGN">
     <div class="ctl">
-      <label>NOISE GATE <output id="o_sovGate">3</output></label>
-      <input type="range" id="sovGate" data-out="o_sovGate" min="1" max="60" step="1" value="3">
+      <label>NOISE GATE <output id="o_sovGate">1</output></label>
+      <input type="range" id="sovGate" data-out="o_sovGate" min="0" max="60" step="1" value="1">
     </div>
     <div class="ctl">
       <label>GLYPH SCALE <output id="o_sovScale">2.4</output></label>
-      <input type="range" id="sovScale" data-out="o_sovScale" min="0.3" max="4" step="0.1" value="2.4">
+      <input type="range" id="sovScale" data-out="o_sovScale" min="0.3" max="8" step="0.1" value="2.4">
     </div>
   </div>
   <div class="ctl" data-eng="GLYPH" data-sub="SOVEREIGN">
@@ -2265,6 +2354,7 @@ function sampleFill(id, P){
   }
   return id;
 }
+
 
 /* CHROMA RAZOR — downsample, median, band-quantize, wash, edge outline */
 function colorPastel(id, P){
@@ -4354,6 +4444,18 @@ function runEngine(id){
         wash: val('paWash'), lift: int('paLift'), outline: $('paOutline').checked,
         thr: int('stThr'), streak: int('stStreak'), shadow: int('stShadow')
       };
+      if(eng === 'AXIS') return colorAxisSplit(id, {
+        va: axisVec($('axA').value), vb: axisVec($('axB').value),
+        mode: $('axMode').value,
+        dxA: int('axAx'), dyA: int('axAy'),
+        dxB: int('axBx'), dyB: int('axBy'),
+        dxC: int('axCx'), dyC: int('axCy'),
+        gA: val('axGA'), gB: val('axGB'), gC: val('axGC'),
+        wave: val('axWave'), period: int('axPeriod'),
+        jag: val('axJag'), seed: int('axSeed'),
+        wrap: $('axWrap').checked
+      });
+
       if(eng === 'STRATA') return colorStrata(id, P);
       if(eng === 'HARDWARE'){
         const pal = PALETTES[$('hwPal').value];
@@ -4517,6 +4619,102 @@ function runEngine(id){
     }
   }
   return id;
+}
+/* ╔═══════════════════════════════════════════════════╗
+   ║  COLOR :: AXIS SPLIT  (arbitrary colour-axis jitter) ║
+   ╚═══════════════════════════════════════════════════╝
+   Generalises channel jitter: R/G/B and yellow/blue are just two
+   particular choices of axis. Build a basis from any two colours,
+   project, displace the coefficient planes, project back.
+   TRUE keeps the literal axes (skewed basis — the inverse amplifies
+   by 1/sin θ). ORTHO orthogonalises first. All scatter is sine-hash. */
+
+function axisVec(hex){ const [r,g,b] = hex2rgb(hex); return [r/255, g/255, b/255]; }
+
+function buildAxisBasis(va, vb, mode){
+  const norm = v => { const n = Math.hypot(v[0],v[1],v[2]); return n < 1e-9 ? null : [v[0]/n, v[1]/n, v[2]/n]; };
+  let a = norm(va), b = norm(vb);
+  if(!a || !b) throw new Error('AXIS SPLIT: an axis colour is pure black — give it some brightness');
+  if(mode === 'ORTHO'){
+    const dp = a[0]*b[0] + a[1]*b[1] + a[2]*b[2];
+    b = norm([b[0]-dp*a[0], b[1]-dp*a[1], b[2]-dp*a[2]]);
+    if(!b) throw new Error('AXIS SPLIT: the two axis colours are parallel in RGB — pick more distinct hues');
+  }
+  const c = norm([a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]]);
+  if(!c) throw new Error('AXIS SPLIT: the two axis colours are parallel in RGB — pick more distinct hues');
+
+  const M = [[a[0],b[0],c[0]], [a[1],b[1],c[1]], [a[2],b[2],c[2]]];
+  const det = M[0][0]*(M[1][1]*M[2][2]-M[1][2]*M[2][1])
+            - M[0][1]*(M[1][0]*M[2][2]-M[1][2]*M[2][0])
+            + M[0][2]*(M[1][0]*M[2][1]-M[1][1]*M[2][0]);
+  if(Math.abs(det) < 1e-6) throw new Error('AXIS SPLIT: the two axis colours are too close in RGB — pick more distinct hues');
+
+  const cof = (r, cc) => {
+    const rr = [0,1,2].filter(i => i !== cc), cs = [0,1,2].filter(i => i !== r);
+    const m = M[rr[0]][cs[0]]*M[rr[1]][cs[1]] - M[rr[0]][cs[1]]*M[rr[1]][cs[0]];
+    return ((r+cc) % 2 ? -m : m) / det;
+  };
+  const Minv = [[cof(0,0),cof(0,1),cof(0,2)],
+                [cof(1,0),cof(1,1),cof(1,2)],
+                [cof(2,0),cof(2,1),cof(2,2)]];
+  return { M, Minv, sep: Math.asin(clamp(Math.abs(det), 0, 1)) };
+}
+
+function colorAxisSplit(id, P){
+  const {width:w, height:h, data:d} = id, n = w*h;
+  const {M, Minv, sep} = buildAxisBasis(P.va, P.vb, P.mode);
+  const amp = 1/Math.max(1e-6, Math.sin(sep));
+  log('[AXIS SPLIT] ' + P.mode + ' · axis separation ' + (sep*180/Math.PI).toFixed(1) +
+      '° · amplification ×' + amp.toFixed(1));
+  if(amp > 8) log('axes are nearly identical — expect heavy clipping', true);
+
+  // decompose
+  const co = [new Float32Array(n), new Float32Array(n), new Float32Array(n)];
+  for(let i=0;i<n;i++){
+    const t = i<<2, r = d[t]/255, g = d[t+1]/255, b = d[t+2]/255;
+    co[0][i] = Minv[0][0]*r + Minv[0][1]*g + Minv[0][2]*b;
+    co[1][i] = Minv[1][0]*r + Minv[1][1]*g + Minv[1][2]*b;
+    co[2][i] = Minv[2][0]*r + Minv[2][1]*g + Minv[2][2]*b;
+  }
+
+  // displace each plane
+  const off = [[P.dxA,P.dyA], [P.dxB,P.dyB], [P.dxC,P.dyC]];
+  const gain = [P.gA, P.gB, P.gC];
+  const sh = [new Float32Array(n), new Float32Array(n), new Float32Array(n)];
+  for(let k=0;k<3;k++){
+    const wav = k===0 ? P.wave : (k===1 ? -P.wave : 0);   // A and B scissor apart
+    const jag = k<2 ? P.jag : 0;
+    const dx = off[k][0], dy = off[k][1], sd = P.seed + k*7.3;
+    const rowDx = new Int32Array(h);
+    for(let y=0;y<h;y++){
+      let v = dx;
+      if(wav) v += wav * Math.sin(2*Math.PI*y / Math.max(1, P.period));
+      if(jag) v += jag * ((shash(y, 5.1+sd) + shash(y+9973, 11.7+sd) + shash(y+19937, 23.9+sd)) - 1.5) * 2;
+      rowDx[y] = Math.round(v);
+    }
+    const src = co[k], dst = sh[k];
+    for(let y=0;y<h;y++){
+      let sy = y - dy;
+      sy = P.wrap ? ((sy % h) + h) % h : clamp(sy, 0, h-1);
+      const rdx = rowDx[y], srow = sy*w, drow = y*w;
+      for(let x=0;x<w;x++){
+        let sx = x - rdx;
+        sx = P.wrap ? ((sx % w) + w) % w : clamp(sx, 0, w-1);
+        dst[drow+x] = src[srow+sx];
+      }
+    }
+  }
+
+  // recombine
+  const out = new Uint8ClampedArray(n*4);
+  for(let i=0;i<n;i++){
+    const c0 = sh[0][i]*gain[0], c1 = sh[1][i]*gain[1], c2 = sh[2][i]*gain[2], t = i<<2;
+    out[t]   = (M[0][0]*c0 + M[0][1]*c1 + M[0][2]*c2) * 255;
+    out[t+1] = (M[1][0]*c0 + M[1][1]*c1 + M[1][2]*c2) * 255;
+    out[t+2] = (M[2][0]*c0 + M[2][1]*c1 + M[2][2]*c2) * 255;
+    out[t+3] = 255;
+  }
+  return new ImageData(out, w, h);
 }
 
 /* ── source loading ──────────────────────────────────────────── */
