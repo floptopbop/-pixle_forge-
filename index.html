@@ -105,6 +105,11 @@ a.btn{text-decoration:none; display:inline-block;}
   text-align:center; font-size:10px; background:var(--bg); color:var(--txt); border:1px solid var(--line); cursor:pointer;}
 #sfLive{width:40px; height:40px; border:1px solid var(--venom); background:#000; flex:0 0 auto;}
 html, body { font-family: "IBM VGA", monospace; }
+details.grp{margin-top:10px; border-top:1px solid var(--line); padding-top:2px;}
+details.grp>summary{cursor:pointer; list-style:none; font-size:11px; letter-spacing:.18em; color:var(--dim); padding:10px 0;}
+details.grp>summary::-webkit-details-marker{display:none}
+details.grp>summary::before{content:"▸ "; color:var(--venom);}
+details.grp[open]>summary::before{content:"▾ ";}
 button, input, select, textarea { font-family: inherit; }
 </style>
 </head>
@@ -113,7 +118,7 @@ button, input, select, textarea { font-family: inherit; }
 
 <header>
   <h1>PIXEL_FORGE<span class="cur">▮</span></h1>
-  <div class="sub">SOVEREIGN IMAGE SUITE · 9 GROUPS · 44 ENGINES · SINGLE FILE · SZ-2</div>
+  <div class="sub">SOVEREIGN IMAGE SUITE · 10 GROUPS · 45 ENGINES · SINGLE FILE · SZ-2</div>
 </header>
 
 <div id="tabs" role="tablist">
@@ -126,6 +131,7 @@ button, input, select, textarea { font-family: inherit; }
   <button class="tab" data-e="GHOST" aria-selected="false">GHOST</button>
   <button class="tab" data-e="OVER" aria-selected="false">OVERLAY</button>
   <button class="tab" data-e="GLYPH" aria-selected="false">GLYPH</button>
+  <button class="tab" data-e="BOARD" aria-selected="false">BOARD</button>
 </div>
 
 <section class="card">
@@ -1496,21 +1502,21 @@ button, input, select, textarea { font-family: inherit; }
   <!-- SOVEREIGN -->
   <div class="ctl" data-eng="GLYPH" data-sub="SOVEREIGN">
     <label>GRID WIDTH <output id="gf_o_sovW">45</output></label>
-    <input type="range" id="gf_sovW" data-out="gf_o_sovW" min="20" max="120" step="1" value="45">
+    <input type="range" id="gf_sovW" data-out="gf_o_sovW" min="4" max="360" step="1" value="45">
   </div>
   <div class="pair" data-eng="GLYPH" data-sub="SOVEREIGN">
     <div class="ctl">
       <label>COLOR BANDS <output id="gf_o_bands">24</output></label>
-      <input type="range" id="gf_bands" data-out="gf_o_bands" min="2" max="64" step="1" value="24">
+      <input type="range" id="gf_bands" data-out="gf_o_bands" min="0" max="64" step="1" value="24">
     </div>
     <div class="ctl">
       <label>NOISE GATE <output id="gf_o_gateSov">3</output></label>
-      <input type="range" id="gf_gateSov" data-out="gf_o_gateSov" min="1" max="60" step="1" value="3">
+      <input type="range" id="gf_gateSov" data-out="gf_o_gateSov" min="0" max="60" step="1" value="3">
     </div>
   </div>
   <div class="ctl" data-eng="GLYPH" data-sub="SOVEREIGN">
     <label>GLYPH SCALE <output id="gf_o_gscale">2.4</output></label>
-    <input type="range" id="gf_gscale" data-out="gf_o_gscale" min="0.3" max="4" step="0.1" value="2.4">
+    <input type="range" id="gf_gscale" data-out="gf_o_gscale" min="0.3" max="32" step="0.1" value="2.4">
   </div>
   <div class="ctl" data-eng="GLYPH" data-sub="SOVEREIGN">
     <label>KANA ー ヽ 丨 ノ</label>
@@ -1582,6 +1588,90 @@ button, input, select, textarea { font-family: inherit; }
   </div>
   </div>
 
+  <!-- ══ BOARD ══ -->
+  <div class="ctl" data-eng="BOARD">
+    <label>ENGINE</label>
+    <select id="bdEng">
+      <option value="MOTHERBOARD">MOTHERBOARD — quadtree circuit board + lambda spines</option>
+    </select>
+  </div>
+  <div class="btnrow" data-eng="BOARD" style="margin-top:10px">
+    <button class="btn small" id="mbReset">RESET ALL</button>
+    <button class="btn small" id="mbPure">PURE BOARD</button>
+    <button class="btn small" id="mbLamOnly">LAMBDA ONLY</button>
+  </div>
+  <div class="ctl" data-eng="BOARD">
+    <label>LAYOUT SEED <output id="o_mb_seed">0</output></label>
+    <input type="range" id="mb_seed" data-out="o_mb_seed" data-mb="1" min="0" max="9999" step="1" value="0">
+  </div>
+
+  <details class="grp" data-eng="BOARD"><summary>QUADTREE — how many parts</summary>
+    <div class="pair"><div class="ctl"><label>MAX DEPTH <output id="o_mb_maxDepth">12</output></label><input type="range" id="mb_maxDepth" data-out="o_mb_maxDepth" data-mb="1" min="1" max="16" step="1" value="12"></div><div class="ctl"><label>MIN BLOCK <output id="o_mb_minBlock">6</output></label><input type="range" id="mb_minBlock" data-out="o_mb_minBlock" data-mb="1" min="2" max="96" step="1" value="6"></div></div>
+    <div class="ctl"><label>DETAIL THRESHOLD <output id="o_mb_detail">22</output></label><input type="range" id="mb_detail" data-out="o_mb_detail" data-mb="1" min="0" max="100" step="1" value="22"></div>
+  </details>
+  <details class="grp" data-eng="BOARD"><summary>BOARD — substrate</summary>
+    <div class="pair"><div class="ctl"><label>MASK TINT <output id="o_mb_mask">0.35</output></label><input type="range" id="mb_mask" data-out="o_mb_mask" data-mb="1" min="0" max="1" step="0.01" value="0.35"></div><div class="ctl"><label>CLEARANCE <output id="o_mb_clear">1</output></label><input type="range" id="mb_clear" data-out="o_mb_clear" data-mb="1" min="0" max="8" step="1" value="1"></div></div>
+    <div class="ctl"><label>BOARD COLOUR</label><input type="color" id="mb_bg" data-mb="1" value="#060a0e"></div>
+  </details>
+  <details class="grp" data-eng="BOARD"><summary>WIRING — traces</summary>
+    <div class="pair"><div class="ctl"><label>LINK NEIGHBOURS <output id="o_mb_linkK">4</output></label><input type="range" id="mb_linkK" data-out="o_mb_linkK" data-mb="1" min="1" max="16" step="1" value="4"></div><div class="ctl"><label>LINK CHANCE <output id="o_mb_linkCh">0.8</output></label><input type="range" id="mb_linkCh" data-out="o_mb_linkCh" data-mb="1" min="0" max="1" step="0.01" value="0.8"></div></div>
+    <div class="pair"><div class="ctl"><label>FOLLOW EDGES <output id="o_mb_follow">0.7</output></label><input type="range" id="mb_follow" data-out="o_mb_follow" data-mb="1" min="0" max="1" step="0.01" value="0.7"></div><div class="ctl"><label>TRACE WIDTH SCALE <output id="o_mb_trW">0.08</output></label><input type="range" id="mb_trW" data-out="o_mb_trW" data-mb="1" min="0" max="0.5" step="0.01" value="0.08"></div></div>
+    <div class="pair"><div class="ctl"><label>TRACE MIN <output id="o_mb_trMin">1</output></label><input type="range" id="mb_trMin" data-out="o_mb_trMin" data-mb="1" min="1" max="16" step="1" value="1"></div><div class="ctl"><label>TRACE MAX <output id="o_mb_trMax">4</output></label><input type="range" id="mb_trMax" data-out="o_mb_trMax" data-mb="1" min="1" max="32" step="1" value="4"></div></div>
+    <div class="pair"><div class="ctl"><label>TRACE SHADOW <output id="o_mb_trSh">1</output></label><input type="range" id="mb_trSh" data-out="o_mb_trSh" data-mb="1" min="0" max="10" step="1" value="1"></div><div class="ctl"><label>SHADOW ALPHA <output id="o_mb_trShA">140</output></label><input type="range" id="mb_trShA" data-out="o_mb_trShA" data-mb="1" min="0" max="255" step="1" value="140"></div></div>
+    <label class="check"><input type="checkbox" id="mb_chamfer" data-mb="1" checked> 45° CORNERS</label>
+  </details>
+  <details class="grp" data-eng="BOARD"><summary>BUSSES — bundled lanes</summary>
+    <div class="pair"><div class="ctl"><label>BUS COUNT <output id="o_mb_busN">10</output></label><input type="range" id="mb_busN" data-out="o_mb_busN" data-mb="1" min="0" max="80" step="1" value="10"></div><div class="ctl"><label>LANES PER BUS <output id="o_mb_busL">3</output></label><input type="range" id="mb_busL" data-out="o_mb_busL" data-mb="1" min="0" max="16" step="1" value="3"></div></div>
+    <div class="pair"><div class="ctl"><label>LANE GAP <output id="o_mb_busGap">3</output></label><input type="range" id="mb_busGap" data-out="o_mb_busGap" data-mb="1" min="0" max="24" step="1" value="3"></div><div class="ctl"><label>LANE WIDTH <output id="o_mb_busW">1</output></label><input type="range" id="mb_busW" data-out="o_mb_busW" data-mb="1" min="1" max="12" step="1" value="1"></div></div>
+  </details>
+  <details class="grp" data-eng="BOARD"><summary>PADS + VIAS</summary>
+    <div class="pair"><div class="ctl"><label>PAD CHANCE <output id="o_mb_padCh">0.85</output></label><input type="range" id="mb_padCh" data-out="o_mb_padCh" data-mb="1" min="0" max="1" step="0.01" value="0.85"></div><div class="ctl"><label>PAD SCALE <output id="o_mb_padSc">0.35</output></label><input type="range" id="mb_padSc" data-out="o_mb_padSc" data-mb="1" min="0" max="1" step="0.01" value="0.35"></div></div>
+    <div class="pair"><div class="ctl"><label>PAD MIN <output id="o_mb_padMin">2</output></label><input type="range" id="mb_padMin" data-out="o_mb_padMin" data-mb="1" min="1" max="30" step="1" value="2"></div><div class="ctl"><label>PAD MAX <output id="o_mb_padMax">9</output></label><input type="range" id="mb_padMax" data-out="o_mb_padMax" data-mb="1" min="1" max="80" step="1" value="9"></div></div>
+    <div class="pair"><div class="ctl"><label>PAD HOLE <output id="o_mb_padHole">0.4</output></label><input type="range" id="mb_padHole" data-out="o_mb_padHole" data-mb="1" min="0" max="0.95" step="0.01" value="0.4"></div><div class="ctl"><label>VIA CHANCE <output id="o_mb_viaCh">0.15</output></label><input type="range" id="mb_viaCh" data-out="o_mb_viaCh" data-mb="1" min="0" max="1" step="0.01" value="0.15"></div></div>
+    <div class="ctl"><label>VIA RADIUS <output id="o_mb_viaR">2</output></label><input type="range" id="mb_viaR" data-out="o_mb_viaR" data-mb="1" min="1" max="16" step="1" value="2"></div>
+    <div class="ctl"><label>PAD MIN BLOCK <output id="o_mb_padMinBlock">20</output></label><input type="range" id="mb_padMinBlock" data-out="o_mb_padMinBlock" data-mb="1" min="1" max="120" step="1" value="20"></div>
+  </details>
+  <details class="grp" data-eng="BOARD"><summary>CHIPS</summary>
+    <div class="pair"><div class="ctl"><label>CHIP MIN SIDE <output id="o_mb_chipMin">28</output></label><input type="range" id="mb_chipMin" data-out="o_mb_chipMin" data-mb="1" min="6" max="300" step="1" value="28"></div><div class="ctl"><label>CHIP CHANCE <output id="o_mb_chipCh">0.7</output></label><input type="range" id="mb_chipCh" data-out="o_mb_chipCh" data-mb="1" min="0" max="1" step="0.01" value="0.7"></div></div>
+    <div class="pair"><div class="ctl"><label>CHIP INSET <output id="o_mb_chipInset">0.14</output></label><input type="range" id="mb_chipInset" data-out="o_mb_chipInset" data-mb="1" min="0" max="0.45" step="0.01" value="0.14"></div><div class="ctl"><label>CHIP BODY DARK <output id="o_mb_chipDark">0.35</output></label><input type="range" id="mb_chipDark" data-out="o_mb_chipDark" data-mb="1" min="0" max="2" step="0.01" value="0.35"></div></div>
+    <div class="pair"><div class="ctl"><label>PIN PITCH <output id="o_mb_pinPitch">5</output></label><input type="range" id="mb_pinPitch" data-out="o_mb_pinPitch" data-mb="1" min="2" max="32" step="1" value="5"></div><div class="ctl"><label>PIN LENGTH <output id="o_mb_pinLen">3</output></label><input type="range" id="mb_pinLen" data-out="o_mb_pinLen" data-mb="1" min="0" max="24" step="1" value="3"></div></div>
+    <div class="ctl"><label>PIN WIDTH <output id="o_mb_pinW">2</output></label><input type="range" id="mb_pinW" data-out="o_mb_pinW" data-mb="1" min="1" max="12" step="1" value="2"></div>
+    <div class="pair"><label class="check"><input type="checkbox" id="mb_pins" data-mb="1" checked> PINS</label><label class="check"><input type="checkbox" id="mb_notch" data-mb="1" checked> PIN-1 DOT</label></div>
+    <label class="check"><input type="checkbox" id="mb_label" data-mb="1" checked> HEX LABEL</label>
+    <div class="pair"><div class="ctl"><label>REPEAT TAG FROM Nth <output id="o_mb_repFrom">0</output></label><input type="range" id="mb_repFrom" data-out="o_mb_repFrom" data-mb="1" min="0" max="30" step="1" value="0"></div><div class="ctl"><label>REPEAT TOLERANCE <output id="o_mb_repTol">6</output></label><input type="range" id="mb_repTol" data-out="o_mb_repTol" data-mb="1" min="0" max="80" step="1" value="6"></div></div>
+    <div class="ctl"><label>CHIP TEXT SIZE <output id="o_mb_chipTxt">16</output></label><input type="range" id="mb_chipTxt" data-out="o_mb_chipTxt" data-mb="1" min="6" max="48" step="1" value="16"></div>
+    <div class="ctl"><label>REPEAT SIZE FORMAT</label><input type="text" id="mb_sizeFmt" data-mb="1" value=".x{w}y{h}"></div>
+    <div class="pair"><div class="ctl"><label>MICRO-CHIP MIN SIDE <output id="o_mb_microMin">5</output></label><input type="range" id="mb_microMin" data-out="o_mb_microMin" data-mb="1" min="2" max="60" step="1" value="5"></div><div class="ctl"><label>MICRO-CHIP CHANCE <output id="o_mb_microCh">0.75</output></label><input type="range" id="mb_microCh" data-out="o_mb_microCh" data-mb="1" min="0" max="1" step="0.01" value="0.75"></div></div>
+    <div class="pair"><div class="ctl"><label>MICRO PIN LENGTH <output id="o_mb_microPinLen">2</output></label><input type="range" id="mb_microPinLen" data-out="o_mb_microPinLen" data-mb="1" min="0" max="8" step="1" value="2"></div><div class="ctl"><label>MICRO PIN PITCH <output id="o_mb_microPinPitch">2</output></label><input type="range" id="mb_microPinPitch" data-out="o_mb_microPinPitch" data-mb="1" min="2" max="12" step="1" value="2"></div></div>
+    <div class="ctl"><label>MICRO ASYMMETRY <output id="o_mb_microAsym">0.7</output></label><input type="range" id="mb_microAsym" data-out="o_mb_microAsym" data-mb="1" min="0" max="1" step="0.01" value="0.7"></div>
+  </details>
+  <details class="grp" data-eng="BOARD"><summary>SILKSCREEN — R12, C7</summary>
+    <div class="pair"><div class="ctl"><label>LABEL CHANCE <output id="o_mb_silkCh">0.25</output></label><input type="range" id="mb_silkCh" data-out="o_mb_silkCh" data-mb="1" min="0" max="1" step="0.01" value="0.25"></div><div class="ctl"><label>MIN BLOCK <output id="o_mb_silkMin">10</output></label><input type="range" id="mb_silkMin" data-out="o_mb_silkMin" data-mb="1" min="2" max="120" step="1" value="10"></div></div>
+    <div class="pair"><div class="ctl"><label>TEXT SIZE <output id="o_mb_silkSz">16</output></label><input type="range" id="mb_silkSz" data-out="o_mb_silkSz" data-mb="1" min="6" max="48" step="1" value="16"></div><div class="ctl"><label>OPACITY <output id="o_mb_silkA">150</output></label><input type="range" id="mb_silkA" data-out="o_mb_silkA" data-mb="1" min="0" max="255" step="1" value="150"></div></div>
+    <div class="ctl"><label>LABEL COLOUR</label><input type="color" id="mb_silkCol" data-mb="1" value="#c8cdd2"></div>
+  </details>
+  <details class="grp" data-eng="BOARD"><summary>COPPER + GLOW</summary>
+    <div class="pair"><div class="ctl"><label>COPPER ← IMAGE MIX <output id="o_mb_cuMix">0.7</output></label><input type="range" id="mb_cuMix" data-out="o_mb_cuMix" data-mb="1" min="0" max="1" step="0.01" value="0.7"></div><div class="ctl"><label>COPPER BOOST <output id="o_mb_cuBoost">1.25</output></label><input type="range" id="mb_cuBoost" data-out="o_mb_cuBoost" data-mb="1" min="0" max="4" step="0.05" value="1.25"></div></div>
+    <div class="pair"><div class="ctl"><label>GLOW RADIUS <output id="o_mb_glowR">3</output></label><input type="range" id="mb_glowR" data-out="o_mb_glowR" data-mb="1" min="0" max="40" step="0.5" value="3"></div><div class="ctl"><label>GLOW STRENGTH <output id="o_mb_glowS">0.6</output></label><input type="range" id="mb_glowS" data-out="o_mb_glowS" data-mb="1" min="0" max="4" step="0.05" value="0.6"></div></div>
+    <div class="ctl"><label>COPPER COLOUR</label><input type="color" id="mb_cuCol" data-mb="1" value="#cda046"></div>
+  </details>
+  <details class="grp" data-eng="BOARD"><summary>LAMBDA — spines + rails</summary>
+    <label class="check"><input type="checkbox" id="mb_lamOn" data-mb="1" checked> LAMBDA LAYER</label>
+    <div class="pair"><div class="ctl"><label>SPINE SPACING <output id="o_mb_lamDen">8</output></label><input type="range" id="mb_lamDen" data-out="o_mb_lamDen" data-mb="1" min="1" max="60" step="1" value="8"></div><div class="ctl"><label>NODE BUDGET <output id="o_mb_lamBud">25000</output></label><input type="range" id="mb_lamBud" data-out="o_mb_lamBud" data-mb="1" min="0" max="150000" step="500" value="25000"></div></div>
+    <label class="check"><input type="checkbox" id="mb_lamAdapt" data-mb="1" checked> ADAPTIVE BIT THRESHOLD</label>
+    <div class="pair"><div class="ctl"><label>BIT THRESHOLD <output id="o_mb_lamThr">127</output></label><input type="range" id="mb_lamThr" data-out="o_mb_lamThr" data-mb="1" min="0" max="255" step="1" value="127"></div><div class="ctl"><label>STEP UP <output id="o_mb_lamStep">8</output></label><input type="range" id="mb_lamStep" data-out="o_mb_lamStep" data-mb="1" min="1" max="60" step="1" value="8"></div></div>
+    <div class="pair"><div class="ctl"><label>MAX DEPTH <output id="o_mb_lamDepth">50</output></label><input type="range" id="mb_lamDepth" data-out="o_mb_lamDepth" data-mb="1" min="1" max="300" step="1" value="50"></div><div class="ctl"><label>FIRST FORK WIDTH <output id="o_mb_lamSpread">0.02</output></label><input type="range" id="mb_lamSpread" data-out="o_mb_lamSpread" data-mb="1" min="0" max="0.3" step="0.005" value="0.02"></div></div>
+    <div class="pair"><div class="ctl"><label>FORK DECAY <output id="o_mb_lamDecay">0.72</output></label><input type="range" id="mb_lamDecay" data-out="o_mb_lamDecay" data-mb="1" min="0.2" max="1" step="0.01" value="0.72"></div><div class="ctl"><label>FORK FLOOR <output id="o_mb_lamFloor">8</output></label><input type="range" id="mb_lamFloor" data-out="o_mb_lamFloor" data-mb="1" min="1" max="120" step="1" value="8"></div></div>
+    <div class="pair"><div class="ctl"><label>RAIL COUNT <output id="o_mb_barN">16</output></label><input type="range" id="mb_barN" data-out="o_mb_barN" data-mb="1" min="0" max="80" step="1" value="16"></div><div class="ctl"><label>RAIL ZONE <output id="o_mb_barZone">0.08</output></label><input type="range" id="mb_barZone" data-out="o_mb_barZone" data-mb="1" min="0.01" max="0.5" step="0.01" value="0.08"></div></div>
+    <div class="pair"><div class="ctl"><label>RAIL WIDTH <output id="o_mb_barW">2</output></label><input type="range" id="mb_barW" data-out="o_mb_barW" data-mb="1" min="1" max="16" step="1" value="2"></div><div class="ctl"><label>VARIABLE WIRE WIDTH <output id="o_mb_varW">1</output></label><input type="range" id="mb_varW" data-out="o_mb_varW" data-mb="1" min="1" max="12" step="1" value="1"></div></div>
+    <div class="pair"><div class="ctl"><label>WIRE THICKEN DIST <output id="o_mb_varScale">600</output></label><input type="range" id="mb_varScale" data-out="o_mb_varScale" data-mb="1" min="20" max="4000" step="20" value="600"></div><div class="ctl"><label>BIND DOT RADIUS <output id="o_mb_bind">2</output></label><input type="range" id="mb_bind" data-out="o_mb_bind" data-mb="1" min="0" max="16" step="1" value="2"></div></div>
+    <div class="pair"><div class="ctl"><label>BRANCH WIRE WIDTH <output id="o_mb_wireW">1</output></label><input type="range" id="mb_wireW" data-out="o_mb_wireW" data-mb="1" min="1" max="12" step="1" value="1"></div><div class="ctl"><label>PAD-BAR WIDTH <output id="o_mb_absW">2</output></label><input type="range" id="mb_absW" data-out="o_mb_absW" data-mb="1" min="1" max="16" step="1" value="2"></div></div>
+    <div class="ctl"><label>BRANCH CHAMFER <output id="o_mb_lamCham">3</output></label><input type="range" id="mb_lamCham" data-out="o_mb_lamCham" data-mb="1" min="0" max="30" step="1" value="3"></div>
+    <label class="check"><input type="checkbox" id="mb_trunk" data-mb="1" checked> TRUNK WIRES</label>
+    <div class="pair"><div class="ctl"><label>WIRE OPACITY <output id="o_mb_wireA">170</output></label><input type="range" id="mb_wireA" data-out="o_mb_wireA" data-mb="1" min="0" max="255" step="1" value="170"></div><div class="ctl"><label>WIRE GLOW SHARE <output id="o_mb_wireGlow">0.35</output></label><input type="range" id="mb_wireGlow" data-out="o_mb_wireGlow" data-mb="1" min="0" max="1" step="0.01" value="0.35"></div></div>
+  </details>
+  <div class="note" data-eng="BOARD">Every constant of MOTHERBOARD.py is a slider. Chips carry their block's real hex colour; set REPEAT TAG FROM to 2 to turn repeats into short tags (<code>fv3</code> over <code>.x124y56</code>). PURE BOARD drops the lambda layer; LAMBDA ONLY drops the board parts and keeps the spines. Text uses the embedded IBM VGA font at 16 px, its native grid. Blocks smaller than CHIP MIN SIDE become unlabelled micro-chips (MICRO ASYMMETRY 0 = neat, 1 = wild); PAD MIN BLOCK keeps rivets off small blocks so they never trace the outline. LAYOUT SEED reshuffles scatter without touching any other setting.</div>
+
 </section>
 
 <button id="runBtn" disabled>RUN ENGINE</button>
@@ -1648,7 +1738,7 @@ document.querySelectorAll('input[data-out]').forEach(r=>{
 /* ── tab + sub-engine gating ─────────────────────────────────── */
 let TAB = 'WARP';
 const SUBSEL = {WARP:'warpEng', COLOR:'colEng', STRUCT:'stEng', QUAD:'qdEng',
-                INK:'inkEng', LIGHT:'ltEng', GHOST:'ghEng', OVER:'ovEng', GLYPH:'glEng'};
+                INK:'inkEng', LIGHT:'ltEng', GHOST:'ghEng', OVER:'ovEng', GLYPH:'glEng', BOARD:'bdEng'};
 
 function currentEngine(){ return $(SUBSEL[TAB]).value; }
 
@@ -5098,11 +5188,561 @@ function runEngine(id){
         anchor: $('tbAnchor').value, bgColor: $('tbBg').value, alpha: int('tbAlpha'),
         borderColor: $('tbBorder').value, fgColor: $('tbFg').value
       });
+    case 'BOARD':
+      return boardMotherboard(id, mbParams());
     case 'GLYPH':
       return GF.run(eng, id);
   }
   return id;
 }
+/* ╔═══════════════════════════════════════════════════════════════╗
+   ║  BOARD :: MOTHERBOARD — port of MOTHERBOARD.py                 ║
+   ║  (Genesis II + Lambda Spine). Quadtree blocks become chips,    ║
+   ║  pads, routed traces, busses, vias, silkscreen and copper      ║
+   ║  glow; the lambda layer grows Binary Lambda Calculus spines    ║
+   ║  from pixel columns. Every constant is a slider. All scatter   ║
+   ║  is sine-hash (hrnd) — no Math.random.                         ║
+   ╚═══════════════════════════════════════════════════════════════╝ */
+const MB_FONT = '"GF_VGA","IBM VGA",ui-monospace,Menlo,monospace';
+
+function mbParams(){
+  const f = id => parseFloat($(id).value), n = id => parseInt($(id).value, 10);
+  const c = id => $(id).checked, h = id => hex2rgb($(id).value);
+  return {
+    seed: n('mb_seed'),
+    P: {
+      maxDepth: n('mb_maxDepth'), minBlock: n('mb_minBlock'), detail: f('mb_detail'),
+      mask: f('mb_mask'), bg: h('mb_bg'), clear: n('mb_clear'),
+      linkK: n('mb_linkK'), linkCh: f('mb_linkCh'), follow: f('mb_follow'), chamfer: c('mb_chamfer'),
+      trW: f('mb_trW'), trMin: n('mb_trMin'), trMax: n('mb_trMax'),
+      trSh: n('mb_trSh'), trShA: n('mb_trShA'),
+      busN: n('mb_busN'), busL: n('mb_busL'), busGap: n('mb_busGap'), busW: n('mb_busW'),
+      padCh: f('mb_padCh'), padSc: f('mb_padSc'), padMin: n('mb_padMin'), padMax: n('mb_padMax'),
+      padHole: f('mb_padHole'), viaCh: f('mb_viaCh'), viaR: n('mb_viaR'), padMinBlock: n('mb_padMinBlock'),
+      microMin: n('mb_microMin'), microCh: f('mb_microCh'), microPinLen: n('mb_microPinLen'),
+      microPinPitch: n('mb_microPinPitch'), microAsym: f('mb_microAsym'),
+      chipMin: n('mb_chipMin'), chipCh: f('mb_chipCh'), chipInset: f('mb_chipInset'), chipDark: f('mb_chipDark'),
+      pins: c('mb_pins'), pinPitch: n('mb_pinPitch'), pinLen: n('mb_pinLen'), pinW: n('mb_pinW'),
+      notch: c('mb_notch'), label: c('mb_label'), repFrom: n('mb_repFrom'), repTol: n('mb_repTol'),
+      sizeFmt: $('mb_sizeFmt').value, chipTxt: n('mb_chipTxt'),
+      silkCh: f('mb_silkCh'), silkMin: n('mb_silkMin'), silkSz: n('mb_silkSz'),
+      silkCol: h('mb_silkCol'), silkA: n('mb_silkA'),
+      cuCol: h('mb_cuCol'), cuMix: f('mb_cuMix'), cuBoost: f('mb_cuBoost'),
+      glowR: f('mb_glowR'), glowS: f('mb_glowS')
+    },
+    L: {
+      on: c('mb_lamOn'), density: n('mb_lamDen'), budget: n('mb_lamBud'),
+      adaptive: c('mb_lamAdapt'), thr: n('mb_lamThr'),
+      step: n('mb_lamStep'), maxDepth: n('mb_lamDepth'),
+      spread: f('mb_lamSpread'), decay: f('mb_lamDecay'), floor: n('mb_lamFloor'),
+      barN: n('mb_barN'), barZone: f('mb_barZone'), barW: n('mb_barW'),
+      varW: n('mb_varW'), varScale: n('mb_varScale'), bind: n('mb_bind'),
+      wireW: n('mb_wireW'), absW: n('mb_absW'), chamfer: n('mb_lamCham'),
+      trunk: c('mb_trunk'), wireA: n('mb_wireA'), wireGlow: f('mb_wireGlow')
+    }
+  };
+}
+
+/* quadtree: split while the block's colour spread is above the threshold */
+function mbLeaves(d, W, x, y, w, h, depth, P, out){
+  if(w < 1 || h < 1) return;
+  let sr=0, sg=0, sb=0, qr=0, qg=0, qb=0;
+  for(let yy=y; yy<y+h; yy++){
+    let i = (yy*W + x) * 4;
+    for(let xx=0; xx<w; xx++, i+=4){
+      const r=d[i], g=d[i+1], b=d[i+2];
+      sr+=r; sg+=g; sb+=b; qr+=r*r; qg+=g*g; qb+=b*b;
+    }
+  }
+  const n = w*h, mr=sr/n, mg=sg/n, mb=sb/n;
+  const sd = (Math.sqrt(Math.max(0, qr/n - mr*mr)) + Math.sqrt(Math.max(0, qg/n - mg*mg))
+            + Math.sqrt(Math.max(0, qb/n - mb*mb))) / 3;
+  if(depth >= P.maxDepth || w <= P.minBlock || h <= P.minBlock || w < 2 || h < 2 || sd < P.detail){
+    out.push({x, y, w, h, col:[mr|0, mg|0, mb|0], v:sd});
+    return;
+  }
+  const hw = w >> 1, hh = h >> 1;
+  mbLeaves(d, W, x,    y,    hw,   hh,   depth+1, P, out);
+  mbLeaves(d, W, x+hw, y,    w-hw, hh,   depth+1, P, out);
+  mbLeaves(d, W, x,    y+hh, hw,   h-hh, depth+1, P, out);
+  mbLeaves(d, W, x+hw, y+hh, w-hw, h-hh, depth+1, P, out);
+}
+
+/* dominant edge direction inside a block (structure tensor) → [dx, dy, coherence] or null */
+function mbEdgeDir(gx, gy, W, x, y, w, h){
+  let sxx=0, syy=0, sxy=0;
+  for(let yy=y; yy<y+h; yy++){
+    let i = yy*W + x;
+    for(let xx=0; xx<w; xx++, i++){
+      const a=gx[i], b=gy[i];
+      sxx += a*a; syy += b*b; sxy += a*b;
+    }
+  }
+  const n = w*h; sxx/=n; syy/=n; sxy/=n;
+  const total = sxx + syy;
+  if(total < 1e-3) return null;
+  const theta = 0.5 * Math.atan2(2*sxy, sxx - syy);
+  const coh = Math.sqrt((sxx-syy)*(sxx-syy) + 4*sxy*sxy) / total;
+  const edge = theta + Math.PI/2;
+  return [Math.cos(edge), Math.sin(edge), coh];
+}
+
+/* k nearest block centres via a coarse grid hash */
+function mbNeighbours(centers, k, W, H){
+  const n = centers.length;
+  const cell = Math.max(24, Math.floor(Math.sqrt(W*H / Math.max(1, n)) * 2));
+  const grid = new Map();
+  for(let i=0; i<n; i++){
+    const key = Math.floor(centers[i][0]/cell) + ',' + Math.floor(centers[i][1]/cell);
+    if(!grid.has(key)) grid.set(key, []);
+    grid.get(key).push(i);
+  }
+  const res = new Array(n);
+  for(let i=0; i<n; i++){
+    const cx = centers[i][0], cy = centers[i][1];
+    const gx = Math.floor(cx/cell), gy = Math.floor(cy/cell);
+    let cand = [];
+    for(let ring=1; ring<5; ring++){
+      cand = [];
+      for(let ix=gx-ring; ix<=gx+ring; ix++) for(let iy=gy-ring; iy<=gy+ring; iy++){
+        const g = grid.get(ix + ',' + iy);
+        if(g) for(const j of g) if(j !== i) cand.push(j);
+      }
+      if(cand.length >= k) break;
+    }
+    cand.sort((a, b) => ((centers[a][0]-cx)**2 + (centers[a][1]-cy)**2) - ((centers[b][0]-cx)**2 + (centers[b][1]-cy)**2));
+    res[i] = cand.slice(0, k);
+  }
+  return res;
+}
+
+/* shift a polyline sideways (parallel bus lanes) */
+function mbOffsetPoly(pts, off){
+  if(pts.length < 2 || off === 0) return pts;
+  const nr = [];
+  for(let i=0; i<pts.length-1; i++){
+    const dx = pts[i+1][0]-pts[i][0], dy = pts[i+1][1]-pts[i][1], L = Math.hypot(dx, dy) || 1;
+    nr.push([-dy/L, dx/L]);
+  }
+  const out = [];
+  for(let i=0; i<pts.length; i++){
+    let n, s = 1;
+    if(i === 0) n = nr[0];
+    else if(i === pts.length-1) n = nr[nr.length-1];
+    else {
+      const nx = nr[i-1][0]+nr[i][0], ny = nr[i-1][1]+nr[i][1], L = Math.hypot(nx, ny);
+      n = L > 1e-6 ? [nx/L, ny/L] : nr[i];
+      s = 1 / Math.max(0.5, n[0]*nr[i][0] + n[1]*nr[i][1]);
+    }
+    out.push([pts[i][0] + n[0]*off*s, pts[i][1] + n[1]*off*s]);
+  }
+  return out;
+}
+
+/* three box blurs ≈ gaussian, RGB only, in place */
+function mbBlurRGB(data, W, H, sigma){
+  if(sigma < 0.3) return;
+  const wIdeal = Math.sqrt(12*sigma*sigma/3 + 1);
+  let wl = Math.floor(wIdeal); if(wl % 2 === 0) wl--;
+  const wu = wl + 2, mI = (12*sigma*sigma - 3*wl*wl - 12*wl - 9) / (-4*wl - 4);
+  const m = Math.round(mI), sizes = [0,1,2].map(i => i < m ? wl : wu);
+  const tmp = new Float32Array(W*H), cur = new Float32Array(W*H);
+  for(let ch=0; ch<3; ch++){
+    for(let i=0; i<W*H; i++) cur[i] = data[i*4+ch];
+    for(const sz of sizes){
+      const r = (sz-1) >> 1;
+      for(let y=0; y<H; y++){                       // horizontal
+        const row = y*W; let acc = 0;
+        for(let x=-r; x<=r; x++) acc += cur[row + Math.min(W-1, Math.max(0, x))];
+        for(let x=0; x<W; x++){
+          tmp[row+x] = acc/(2*r+1);
+          acc += cur[row + Math.min(W-1, x+r+1)] - cur[row + Math.max(0, x-r)];
+        }
+      }
+      for(let x=0; x<W; x++){                        // vertical
+        let acc = 0;
+        for(let y=-r; y<=r; y++) acc += tmp[Math.min(H-1, Math.max(0, y))*W + x];
+        for(let y=0; y<H; y++){
+          cur[y*W+x] = acc/(2*r+1);
+          acc += tmp[Math.min(H-1, y+r+1)*W + x] - tmp[Math.max(0, y-r)*W + x];
+        }
+      }
+    }
+    for(let i=0; i<W*H; i++) data[i*4+ch] = cur[i];
+  }
+}
+
+function boardMotherboard(id, PR){
+  const P = PR.P, L = PR.L;
+  const W = id.width, H = id.height, src = id.data;
+  hseed(1 + (PR.seed | 0) * 9973);
+
+  /* PIL-style 'L' grey + central-difference gradient (np.gradient) */
+  const gray = new Uint8Array(W*H);
+  for(let i=0, j=0; i<W*H; i++, j+=4) gray[i] = (src[j]*19595 + src[j+1]*38470 + src[j+2]*7471 + 32768) >> 16;
+  const gx = new Float32Array(W*H), gy = new Float32Array(W*H);
+  for(let y=0; y<H; y++) for(let x=0; x<W; x++){
+    const i = y*W + x;
+    gx[i] = W < 2 ? 0 : (x === 0 ? gray[i+1]-gray[i] : x === W-1 ? gray[i]-gray[i-1] : (gray[i+1]-gray[i-1]) / 2);
+    gy[i] = H < 2 ? 0 : (y === 0 ? gray[i+W]-gray[i] : y === H-1 ? gray[i]-gray[i-W] : (gray[i+W]-gray[i-W]) / 2);
+  }
+
+  const leaves = [];
+  mbLeaves(src, W, 0, 0, W, H, 0, P, leaves);
+  const edges = leaves.map(l => mbEdgeDir(gx, gy, W, l.x, l.y, l.w, l.h));
+  const n = leaves.length;
+  const centers = leaves.map(l => [l.x + (l.w >> 1), l.y + (l.h >> 1)]);
+
+  const cv = mkCanvas(W, H), ctx = cv.getContext('2d', {willReadFrequently:true});
+  const mcv = mkCanvas(W, H), mctx = mcv.getContext('2d', {willReadFrequently:true});   // copper only → glow
+  const bg = P.bg;
+  const css = (c, a) => (a === undefined || a >= 255)
+    ? `rgb(${c[0]},${c[1]},${c[2]})` : `rgba(${c[0]},${c[1]},${c[2]},${(a/255).toFixed(3)})`;
+  ctx.fillStyle = css(bg); ctx.fillRect(0, 0, W, H);
+  mctx.fillStyle = '#000'; mctx.fillRect(0, 0, W, H);
+
+  const lerp3 = (a, b, t) => { t = Math.max(0, Math.min(1, t)); return [0,1,2].map(k => Math.trunc(a[k] + (b[k]-a[k])*t)); };
+  const copper = (...cols) => {
+    const out = [];
+    for(let k=0; k<3; k++){
+      let s = 0; for(const c of cols) s += c[k];
+      out.push(Math.trunc(P.cuCol[k]*(1-P.cuMix) + Math.min(255, (s/cols.length) * P.cuBoost) * P.cuMix));
+    }
+    return out;
+  };
+  const dim = (c, g) => g >= 1 ? c : c.map(v => Math.trunc(v*g));
+  const rect = (c, x0, y0, x1, y1, style) => { c.fillStyle = style; c.fillRect(x0, y0, x1-x0+1, y1-y0+1); };
+
+  /* strokes: coordinates snapped to the pixel grid so 1px lines stay crisp */
+  const sn = (v, w) => (w & 1) ? Math.round(v) + 0.5 : Math.round(v);
+  function stroke(c, pts, style, width){
+    c.lineWidth = width; c.strokeStyle = style;
+    c.lineCap = width > 2 ? 'round' : 'butt'; c.lineJoin = width > 2 ? 'round' : 'miter';
+    c.beginPath();
+    for(let i=0; i<pts.length; i++){
+      const X = sn(pts[i][0], width), Y = sn(pts[i][1], width);
+      if(i) c.lineTo(X, Y); else c.moveTo(X, Y);
+    }
+    c.stroke();
+  }
+  function poly(pts, color, width, alpha, glow){
+    if(pts.length < 2) return;
+    alpha = alpha === undefined ? 255 : alpha; glow = glow === undefined ? 1 : glow;
+    if(P.trSh > 0)
+      stroke(ctx, pts.map(p => [p[0]+P.trSh, p[1]+P.trSh]), css([0,0,0], Math.trunc(P.trShA*alpha/255)), width);
+    stroke(ctx, pts, css(color, alpha), width);
+    stroke(mctx, pts, css(dim(color, glow)), width);
+  }
+  function disc(c, x, y, r, style){ c.fillStyle = style; c.beginPath(); c.arc(x, y, r + 0.5, 0, 6.283185307); c.fill(); }
+  function ring(x, y, r, color, hole, glow){
+    glow = glow === undefined ? 1 : glow;
+    disc(ctx, x, y, r, css(color)); disc(mctx, x, y, r, css(dim(color, glow)));
+    const hr = r * hole;
+    if(hr >= 0.8){ disc(ctx, x, y, hr, css(bg)); disc(mctx, x, y, hr, '#000'); }
+  }
+  const rivets = [];                 // pads / vias / bind dots — drawn in one pass after all copper
+  const rivet = (...a) => rivets.push(a);
+  function route(p1, p2, diagFirst){
+    const [x1, y1] = p1, [x2, y2] = p2, dx = x2-x1, dy = y2-y1;
+    let mid;
+    if(!P.chamfer) mid = diagFirst ? [x2, y1] : [x1, y2];
+    else {
+      const ax = Math.abs(dx), ay = Math.abs(dy), d = Math.min(ax, ay);
+      const sx = dx >= 0 ? 1 : -1, sy = dy >= 0 ? 1 : -1;
+      if(diagFirst) mid = [x1 + sx*d, y1 + sy*d];
+      else mid = ax > ay ? [x1 + sx*(ax-d), y1] : [x1, y1 + sy*(ay-d)];
+    }
+    const pts = [p1];
+    for(const p of [mid, p2]) if(p[0] !== pts[pts.length-1][0] || p[1] !== pts[pts.length-1][1]) pts.push(p);
+    return pts;
+  }
+
+  /* text: PIL draws from the ascender line; canvas needs the baseline (~0.75 em) */
+  const asc = s => Math.round(s * 0.75), glyphH = s => Math.round(s * 0.625);
+  function text(str, x, y, size, color, alpha){
+    ctx.font = size + 'px ' + MB_FONT; ctx.textBaseline = 'alphabetic';
+    ctx.fillStyle = css(color, alpha); ctx.fillText(str, x, y + asc(size));
+  }
+  function textW(str, size){ ctx.font = size + 'px ' + MB_FONT; return ctx.measureText(str).width; }
+
+  /* 1. solder-mask substrate, tinted by the image */
+  for(const l of leaves){
+    ctx.fillStyle = css(lerp3(bg, l.col, P.mask)); ctx.fillRect(l.x, l.y, l.w, l.h);
+    if(P.clear > 0){
+      const cl = Math.max(1, P.clear);
+      ctx.lineWidth = cl; ctx.strokeStyle = css(bg);
+      ctx.strokeRect(l.x + cl/2, l.y + cl/2, l.w - cl, l.h - cl);
+    }
+  }
+
+  const isChip = leaves.map(l => Math.min(l.w, l.h) >= P.chipMin && hrnd() < P.chipCh);
+  const isMicro = leaves.map((l, i) => !isChip[i] && Math.min(l.w, l.h) >= P.microMin && Math.min(l.w, l.h) < P.chipMin && hrnd() < P.microCh);
+
+  /* 2. wiring: each block links to a neighbour, preferring the edge direction */
+  const nbrs = mbNeighbours(centers, Math.max(1, P.linkK), W, H);
+  const linkSet = new Set();
+  for(let i=0; i<n; i++){
+    const cand = nbrs[i];
+    if(!cand.length || hrnd() > P.linkCh) continue;
+    let j;
+    if(edges[i] && hrnd() < P.follow){
+      const [ex, ey, coh] = edges[i], [cx, cy] = centers[i];
+      const last = centers[cand[cand.length-1]];
+      const far = Math.max(1, Math.hypot(last[0]-cx, last[1]-cy));
+      let best = cand[0], bestS = -1e9;
+      for(const k of cand){
+        const vx = centers[k][0]-cx, vy = centers[k][1]-cy, dist = Math.hypot(vx, vy) || 1;
+        const score = Math.abs(vx*ex + vy*ey) / dist * coh - 0.5 * dist / far;
+        if(score > bestS){ best = k; bestS = score; }
+      }
+      j = best;
+    } else {
+      j = hrnd() < 0.6 ? cand[0] : cand[Math.floor(hrnd() * cand.length)];
+    }
+    linkSet.add(Math.min(i, j) * n + Math.max(i, j));
+  }
+  const links = Array.from(linkSet).sort((a, b) => a - b);
+  for(const key of links){
+    const i = Math.floor(key / n), j = key % n, a = leaves[i], b = leaves[j];
+    let wd = Math.round(Math.min(a.w, a.h, b.w, b.h) * P.trW);
+    wd = Math.max(P.trMin, Math.min(P.trMax, wd));
+    const pts = route(centers[i], centers[j], hrnd() < 0.5), col = copper(a.col, b.col);
+    poly(pts, col, wd);
+    if(pts.length > 2 && hrnd() < P.viaCh) rivet(pts[1][0], pts[1][1], P.viaR, col, 0.45);
+  }
+
+  /* 3. data busses: bundled lanes between the largest blocks */
+  if(P.busL > 0 && P.busN > 0 && n > 1){
+    const big = leaves.map((l, i) => i).sort((a, b) => leaves[b].w*leaves[b].h - leaves[a].w*leaves[a].h).slice(0, P.busN + 1);
+    for(let t=0; t<big.length-1; t++){
+      const i = big[t], j = big[t+1];
+      const pts = route(centers[i], centers[j], hrnd() < 0.5), col = copper(leaves[i].col, leaves[j].col);
+      for(let lane=0; lane<P.busL; lane++)
+        poly(mbOffsetPoly(pts, (lane - (P.busL-1)/2) * P.busGap), col, P.busW);
+    }
+  }
+
+  /* 3b. lambda spine layer, in the same copper */
+  let lamNodes = 0;
+  if(L.on){
+    const iw = W, ih = H, thrBase = L.thr;
+    let thr = thrBase;
+    if(L.adaptive){
+      const hist = new Uint32Array(256); for(let i=0; i<W*H; i++) hist[gray[i]]++;
+      const total = W*H; let acc = 0, lo = -1, hi = -1;
+      const k1 = Math.floor((total-1)/2), k2 = Math.floor(total/2);
+      for(let v=0; v<256; v++){ acc += hist[v]; if(lo < 0 && acc > k1) lo = v; if(hi < 0 && acc > k2){ hi = v; break; } }
+      thr = Math.trunc((lo + hi) / 2);
+    }
+    const reader = x => ({cx: Math.max(0, Math.min(Math.trunc(x), W-1)), row: H-1});
+    const read = r => { if(r.row < 0) return 0; const b = gray[r.row*W + r.cx] > thr ? 1 : 0; r.row--; return b; };
+    const lcolor = (x, y) => {
+      const X = Math.max(0, Math.min(Math.trunc(x), W-1)), Y = Math.max(0, Math.min(Math.trunc(y), H-1)), q = (Y*W + X) * 4;
+      return copper([src[q], src[q+1], src[q+2]]);
+    };
+    const lpoly = (pts, col, w) => poly(pts, col, w, L.wireA, L.wireGlow);
+
+    /* rails across the top */
+    const bars = [], zone = Math.trunc(H * L.barZone);
+    for(let i=0; i<L.barN; i++){
+      const y = Math.max(1, Math.min(H-2, Math.trunc(20 + (zone-40) * (i / Math.max(1, L.barN-1)))));
+      let sr=0, sg=0, sb=0, cnt=0;
+      for(let yy=y; yy<Math.min(y+2, H); yy++) for(let xx=0; xx<W; xx++){ const q=(yy*W+xx)*4; sr+=src[q]; sg+=src[q+1]; sb+=src[q+2]; cnt++; }
+      const col = [Math.trunc(sr/cnt), Math.trunc(sg/cnt), Math.trunc(sb/cnt)];
+      const bw = Math.trunc(W * (0.9 - 0.3 * (i / Math.max(1, L.barN)))), x0 = (W - bw) >> 1;
+      poly([[x0, y], [x0 + bw, y]], copper(col), L.barW);
+      bars.push(y);
+    }
+
+    const cut = H * L.barZone, vws = Math.max(1, L.varScale);
+    let cap = Infinity;
+    function spine(rd0, x0, y0, spread){
+      const stack = [[rd0, x0, y0, spread, 0, 0]];
+      while(stack.length){
+        if(lamNodes >= L.budget || lamNodes >= cap) break;
+        const [rd, cx, cy, sp, depth, lam] = stack.pop();
+        const col = lcolor(cx, cy);
+        lamNodes++;
+        if(depth >= L.maxDepth || cy < cut){
+          lpoly([[cx, cy], [cx, 0]], col, L.varW + Math.trunc(cy / vws));
+          continue;
+        }
+        if(read(rd) === 0){
+          if(read(rd) === 0){                                    // abstraction: a pad-bar
+            const hw = Math.max(3, Math.trunc(sp * 0.8));
+            lpoly([[cx-hw, cy], [cx+hw, cy]], col, L.absW);
+            if(L.trunk) lpoly([[cx, cy], [cx, cy - L.step]], col, L.wireW);
+            stack.push([rd, cx, cy - L.step, sp, depth+1, lam+1]);
+          } else {                                               // application: fork in two
+            const s = Math.max(L.floor, Math.trunc(sp)), xl = cx - s, xr = cx + s, ny = cy - L.step;
+            const k = Math.max(0, Math.min(L.chamfer, L.step - 1, s));
+            const pts = k > 0
+              ? [[xl, ny], [xl, cy-k], [xl+k, cy], [xr-k, cy], [xr, cy-k], [xr, ny]]
+              : [[xl, ny], [xl, cy], [xr, cy], [xr, ny]];
+            lpoly(pts, col, L.wireW);
+            const cs = Math.max(L.floor, sp * L.decay);
+            stack.push([reader(xr), xr, ny, cs, depth+1, lam]);
+            stack.push([reader(xl), xl, ny, cs, depth+1, lam]);
+          }
+        } else {                                                 // variable: wire to a rail, via on it
+          let idx = 0;
+          while(read(rd) === 1){ idx++; if(idx > lam + bars.length) break; }
+          if(bars.length){
+            const by = bars[idx % bars.length];
+            lpoly([[cx, cy], [cx, by]], col, L.varW + Math.trunc(Math.abs(cy - by) / vws));
+            rivet(cx, by, L.bind, col, 0.45, L.wireGlow);
+          } else lpoly([[cx, cy], [cx, 0]], col, L.varW);
+        }
+      }
+    }
+    const dens = Math.max(1, L.density), total = Math.max(1, Math.trunc(W / dens));
+    const perSpine = Math.max(500, Math.trunc(L.budget / Math.max(1, Math.trunc(total / 2))));
+    const sp0 = W * L.spread;
+    for(let x=0; x<W; x+=dens){
+      if(lamNodes >= L.budget) break;
+      cap = lamNodes + perSpine;
+      spine(reader(x), x, H - 20, sp0);
+    }
+  }
+
+  /* 4. every rivet in one pass, on top of all copper: pads, vias, bind dots */
+  for(let i=0; i<n; i++){
+    const l = leaves[i];
+    if(isChip[i] || isMicro[i] || Math.min(l.w, l.h) < P.padMinBlock || hrnd() > P.padCh) continue;
+    const r = Math.max(P.padMin, Math.min(P.padMax, Math.min(l.w, l.h) * P.padSc));
+    rivet(centers[i][0], centers[i][1], r, copper(l.col), P.padHole);
+  }
+  for(const a of rivets) ring(...a);
+
+  /* 5. chips, then silkscreen */
+  let refs = 0, chips = 0;
+  const families = [];
+  function repeatIndex(col){
+    for(const f of families){
+      if(Math.max(Math.abs(f[0][0]-col[0]), Math.abs(f[0][1]-col[1]), Math.abs(f[0][2]-col[2])) <= P.repTol){ f[1]++; return f[1]; }
+    }
+    families.push([col, 1]); return 1;
+  }
+  function chip(l){
+    const {x, y, w, h, col} = l, pl = P.pinLen;
+    const ins = Math.max(pl + 1, Math.trunc(Math.min(w, h) * P.chipInset));
+    const x0 = x + ins, y0 = y + ins, x1 = x + w - 1 - ins, y1 = y + h - 1 - ins;
+    if(x1 - x0 < 8 || y1 - y0 < 8) return;
+    chips++;
+    const body = col.map(v => Math.max(0, Math.min(255, Math.trunc(v * P.chipDark))));
+    const edge = col.map(v => Math.min(255, Math.trunc(v * 0.5 + 80)));
+    rect(ctx, x0, y0, x1, y1, css(body));
+    ctx.lineWidth = 1; ctx.strokeStyle = css(edge); ctx.strokeRect(x0 + 0.5, y0 + 0.5, x1 - x0, y1 - y0);
+
+    if(P.pins){
+      const pw = Math.max(1, P.pinW), pcol = copper(col), quad = Math.abs(w - h) < Math.min(w, h) * 0.35;
+      const along = (len, start) => {
+        const pitch = Math.max(2, P.pinPitch, Math.ceil(len / 24)), out = [];
+        for(let v = start + pitch; v <= start + len - pitch; v += pitch) out.push(v);
+        return out;
+      };
+      const pin = (a, b, c2, d2) => { rect(ctx, a, b, c2, d2, css(pcol)); rect(mctx, a, b, c2, d2, css(pcol)); };
+      for(const px of along(x1 - x0, x0)){
+        const o = px - (pw >> 1);
+        pin(o, y0 - pl, o + pw - 1, y0 - 1); pin(o, y1 + 1, o + pw - 1, y1 + pl);
+      }
+      if(quad) for(const py of along(y1 - y0, y0)){
+        const o = py - (pw >> 1);
+        pin(x0 - pl, o, x0 - 1, o + pw - 1); pin(x1 + 1, o, x1 + pl, o + pw - 1);
+      }
+    }
+    if(P.notch){ ctx.fillStyle = 'rgba(225,225,225,0.82)'; ctx.beginPath(); ctx.arc(x0 + 5, y0 + 5, 2, 0, 6.283185307); ctx.fill(); }
+
+    if(P.label){
+      refs++;
+      const nth = repeatIndex(col), hexs = col.map(v => v.toString(16).padStart(2, '0')).join('');
+      let lines;
+      if(P.repFrom > 0 && nth >= P.repFrom){
+        const code = new Set(hexs).size === 1 ? `${hexs[0]}v${nth}` : `${hexs} v${nth}`;
+        lines = [code, P.sizeFmt.split('{w}').join(w).split('{h}').join(h)];
+      } else lines = ['#' + hexs.toUpperCase()];
+      const size = P.chipTxt, th = glyphH(size), step = th + 3, bw = x1 - x0, bh = y1 - y0, keep = [];
+      for(const t of lines){
+        const tw = textW(t, size);
+        if(tw + 6 < bw && (keep.length + 1) * step + 8 < bh) keep.push([t, tw]);
+        else if(!keep.length) break;
+      }
+      if(keep.length){
+        text('U' + refs, x0 + 3 + 8, y0 + 2, size, [170, 175, 180], 200);
+        let ty = Math.trunc((y0 + y1 - (th + (keep.length - 1) * step)) / 2) + (th >> 1);
+        for(const [t, tw] of keep){
+          text(t, Math.trunc((x0 + x1 - tw) / 2), ty, size, [200, 205, 210], 220);
+          ty += step;
+        }
+      }
+    }
+  }
+  let micros = 0;
+  function micro(l){
+    const {x, y, w, h, col} = l, a = Math.max(0, Math.min(1, P.microAsym)), maxpl = Math.max(0, P.microPinLen);
+    const sides = [0,1,2,3].map(() => maxpl > 0 && hrnd() < 1 - 0.55 * a);          // top right bottom left
+    const pl = sides.map(s => (s && maxpl) ? 1 + Math.floor(hrnd() * maxpl) : 0);
+    const jit = Math.max(0, Math.floor(Math.min(w, h) / 4));
+    const ins = pl.map(p => p + 1 + (jit ? Math.floor(hrnd() * a * (jit + 1)) : 0));
+    const x0 = x + ins[3], y0 = y + ins[0], x1 = x + w - 1 - ins[1], y1 = y + h - 1 - ins[2];
+    if(x1 - x0 < 2 || y1 - y0 < 2) return;
+    micros++;
+    const body = col.map(v => Math.max(0, Math.min(255, Math.trunc(v * P.chipDark))));
+    const edge = col.map(v => Math.min(255, Math.trunc(v * 0.5 + 70)));
+    rect(ctx, x0, y0, x1, y1, css(body));
+    if(x1 - x0 >= 4 && y1 - y0 >= 4){ ctx.lineWidth = 1; ctx.strokeStyle = css(edge); ctx.strokeRect(x0 + 0.5, y0 + 0.5, x1 - x0, y1 - y0); }
+    const pcol = css(copper(col)), pitch = Math.max(2, P.microPinPitch);
+    const run = (lo, hi) => {
+      const span = hi - lo; if(span < 2) return [];
+      const ca = Math.floor(hrnd() * a * span * 0.45), cb = Math.floor(hrnd() * a * span * 0.45);
+      const p = pitch + (a > 0.5 ? Math.floor(hrnd() * 2) : 0), out = [];
+      for(let v = lo + 1 + ca; v < hi - cb; v += p) out.push(v);
+      return out;
+    };
+    const pin = (a0, b0, a1, b1) => { rect(ctx, a0, b0, a1, b1, pcol); rect(mctx, a0, b0, a1, b1, pcol); };
+    if(sides[0]) for(const px of run(x0, x1)) pin(px, y0 - pl[0], px, y0 - 1);
+    if(sides[2]) for(const px of run(x0, x1)) pin(px, y1 + 1, px, y1 + pl[2]);
+    if(sides[3]) for(const py of run(y0, y1)) pin(x0 - pl[3], py, x0 - 1, py);
+    if(sides[1]) for(const py of run(y0, y1)) pin(x1 + 1, py, x1 + pl[1], py);
+    const bw = x1 - x0, bh = y1 - y0;
+    if(bw >= 6 && bh >= 6 && hrnd() < 0.15 + 0.35 * a){                                   // die window
+      const wx0 = x0 + 2 + Math.floor(hrnd() * a * bw * 0.3), wy0 = y0 + 2 + Math.floor(hrnd() * a * bh * 0.3);
+      const wx1 = x1 - 2 - Math.floor(hrnd() * a * bw * 0.3), wy1 = y1 - 2 - Math.floor(hrnd() * a * bh * 0.3);
+      if(wx1 > wx0 && wy1 > wy0) rect(ctx, wx0, wy0, wx1, wy1, css(col.map(v => Math.min(255, Math.trunc(v * 0.55 + 25)))));
+    }
+    if(bw >= 5 && hrnd() < 0.3 * a){                                                        // bond stripe
+      const sy = y0 + 1 + Math.floor(hrnd() * Math.max(1, bh - 2));
+      rect(ctx, x0 + 1, sy, x1 - 1, sy, pcol); rect(mctx, x0 + 1, sy, x1 - 1, sy, pcol);
+    }
+    if(bw >= 4 && bh >= 4 && P.notch){                                                      // pin-1 dot, random corner
+      const cx = hrnd() < 0.5 ? x0 + 1 : x1 - 1, cy = hrnd() < 0.5 ? y0 + 1 : y1 - 1;
+      ctx.fillStyle = 'rgba(225,225,225,0.86)'; ctx.fillRect(cx, cy, 1, 1);
+    }
+  }
+  for(let i=0; i<n; i++){ if(isChip[i]) chip(leaves[i]); else if(isMicro[i]) micro(leaves[i]); }
+  for(let i=0; i<n; i++){
+    const l = leaves[i];
+    if(!isChip[i] && !isMicro[i] && Math.min(l.w, l.h) >= P.silkMin && hrnd() < P.silkCh){
+      refs++;
+      text('RCLDQ'[Math.floor(hrnd() * 5)] + refs, l.x + 2, l.y + 1, P.silkSz, P.silkCol, P.silkA);
+    }
+  }
+
+  /* glow: blur the copper layer, brighten, screen it over the board */
+  const out = ctx.getImageData(0, 0, W, H);
+  if(P.glowS > 0 && P.glowR > 0){
+    const m = mctx.getImageData(0, 0, W, H);
+    mbBlurRGB(m.data, W, H, P.glowR);
+    const a = out.data, b = m.data, k = P.glowS;
+    for(let i=0; i<a.length; i+=4) for(let c=0; c<3; c++){
+      const g = Math.min(255, b[i+c] * k);
+      a[i+c] = 255 - ((255 - a[i+c]) * (255 - g) / 255);
+    }
+  }
+  log(`BOARD — ${n} blocks · ${chips} chips · ${micros} micro · ${links.length} traces` + (L.on ? ` · ${lamNodes} lambda nodes` : ''));
+  return out;
+}
+
 /* ╔═══════════════════════════════════════════════════╗
    ║  COLOR :: AXIS SPLIT  (arbitrary colour-axis jitter) ║
    ╚═══════════════════════════════════════════════════╝
@@ -5308,6 +5948,26 @@ if(location.search.includes('debug')){
   s.onload = ()=>{ if(window.eruda) window.eruda.init(); };
   document.head.appendChild(s);
 }
+
+/* BOARD tab: reset + quick presets */
+function mbSet(id, v){
+  const el = $(id); if(!el) return;
+  if(el.type === 'checkbox') el.checked = !!v; else el.value = v;
+  el.dispatchEvent(new Event('input'));
+}
+$('mbReset').addEventListener('click', ()=>{
+  document.querySelectorAll('[data-mb]').forEach(el=>{
+    if(el.type === 'checkbox') el.checked = el.defaultChecked; else el.value = el.defaultValue;
+    el.dispatchEvent(new Event('input'));
+  });
+  log('BOARD — all controls reset to MOTHERBOARD.py defaults');
+});
+$('mbPure').addEventListener('click', ()=>{ mbSet('mb_lamOn', false); log('BOARD — lambda layer off (pure board)'); });
+$('mbLamOnly').addEventListener('click', ()=>{
+  mbSet('mb_lamOn', true);
+  ['linkCh','busN','padCh','chipCh','silkCh'].forEach(k => mbSet('mb_'+k, 0));
+  log('BOARD — board parts off, lambda spines only');
+});
 
 renderSwatches();
 sync();
